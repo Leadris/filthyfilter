@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FilthyFilter.nl — Airco Decontaminatie Divisie</title>
+  <meta name="description" content="Professionele reiniging van airconditioning. Wij sporen de schimmel op en ruimen ’m op.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+  <!-- fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Share+Tech+Mono&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- animated spore field behind everything -->
+<canvas id="spore-field" aria-hidden="true"></canvas>
+
+<!-- ============================ NAV ============================ -->
+<header class="nav">
+  <div class="nav__inner">
+    <a class="brand" href="#top" aria-label="FilthyFilter">
+      <img class="brand__mark" src="assets/favicon.svg" alt="FilthyFilter logo">
+      <span class="brand__txt">
+        <b>FILTHYFILTER<span style="color:var(--copper)">.nl</span></b>
+        <small data-nl="FUNGUS DETECTION DIVISION" data-en="FUNGUS DETECTION DIVISION" data-sk="FUNGUS DETECTION DIVISION">FUNGUS DETECTION DIVISION</small>
+      </span>
+    </a>
+
+    <nav class="nav__links" aria-label="Menu">
+      <a href="#overview"  data-nl="Missie"      data-en="Mission"     data-sk="Misia">Missie</a>
+      <a href="#ffff"      data-nl="FFFF Rating"  data-en="FFFF Rating" data-sk="FFFF Rating">FFFF Rating</a>
+      <a href="#diensten"  data-nl="Diensten"     data-en="Services"    data-sk="Služby">Diensten</a>
+      <a href="#werkwijze" data-nl="Werkwijze"    data-en="Process"     data-sk="Postup">Werkwijze</a>
+      <a href="#hall"      data-nl="Hall of Filth" data-en="Hall of Filth" data-sk="Hall of Filth">Hall of Filth</a>
+      <a href="steden/"    data-nl="Steden"       data-en="Cities"      data-sk="Mestá">Steden</a>
+      <a href="#contact"   data-nl="Contact"      data-en="Contact"     data-sk="Kontakt">Contact</a>
+    </nav>
+
+    <div class="langswitch" role="group" aria-label="Taal / Language / Jazyk">
+      <button type="button" data-lang="nl" class="active" aria-pressed="true">NL</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      <button type="button" data-lang="sk" aria-pressed="false">SK</button>
+    </div>
+
+    <button class="nav__toggle" aria-label="Menu" data-attr-target="aria-label" data-nl="Menu" data-en="Menu" data-sk="Menu">☰</button>
+  </div>
+</header>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="hero__rings" aria-hidden="true"></div>
+    <div class="hero__coords" aria-hidden="true">52.3676° N · 4.9041° E — SECTOR AIRCO</div>
+
+    <div class="hero__inner">
+      <span class="tag" data-nl="AIRCONDITIONING · DECONTAMINATIE" data-en="AIR CONDITIONING · DECONTAMINATION" data-sk="KLIMATIZÁCIE · DEKONTAMINÁCIA">AIRCONDITIONING · DECONTAMINATIE</span>
+      <h1 class="hero__title">FILTHYFILTER</h1>
+      <p class="hero__sub" data-nl="AIRCO DECONTAMINATIE DIVISIE" data-en="AIRCO DECONTAMINATION DIVISION" data-sk="DIVÍZIA DEKONTAMINÁCIE KLÍMY">AIRCO DECONTAMINATIE DIVISIE</p>
+      <p class="hero__tagline"
+         data-nl="Schoon. Gecertificeerd. Schimmel-geïnspireerd."
+         data-en="Clean. Certified. Fungus-inspired."
+         data-sk="Čisto. Certifikovane. Inšpirované hubami.">Schoon. Gecertificeerd. Schimmel-geïnspireerd.</p>
+
+      <div class="cta-row">
+        <a class="btn btn--primary" href="#contact"
+           data-nl="Plan een decontaminatie" data-en="Book a decontamination" data-sk="Objednať dekontamináciu">Plan een decontaminatie</a>
+        <a class="btn btn--ghost" href="#ffff"
+           data-nl="Bekijk de FFFF Rating™" data-en="View the FFFF Rating™" data-sk="Pozri FFFF Rating™">Bekijk de FFFF Rating™</a>
+      </div>
+
+      <div class="hero__stats">
+        <div><b>500+</b><span data-nl="units ontsmet" data-en="units decontaminated" data-sk="vyčistených jednotiek">units ontsmet</span></div>
+        <div><b>FFFF 5</b><span data-nl="hoogste alarmniveau" data-en="max threat level" data-sk="najvyšší stupeň hrozby">hoogste alarmniveau</span></div>
+        <div><b>0</b><span data-nl="overlevende sporen" data-en="surviving spores" data-sk="prežívajúcich spór">overlevende sporen</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ OVERVIEW ============================ -->
+<section class="section" id="overview">
+  <div class="wrap reveal">
+    <div class="grid-2">
+      <div class="panel panel--glow">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <div class="section__head">
+          <span class="tag" data-nl="MISSIE-OVERZICHT" data-en="MISSION OVERVIEW" data-sk="PREHĽAD MISIE">MISSIE-OVERZICHT</span>
+          <h2 class="section__title" data-nl="Wat de Divisie doet" data-en="What the Division does" data-sk="Čo Divízia robí">Wat de Divisie doet</h2>
+        </div>
+        <p class="lead"
+           data-nl="FilthyFilter reinigt airconditioners tot op het bot. Filters, lamellen, ventilator, warmtewisselaar en afvoer — alles wat zich verstopt en stinkt. Wat in jouw split-unit leeft, krijgt bij ons een uitzettingsbevel."
+           data-en="FilthyFilter cleans air conditioners down to the bone. Filters, fins, fan, heat exchanger and drain — everything that clogs and reeks. Whatever is living in your split unit gets served an eviction notice."
+           data-sk="FilthyFilter vyčistí klimatizácie do špiku kosti. Filtre, lamely, ventilátor, výmenník a odvod kondenzátu — všetko, čo sa upcháva a smrdí. Čokoľvek žije vo vašej split jednotke, dostane od nás príkaz na vysťahovanie.">
+           FilthyFilter reinigt airconditioners tot op het bot. Filters, lamellen, ventilator, warmtewisselaar en afvoer — alles wat zich verstopt en stinkt. Wat in jouw split-unit leeft, krijgt bij ons een uitzettingsbevel.</p>
+        <p class="lead lead--muted" style="margin-top:14px"
+           data-nl="Resultaat: frisse lucht, lager energieverbruik en een unit die niet langer ruikt naar een vergeten sportschooltas."
+           data-en="Result: fresh air, lower energy bills, and a unit that no longer smells like a forgotten gym bag."
+           data-sk="Výsledok: čerstvý vzduch, nižšia spotreba energie a jednotka, ktorá už nesmrdí ako zabudnutá taška z posilňovne.">
+           Resultaat: frisse lucht, lager energieverbruik en een unit die niet langer ruikt naar een vergeten sportschooltas.</p>
+      </div>
+
+      <div class="panel">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <div class="section__head">
+          <span class="tag" data-nl="IN HET KORT" data-en="AT A GLANCE" data-sk="V SKRATKE">IN HET KORT</span>
+        </div>
+        <ul class="spec-list">
+          <li><b data-nl="Specialiteit" data-en="Specialty" data-sk="Špecializácia">Specialiteit</b>
+              <span data-nl="Airco-reiniging" data-en="Airco cleaning" data-sk="Čistenie klimatizácií">Airco-reiniging</span></li>
+          <li><b data-nl="Type" data-en="Type" data-sk="Typ">Type</b>
+              <span data-nl="Split, multisplit & mono" data-en="Split, multisplit & mono" data-sk="Split, multisplit & mono">Split, multisplit & mono</span></li>
+          <li><b data-nl="Doelwit" data-en="Target" data-sk="Cieľ">Doelwit</b>
+              <span data-nl="Schimmel, stof & biofilm" data-en="Fungus, dust & biofilm" data-sk="Pleseň, prach & biofilm">Schimmel, stof & biofilm</span></li>
+          <li><b data-nl="Aanpak" data-en="Method" data-sk="Metóda">Aanpak</b>
+              <span data-nl="Diepreiniging + desinfectie" data-en="Deep clean + disinfection" data-sk="Hĺbkové čistenie + dezinfekcia">Diepreiniging + desinfectie</span></li>
+          <li><b data-nl="Status" data-en="Status" data-sk="Stav">Status</b>
+              <span data-nl="Operationeel & beschikbaar" data-en="Operational & available" data-sk="V prevádzke & dostupní">Operationeel & beschikbaar</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ FFFF RATING ============================ -->
+<section class="section" id="ffff">
+  <div class="wrap reveal">
+    <div class="panel">
+      <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      <div class="section__head">
+        <span class="tag" data-nl="DREIGINGSANALYSE" data-en="THREAT ASSESSMENT" data-sk="ANALÝZA HROZBY">DREIGINGSANALYSE</span>
+        <h2 class="section__title">FFFF Rating&trade;</h2>
+        <p class="lead lead--muted" style="margin-top:6px"
+           data-nl="De FilthyFilter Fungus Fun Factor — onze officiële schaal van smerigheid. Elke unit krijgt een score. Boven FFFF 3 raden we aan niet meer diep in te ademen."
+           data-en="The FilthyFilter Fungus Fun Factor — our official scale of filth. Every unit gets a score. Above FFFF 3 we advise against deep breathing."
+           data-sk="FilthyFilter Fungus Fun Factor — naša oficiálna škála špiny. Každá jednotka dostane skóre. Nad FFFF 3 odporúčame prestať zhlboka dýchať.">
+           De FilthyFilter Fungus Fun Factor — onze officiële schaal van smerigheid. Elke unit krijgt een score. Boven FFFF 3 raden we aan niet meer diep in te ademen.</p>
+      </div>
+
+      <div class="ffff-grid">
+        <div class="ffff" style="--lvl:#e8b057">
+          <span class="ffff__num">0</span>
+          <div class="ffff__code">FFFF 0</div>
+          <div class="ffff__name" data-nl="Fabrieksfris" data-en="Factory Fresh" data-sk="Ako z fabriky">Fabrieksfris</div>
+          <p class="ffff__desc" data-nl="Zo schoon dat zelfs wij niets te doen hebben. Zeldzaam." data-en="So clean even we have nothing to do. Rare." data-sk="Také čisté, že ani my nemáme čo robiť. Vzácne.">Zo schoon dat zelfs wij niets te doen hebben. Zeldzaam.</p>
+        </div>
+        <div class="ffff" style="--lvl:#cf9a47">
+          <span class="ffff__num">1</span>
+          <div class="ffff__code">FFFF 1</div>
+          <div class="ffff__name" data-nl="Stoffig" data-en="Dusty" data-sk="Zaprášené">Stoffig</div>
+          <p class="ffff__desc" data-nl="Een laagje stof. Niets dat een grondige beurt niet oplost." data-en="A layer of dust. Nothing a proper sweep can’t fix." data-sk="Vrstvička prachu. Nič, čo poriadne čistenie nevyrieši.">Een laagje stof. Niets dat een grondige beurt niet oplost.</p>
+        </div>
+        <div class="ffff" style="--lvl:#bda23e">
+          <span class="ffff__num">2</span>
+          <div class="ffff__code">FFFF 2</div>
+          <div class="ffff__name" data-nl="Interessant" data-en="Interesting" data-sk="Zaujímavé">Interessant</div>
+          <p class="ffff__desc" data-nl="Er groeit iets. We weten nog niet precies wát." data-en="Something is growing. We’re not yet sure what." data-sk="Niečo tam rastie. Zatiaľ nevieme presne čo.">Er groeit iets. We weten nog niet precies wát.</p>
+        </div>
+        <div class="ffff" style="--lvl:#8fa54e">
+          <span class="ffff__num">3</span>
+          <div class="ffff__code">FFFF 3</div>
+          <div class="ffff__name" data-nl="Ecosysteem" data-en="Ecosystem" data-sk="Ekosystém">Ecosysteem</div>
+          <p class="ffff__desc" data-nl="Volledige voedselketen aangetroffen. Adembescherming aanbevolen." data-en="Full food chain detected. Respirator recommended." data-sk="Zistená kompletná potravinová reťaz. Odporúčame respirátor.">Volledige voedselketen aangetroffen. Adembescherming aanbevolen.</p>
+        </div>
+        <div class="ffff" style="--lvl:#5f8fb0">
+          <span class="ffff__num">4</span>
+          <div class="ffff__code">FFFF 4</div>
+          <div class="ffff__name" data-nl="Nieuwe Beschaving" data-en="New Civilization" data-sk="Nová civilizácia">Nieuwe Beschaving</div>
+          <p class="ffff__desc" data-nl="De schimmel heeft een cultuur ontwikkeld. Mogelijk een vlag." data-en="The fungus has developed a culture. Possibly a flag." data-sk="Pleseň si vytvorila kultúru. Možno aj vlajku.">De schimmel heeft een cultuur ontwikkeld. Mogelijk een vlag.</p>
+        </div>
+        <div class="ffff" style="--lvl:#c0533b">
+          <span class="ffff__num">5</span>
+          <div class="ffff__code">FFFF 5</div>
+          <div class="ffff__name" data-nl="Bel Wetenschappers" data-en="Contact Scientists" data-sk="Volajte vedcov">Bel Wetenschappers</div>
+          <p class="ffff__desc" data-nl="Buiten ons mandaat. We bellen het lab. En misschien de pers." data-en="Beyond our mandate. We’re calling the lab. And maybe the press." data-sk="Mimo našej kompetencie. Voláme laboratórium. A možno aj tlač.">Buiten ons mandaat. We bellen het lab. En misschien de pers.</p>
+        </div>
+      </div>
+      <p class="ffff-note"
+         data-nl="// Elke reiniging wordt afgesloten met een officieel FFFF-certificaat (voor en na)."
+         data-en="// Every job ends with an official FFFF certificate (before and after)."
+         data-sk="// Každé čistenie končí oficiálnym FFFF certifikátom (pred a po).">
+         // Elke reiniging wordt afgesloten met een officieel FFFF-certificaat (voor en na).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SERVICES ============================ -->
+<section class="section" id="diensten">
+  <div class="wrap reveal">
+    <div class="section__head">
+      <span class="tag" data-nl="DECONTAMINATIE-PROTOCOLLEN" data-en="DECONTAMINATION PROTOCOLS" data-sk="DEKONTAMINAČNÉ PROTOKOLY">DECONTAMINATIE-PROTOCOLLEN</span>
+      <h2 class="section__title" data-nl="Diensten" data-en="Services" data-sk="Služby">Diensten</h2>
+    </div>
+    <div class="cards">
+      <div class="panel card">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <div class="card__icon" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="8" y="8" width="32" height="32" rx="2"/><path d="M8 18h32M8 28h32M18 8v32M28 8v32"/></svg></div>
+        <h3 data-nl="Filter Forensisch" data-en="Filter Forensics" data-sk="Forenzná analýza filtra">Filter Forensisch</h3>
+        <p data-nl="Filters eruit, doorgelicht, gereinigd of vervangen. Wij weten wat zich erin verstopt." data-en="Filters out, examined, cleaned or replaced. We know what’s hiding inside." data-sk="Filtre von, presvietené, vyčistené alebo vymenené. Vieme, čo sa v nich skrýva.">Filters eruit, doorgelicht, gereinigd of vervangen. Wij weten wat zich erin verstopt.</p>
+      </div>
+      <div class="panel card">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <div class="card__icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M10 14h28M10 22h28M10 30h28"/><path d="M14 10v28M22 10v28M30 10v28"/></svg></div>
+        <h3 data-nl="Lamellen Containment" data-en="Coil Containment" data-sk="Zásah na lamelách">Lamellen Containment</h3>
+        <p data-nl="Warmtewisselaar en lamellen onder hoge druk en met schuim ontdaan van biofilm." data-en="Heat exchanger and fins stripped of biofilm with foam and pressure." data-sk="Výmenník a lamely zbavené biofilmu penou a tlakom.">Warmtewisselaar en lamellen onder hoge druk en met schuim ontdaan van biofilm.</p>
+      </div>
+      <div class="panel card">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <div class="card__icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 6v14M16 20h16l-4 18a4 4 0 0 1-8 0z"/><circle cx="24" cy="42" r="2"/></svg></div>
+        <h3 data-nl="Afvoer Decontaminatie" data-en="Drain Decontamination" data-sk="Dekontaminácia odvodu">Afvoer Decontaminatie</h3>
+        <p data-nl="Condensafvoer doorgespoten en ontsmet — einde aan lekkage en moeraslucht." data-en="Condensate drain flushed and disinfected — no more leaks or swamp smell." data-sk="Odvod kondenzátu prepláchnutý a dezinfikovaný — koniec presakovaniu a bahennému zápachu.">Condensafvoer doorgespoten en ontsmet — einde aan lekkage en moeraslucht.</p>
+      </div>
+      <div class="panel card">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <div class="card__icon" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="16"/><path d="M24 12v12l8 4"/></svg></div>
+        <h3 data-nl="Volledige Sweep" data-en="Full System Sweep" data-sk="Kompletná očista">Volledige Sweep</h3>
+        <p data-nl="Complete unit van binnen en buiten, desinfectie en een verse FFFF-meting." data-en="Complete unit inside and out, disinfection and a fresh FFFF assessment." data-sk="Celá jednotka zvnútra aj zvonku, dezinfekcia a čerstvé FFFF meranie.">Complete unit van binnen en buiten, desinfectie en een verse FFFF-meting.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PROCESS ============================ -->
+<section class="section" id="werkwijze">
+  <div class="wrap reveal">
+    <div class="panel">
+      <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      <div class="section__head">
+        <span class="tag" data-nl="VELD-PROCEDURE" data-en="FIELD PROCEDURE" data-sk="TERÉNNY POSTUP">VELD-PROCEDURE</span>
+        <h2 class="section__title" data-nl="Werkwijze" data-en="Process" data-sk="Postup">Werkwijze</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step__no">01</div>
+          <div class="step__icon" aria-hidden="true"><svg viewBox="0 0 56 56"><circle cx="25" cy="25" r="14"/><path d="M35 35l12 12"/></svg></div>
+          <h4 data-nl="Inspectie" data-en="Inspect" data-sk="Inšpekcia">Inspectie</h4>
+          <p data-nl="We openen de unit en bepalen de FFFF-score." data-en="We open the unit and determine the FFFF score." data-sk="Otvoríme jednotku a určíme FFFF skóre.">We openen de unit en bepalen de FFFF-score.</p>
+        </div>
+        <div class="step">
+          <div class="step__no">02</div>
+          <div class="step__icon" aria-hidden="true"><svg viewBox="0 0 56 56"><path d="M28 8v8M28 40v8M8 28h8M40 28h8"/><circle cx="28" cy="28" r="10"/><circle cx="28" cy="28" r="3"/></svg></div>
+          <h4 data-nl="Detectie" data-en="Detect" data-sk="Detekcia">Detectie</h4>
+          <p data-nl="Schimmel, stof en biofilm worden in kaart gebracht." data-en="Fungus, dust and biofilm are mapped out." data-sk="Pleseň, prach a biofilm zmapujeme.">Schimmel, stof en biofilm worden in kaart gebracht.</p>
+        </div>
+        <div class="step">
+          <div class="step__no">03</div>
+          <div class="step__icon" aria-hidden="true"><svg viewBox="0 0 56 56"><path d="M20 10h16l-3 24a5 5 0 0 1-10 0z"/><path d="M16 10h24"/><path d="M28 44v4"/></svg></div>
+          <h4 data-nl="Decontaminatie" data-en="Decontaminate" data-sk="Dekontaminácia">Decontaminatie</h4>
+          <p data-nl="Diepreiniging, ontsmetting en doorspoeling van de afvoer." data-en="Deep clean, disinfection and drain flush." data-sk="Hĺbkové čistenie, dezinfekcia a prepláchnutie odvodu.">Diepreiniging, ontsmetting en doorspoeling van de afvoer.</p>
+        </div>
+        <div class="step">
+          <div class="step__no">04</div>
+          <div class="step__icon" aria-hidden="true"><svg viewBox="0 0 56 56"><path d="M18 28l7 7 14-15"/><circle cx="28" cy="28" r="20"/></svg></div>
+          <h4 data-nl="Certificering" data-en="Certify" data-sk="Certifikácia">Certificering</h4>
+          <p data-nl="Voor/na-rapport en officieel FFFF-certificaat." data-en="Before/after report and official FFFF certificate." data-sk="Správa pred/po a oficiálny FFFF certifikát.">Voor/na-rapport en officieel FFFF-certificaat.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ WHY US ============================ -->
+<section class="section" id="waarom">
+  <div class="wrap reveal">
+    <div class="why">
+      <div class="panel panel--glow">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <div class="section__head">
+          <span class="tag" data-nl="DIVISIE-KENMERKEN" data-en="DIVISION HIGHLIGHTS" data-sk="PREDNOSTI DIVÍZIE">DIVISIE-KENMERKEN</span>
+          <h2 class="section__title" data-nl="Waarom FilthyFilter" data-en="Why FilthyFilter" data-sk="Prečo FilthyFilter">Waarom FilthyFilter</h2>
+        </div>
+        <ul class="bullets">
+          <li data-nl="Veldgeteste operatives — geen schimmel te groot, geen filter te smerig." data-en="Field-tested operatives — no fungus too big, no filter too filthy." data-sk="Terénne preverení operatívci — žiadna pleseň nie je príliš veľká, žiadny filter príliš špinavý.">Veldgeteste operatives — geen schimmel te groot, geen filter te smerig.</li>
+          <li data-nl="Lab-grade apparatuur en professionele desinfectiemiddelen." data-en="Lab-grade equipment and professional disinfectants." data-sk="Laboratórne vybavenie a profesionálne dezinfekčné prostriedky.">Lab-grade apparatuur en professionele desinfectiemiddelen.</li>
+          <li data-nl="Vaste prijs vooraf — geen verrassingen achteraf (behalve in je filter)." data-en="Fixed price up front — no surprises afterwards (except in your filter)." data-sk="Pevná cena vopred — žiadne prekvapenia (okrem tých vo vašom filtri).">Vaste prijs vooraf — geen verrassingen achteraf (behalve in je filter).</li>
+          <li data-nl="Fungus Detection Division gecertificeerd. Door onszelf, met trots." data-en="Fungus Detection Division certified. By ourselves, proudly." data-sk="Certifikované Divíziou detekcie húb. Nami samými, s hrdosťou.">Fungus Detection Division gecertificeerd. Door onszelf, met trots.</li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <div class="section__head">
+          <span class="tag" data-nl="WAAROM HET ERTOE DOET" data-en="WHY IT MATTERS" data-sk="PREČO NA TOM ZÁLEŽÍ">WAAROM HET ERTOE DOET</span>
+        </div>
+        <ul class="spec-list">
+          <li><b data-nl="Gezondheid" data-en="Health" data-sk="Zdravie">Gezondheid</b><span data-nl="Minder sporen, minder allergie" data-en="Fewer spores, fewer allergies" data-sk="Menej spór, menej alergií">Minder sporen, minder allergie</span></li>
+          <li><b data-nl="Energie" data-en="Energy" data-sk="Energia">Energie</b><span data-nl="Schone unit = lager verbruik" data-en="Clean unit = lower usage" data-sk="Čistá jednotka = nižšia spotreba">Schone unit = lager verbruik</span></li>
+          <li><b data-nl="Geur" data-en="Smell" data-sk="Zápach">Geur</b><span data-nl="Frisse lucht i.p.v. moeras" data-en="Fresh air instead of swamp" data-sk="Čerstvý vzduch namiesto bahna">Frisse lucht i.p.v. moeras</span></li>
+          <li><b data-nl="Levensduur" data-en="Lifespan" data-sk="Životnosť">Levensduur</b><span data-nl="Je airco gaat langer mee" data-en="Your airco lasts longer" data-sk="Vaša klíma vydrží dlhšie">Je airco gaat langer mee</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- quick profile strip -->
+    <div class="panel" style="margin-top:22px">
+      <div class="profile">
+        <div><div class="pi"><svg viewBox="0 0 34 34"><path d="M17 4l11 6v8c0 8-5 11-11 12-6-1-11-4-11-12v-8z"/></svg></div><small data-nl="Sector" data-en="Sector" data-sk="Sektor">Sector</small><b data-nl="Service" data-en="Service" data-sk="Servis">Service</b></div>
+        <div><div class="pi"><svg viewBox="0 0 34 34"><rect x="6" y="8" width="22" height="14" rx="2"/><path d="M9 22v4M25 22v4M10 13h8"/></svg></div><small data-nl="Object" data-en="Object" data-sk="Objekt">Object</small><b>Airco</b></div>
+        <div><div class="pi"><svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="11"/><path d="M17 10v7l5 3"/></svg></div><small data-nl="Doelwit" data-en="Target" data-sk="Cieľ">Doelwit</small><b data-nl="Schimmel" data-en="Fungus" data-sk="Pleseň">Schimmel</b></div>
+        <div><div class="pi"><svg viewBox="0 0 34 34"><path d="M8 24l6-14 6 9 4-6 4 11z"/></svg></div><small data-nl="Methode" data-en="Method" data-sk="Metóda">Methode</small><b data-nl="Diepreiniging" data-en="Deep clean" data-sk="Hĺbkové čistenie">Diepreiniging</b></div>
+        <div><div class="pi"><svg viewBox="0 0 34 34"><path d="M11 18l4 4 9-10"/><circle cx="17" cy="17" r="13"/></svg></div><small data-nl="Resultaat" data-en="Result" data-sk="Výsledok">Resultaat</small><b data-nl="Schoon" data-en="Clean" data-sk="Čisto">Schoon</b></div>
+        <div><div class="pi"><svg viewBox="0 0 34 34"><path d="M17 5l3 7 7 .5-5.5 4.5 2 7L17 26l-6.5 5 2-7L7 12.5 14 12z"/></svg></div><small data-nl="Rating" data-en="Rating" data-sk="Rating">Rating</small><b>FFFF</b></div>
+        <div><div class="pi"><svg viewBox="0 0 34 34"><path d="M6 17h22M20 9l8 8-8 8"/></svg></div><small data-nl="Regio" data-en="Region" data-sk="Región">Regio</small><b data-nl="NL" data-en="NL" data-sk="NL">NL</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ HALL OF FILTH ============================ -->
+<section class="section" id="hall">
+  <div class="wrap reveal">
+    <div class="section__head">
+      <span class="tag" data-nl="SPECIMEN-ARCHIEF // FDD" data-en="SPECIMEN ARCHIVE // FDD" data-sk="ARCHÍV VZORIEK // FDD">SPECIMEN-ARCHIEF // FDD</span>
+      <h2 class="section__title">Hall of Filth</h2>
+      <p class="lead lead--muted"
+         data-nl="Onze technici fotograferen de smerigste filters die ze tegenkomen. De Fungus Detection Division-classifier hangt er een categorie én een FFFF-score aan. Dit is de wall of fame."
+         data-en="Our technicians photograph the filthiest filters they find. The Fungus Detection Division classifier assigns a category and an FFFF score. This is the wall of fame."
+         data-sk="Naši technici fotografujú najšpinavšie filtre, na ktoré narazia. Klasifikátor Fungus Detection Division im priradí kategóriu a FFFF skóre. Toto je sieň slávy.">
+         Onze technici fotograferen de smerigste filters die ze tegenkomen. De Fungus Detection Division-classifier hangt er een categorie én een FFFF-score aan. Dit is de wall of fame.</p>
+    </div>
+
+    <div class="hall-grid">
+      <!-- Dust Monster -->
+      <article class="specimen" style="--lvl:#bda23e">
+        <div class="specimen__img">
+          <!-- TODO: vervang door echte foto: <img src="assets/hall/dust-monster.jpg" alt="Dust Monster specimen"> -->
+          <span class="sicon" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="26" r="13"/><circle cx="20" cy="24" r="1.6" fill="currentColor" stroke="none"/><circle cx="28" cy="24" r="1.6" fill="currentColor" stroke="none"/><path d="M11 20c-3-1-4-4-2-6M37 20c3-1 4-4 2-6"/></svg></span>
+          <span class="specimen__badge">FFFF 3</span>
+          <span class="specimen__ph" data-nl="FOTO VOLGT" data-en="PHOTO PENDING" data-sk="FOTO ČOSKORO">FOTO VOLGT</span>
+        </div>
+        <div class="specimen__body">
+          <h3 class="specimen__cat">Dust Monster</h3>
+          <p class="specimen__verdict"
+             data-nl="Samengeperste stofkolonie — draagt zichzelf."
+             data-en="Compacted dust colony — structurally self-supporting."
+             data-sk="Zhutnená prachová kolónia — drží sa sama.">Samengeperste stofkolonie — draagt zichzelf.</p>
+          <span class="specimen__meta" data-nl="AI-CLASSIFICATIE · 98% ZEKER" data-en="AI CLASSIFICATION · 98% SURE" data-sk="AI KLASIFIKÁCIA · 98% ISTOTA">AI-CLASSIFICATIE · 98% ZEKER</span>
+        </div>
+      </article>
+
+      <!-- Fungus Kingdom -->
+      <article class="specimen" style="--lvl:#5f8fb0">
+        <div class="specimen__img">
+          <!-- TODO: vervang door echte foto -->
+          <span class="sicon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M9 23a15 9 0 0 1 30 0z"/><path d="M19 23v11a5 5 0 0 0 10 0V23"/></svg></span>
+          <span class="specimen__badge">FFFF 4</span>
+          <span class="specimen__ph" data-nl="FOTO VOLGT" data-en="PHOTO PENDING" data-sk="FOTO ČOSKORO">FOTO VOLGT</span>
+        </div>
+        <div class="specimen__body">
+          <h3 class="specimen__cat">Fungus Kingdom</h3>
+          <p class="specimen__verdict"
+             data-nl="Actief schimmelnetwerk. Kroon nog intact."
+             data-en="Active mycelial network. Crown still intact."
+             data-sk="Aktívna sieť mycélia. Koruna stále neporušená.">Actief schimmelnetwerk. Kroon nog intact.</p>
+          <span class="specimen__meta" data-nl="AI-CLASSIFICATIE · 96% ZEKER" data-en="AI CLASSIFICATION · 96% SURE" data-sk="AI KLASIFIKÁCIA · 96% ISTOTA">AI-CLASSIFICATIE · 96% ZEKER</span>
+        </div>
+      </article>
+
+      <!-- Nicotine Edition -->
+      <article class="specimen" style="--lvl:#cf9a47">
+        <div class="specimen__img">
+          <!-- TODO: vervang door echte foto -->
+          <span class="sicon" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="8" y="28" width="26" height="6" rx="1"/><path d="M30 28v6"/><path d="M15 23c0-4 4-4 4-8M23 23c0-4 4-4 4-8"/></svg></span>
+          <span class="specimen__badge">FFFF 3</span>
+          <span class="specimen__ph" data-nl="FOTO VOLGT" data-en="PHOTO PENDING" data-sk="FOTO ČOSKORO">FOTO VOLGT</span>
+        </div>
+        <div class="specimen__body">
+          <h3 class="specimen__cat">Nicotine Edition</h3>
+          <p class="specimen__verdict"
+             data-nl="Met teer geglazuurd, vintage amber. Ruikt naar 1987."
+             data-en="Tar-glazed, vintage amber finish. Smells of 1987."
+             data-sk="Glazúra z dechtu, vintage jantár. Vonia ako rok 1987.">Met teer geglazuurd, vintage amber. Ruikt naar 1987.</p>
+          <span class="specimen__meta" data-nl="AI-CLASSIFICATIE · 94% ZEKER" data-en="AI CLASSIFICATION · 94% SURE" data-sk="AI KLASIFIKÁCIA · 94% ISTOTA">AI-CLASSIFICATIE · 94% ZEKER</span>
+        </div>
+      </article>
+
+      <!-- Kitchen Grease Boss -->
+      <article class="specimen" style="--lvl:#c0533b">
+        <div class="specimen__img">
+          <!-- TODO: vervang door echte foto -->
+          <span class="sicon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 8c6 9 10 13 10 19a10 10 0 0 1-20 0c0-6 4-10 10-19z"/></svg></span>
+          <span class="specimen__badge">FFFF 4</span>
+          <span class="specimen__ph" data-nl="FOTO VOLGT" data-en="PHOTO PENDING" data-sk="FOTO ČOSKORO">FOTO VOLGT</span>
+        </div>
+        <div class="specimen__body">
+          <h3 class="specimen__cat">Kitchen Grease Boss</h3>
+          <p class="specimen__verdict"
+             data-nl="Frituurresten uit de lucht. Eindbaas van de keuken."
+             data-en="Airborne frying residue. Final boss of the kitchen."
+             data-sk="Vyprážacie zvyšky zo vzduchu. Final boss kuchyne.">Frituurresten uit de lucht. Eindbaas van de keuken.</p>
+          <span class="specimen__meta" data-nl="AI-CLASSIFICATIE · 99% ZEKER" data-en="AI CLASSIFICATION · 99% SURE" data-sk="AI KLASIFIKÁCIA · 99% ISTOTA">AI-CLASSIFICATIE · 99% ZEKER</span>
+        </div>
+      </article>
+
+      <!-- Pet Apocalypse -->
+      <article class="specimen" style="--lvl:#c0533b">
+        <div class="specimen__img">
+          <!-- TODO: vervang door echte foto -->
+          <span class="sicon" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="30" r="7"/><circle cx="13" cy="22" r="3"/><circle cx="35" cy="22" r="3"/><circle cx="18" cy="15" r="3"/><circle cx="30" cy="15" r="3"/></svg></span>
+          <span class="specimen__badge">FFFF 5</span>
+          <span class="specimen__ph" data-nl="FOTO VOLGT" data-en="PHOTO PENDING" data-sk="FOTO ČOSKORO">FOTO VOLGT</span>
+        </div>
+        <div class="specimen__body">
+          <h3 class="specimen__cat">Pet Apocalypse</h3>
+          <p class="specimen__verdict"
+             data-nl="Vachtverzadiging kritiek. Nieuwe soort vermoed."
+             data-en="Fur saturation critical. New species suspected."
+             data-sk="Saturácia srsťou kritická. Podozrenie na nový druh.">Vachtverzadiging kritiek. Nieuwe soort vermoed.</p>
+          <span class="specimen__meta" data-nl="AI-CLASSIFICATIE · 100% ZEKER" data-en="AI CLASSIFICATION · 100% SURE" data-sk="AI KLASIFIKÁCIA · 100% ISTOTA">AI-CLASSIFICATIE · 100% ZEKER</span>
+        </div>
+      </article>
+
+      <!-- Submit CTA -->
+      <article class="specimen specimen--cta" style="--lvl:#c8842f">
+        <div class="specimen__body">
+          <span class="sicon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 31V11M16 19l8-8 8 8"/><path d="M10 31v6h28v-6"/></svg></span>
+          <h3 class="specimen__cat" data-nl="Iets ergers gevonden?" data-en="Found something worse?" data-sk="Našiel si niečo horšie?">Iets ergers gevonden?</h3>
+          <p class="specimen__verdict"
+             data-nl="Stuur je smerigste filterfoto via WhatsApp. Misschien haalt-ie de Hall of Filth."
+             data-en="Send your filthiest filter photo via WhatsApp. It might make the Hall of Filth."
+             data-sk="Pošli foto svojho najšpinavšieho filtra cez WhatsApp. Možno sa dostane do Hall of Filth.">Stuur je smerigste filterfoto via WhatsApp. Misschien haalt-ie de Hall of Filth.</p>
+          <!-- TODO: wa.me nummer -->
+          <a class="btn btn--wa" href="https://wa.me/31600000000" target="_blank" rel="noopener" style="margin-top:4px"
+             data-nl="Stuur je specimen" data-en="Send your specimen" data-sk="Pošli svoju vzorku">Stuur je specimen</a>
+          <span class="specimen__meta" data-nl="INZENDINGEN WELKOM" data-en="SUBMISSIONS WELCOME" data-sk="PRÍSPEVKY VÍTANÉ">INZENDINGEN WELKOM</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CONTACT ============================ -->
+<section class="section" id="contact">
+  <div class="wrap reveal">
+    <div class="section__head">
+      <span class="tag" data-nl="NEEM CONTACT OP" data-en="GET IN TOUCH" data-sk="OZVITE SA">NEEM CONTACT OP</span>
+      <h2 class="section__title" data-nl="Bel de Wetenschappers" data-en="Contact the Scientists" data-sk="Zavolajte vedcov">Bel de Wetenschappers</h2>
+    </div>
+
+    <div class="contact">
+      <div class="panel contact__big">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <h3 data-nl="Klaar voor decontaminatie?" data-en="Ready for decontamination?" data-sk="Pripravení na dekontamináciu?">Klaar voor decontaminatie?</h3>
+        <p class="lead lead--muted"
+           data-nl="Stuur ons je FFFF-vermoeden — of laat ons het ter plekke vaststellen. We reageren snel."
+           data-en="Send us your FFFF suspicion — or let us assess it on site. We respond fast."
+           data-sk="Pošlite nám svoje FFFF podozrenie — alebo to zistíme na mieste. Reagujeme rýchlo.">
+           Stuur ons je FFFF-vermoeden — of laat ons het ter plekke vaststellen. We reageren snel.</p>
+
+        <ul class="contact__methods">
+          <li>
+            <span class="ci" aria-hidden="true"><svg viewBox="0 0 26 26"><path d="M6 4h4l2 5-3 2a12 12 0 0 0 6 6l2-3 5 2v4a2 2 0 0 1-2 2A18 18 0 0 1 4 6 2 2 0 0 1 6 4z"/></svg></span>
+            <!-- TODO: vervang door echt telefoonnummer -->
+            <span><a href="tel:+31600000000">+31 6 00 00 00 00</a><small data-nl="Telefoon / WhatsApp" data-en="Phone / WhatsApp" data-sk="Telefón / WhatsApp">Telefoon / WhatsApp</small></span>
+          </li>
+          <li>
+            <span class="ci" aria-hidden="true"><svg viewBox="0 0 26 26"><rect x="3" y="5" width="20" height="16" rx="2"/><path d="M3 7l10 7 10-7"/></svg></span>
+            <!-- TODO: vervang door echt e-mailadres -->
+            <span><a href="mailto:info@filthyfilter.nl">info@filthyfilter.nl</a><small data-nl="E-mail" data-en="E-mail" data-sk="E-mail">E-mail</small></span>
+          </li>
+          <li>
+            <span class="ci" aria-hidden="true"><svg viewBox="0 0 26 26"><path d="M13 3a10 10 0 0 0-8.5 15.2L3 23l4.9-1.5A10 10 0 1 0 13 3z"/></svg></span>
+            <span><span data-nl="Werkgebied: heel Nederland" data-en="Service area: all of the Netherlands" data-sk="Oblasť pôsobenia: celé Holandsko">Werkgebied: heel Nederland</span><small data-nl="Regio" data-en="Region" data-sk="Región">Regio</small></span>
+          </li>
+          <li>
+            <span class="ci" aria-hidden="true"><svg viewBox="0 0 26 26"><circle cx="13" cy="13" r="10"/><path d="M13 7v6l4 2"/></svg></span>
+            <span><span data-nl="Ma–za · 08:00–18:00" data-en="Mon–Sat · 08:00–18:00" data-sk="Po–so · 08:00–18:00">Ma–za · 08:00–18:00</span><small data-nl="Openingstijden" data-en="Hours" data-sk="Otváracie hodiny">Openingstijden</small></span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <div class="section__head">
+          <span class="tag" data-nl="SNELLE ACTIE" data-en="QUICK ACTION" data-sk="RÝCHLA AKCIA">SNELLE ACTIE</span>
+          <h2 class="section__title" style="font-size:1.4rem" data-nl="Direct contact" data-en="Reach us now" data-sk="Priamy kontakt">Direct contact</h2>
+        </div>
+        <div class="contact__cta">
+          <!-- TODO: vervang nummer in wa.me-link (landcode zonder + en zonder spaties, bv. 316XXXXXXXX) -->
+          <a class="btn btn--wa" href="https://wa.me/31600000000" target="_blank" rel="noopener"
+             data-nl="WhatsApp ons" data-en="WhatsApp us" data-sk="Napíšte na WhatsApp">WhatsApp ons</a>
+          <a class="btn btn--primary" href="tel:+31600000000"
+             data-nl="Bel direct" data-en="Call now" data-sk="Zavolať hneď">Bel direct</a>
+          <a class="btn btn--ghost" href="mailto:info@filthyfilter.nl"
+             data-nl="Stuur een e-mail" data-en="Send an e-mail" data-sk="Poslať e-mail">Stuur een e-mail</a>
+        </div>
+        <p class="ffff-note"
+           data-nl="// Gemiddelde reactietijd: sneller dan schimmel groeit."
+           data-en="// Average response time: faster than fungus grows."
+           data-sk="// Priemerný čas odozvy: rýchlejšie, než stihne narásť pleseň.">
+           // Gemiddelde reactietijd: sneller dan schimmel groeit.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="citylinks" style="margin-bottom:16px">
+      <a href="steden/" data-nl="Werkgebieden:" data-en="Service areas:" data-sk="Oblasti:">Werkgebieden:</a>
+      <a href="steden/eindhoven/">Eindhoven</a>
+      <a href="steden/tilburg/">Tilburg</a>
+      <a href="steden/breda/">Breda</a>
+      <a href="steden/den-bosch/">’s-Hertogenbosch</a>
+      <a href="steden/maastricht/">Maastricht</a>
+    </div>
+    <div class="footer__inner">
+      <p>© <span id="year">2026</span> FilthyFilter.nl — <span data-nl="Airco Decontaminatie Divisie" data-en="Airco Decontamination Division" data-sk="Divízia dekontaminácie klímy">Airco Decontaminatie Divisie</span></p>
+      <p class="joke" data-nl="Geen schimmels mishandeld — alleen uitgezet." data-en="No fungi were harmed — only evicted." data-sk="Žiadne huby neboli týrané — len vysťahované.">Geen schimmels mishandeld — alleen uitgezet.</p>
+      <!-- TODO: vervang door echte KvK / btw-gegevens -->
+      <p>KvK 00000000 · BTW NL000000000B00</p>
+    </div>
+  </div>
+</footer>
+
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+<script src="js/background.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

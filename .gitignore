@@ -1,0 +1,10 @@
+# OS / editor junk
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+
+# Dependencies / build (not used now — static site, but just in case)
+node_modules/
+dist/
+.cache/

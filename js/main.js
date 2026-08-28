@@ -6,7 +6,7 @@
   "use strict";
 
   var STORE_KEY = "ff_lang";
-  var DEFAULT_LANG = "nl";
+  var DEFAULT_LANG = "en";
 
   var META = {
     nl: {
@@ -23,7 +23,7 @@
     }
   };
 
-  function applyLang(lang) {
+  function applyLang(lang, persist) {
     if (lang !== "nl" && lang !== "en" && lang !== "sk") lang = DEFAULT_LANG;
 
     document.documentElement.setAttribute("lang", lang);
@@ -58,18 +58,26 @@
       btns[j].setAttribute("aria-pressed", btns[j].getAttribute("data-lang") === lang ? "true" : "false");
     }
 
-    try { localStorage.setItem(STORE_KEY, lang); } catch (e) {}
+    if (persist) {
+      try { localStorage.setItem(STORE_KEY, lang); } catch (e) {}
+    }
+  }
+
+  function systemLang() {
+    var raw = (navigator.language || "").toLowerCase();
+    var lang = raw.split("-")[0];
+    return (lang === "nl" || lang === "en" || lang === "sk") ? lang : DEFAULT_LANG;
   }
 
   function initLang() {
-    var stored = DEFAULT_LANG;
-    try { stored = localStorage.getItem(STORE_KEY) || DEFAULT_LANG; } catch (e) {}
-    applyLang(stored);
+    var selected = null;
+    try { selected = localStorage.getItem(STORE_KEY); } catch (e) {}
+    applyLang(selected || systemLang(), false);
 
     var btns = document.querySelectorAll(".langswitch button");
     for (var i = 0; i < btns.length; i++) {
       btns[i].addEventListener("click", function () {
-        applyLang(this.getAttribute("data-lang"));
+        applyLang(this.getAttribute("data-lang"), true);
       });
     }
   }

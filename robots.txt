@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://filthyfilter.nl/sitemap.xml
+Sitemap: https://whispair.sk/filthyfilter/sitemap.xml

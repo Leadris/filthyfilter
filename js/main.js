@@ -6,7 +6,11 @@
   "use strict";
 
   var STORE_KEY = "ff_lang";
+  // Version the preference when the welcome experience changes so returning
+  // visitors get one chance to see the new prompt.
+  var SOUND_STORE_KEY = "ff_sound_v2";
   var DEFAULT_LANG = "en";
+  var MUSIC_URL = new URL("../assets/backgroundMusic.mp3", document.currentScript.src).href;
 
   var META = {
     nl: {
@@ -114,7 +118,118 @@
     });
   }
 
+  function initMusic() {
+    var audio = new Audio(MUSIC_URL);
+    var fadeFrame = 0;
+    var revealTimer = 0;
+    var modal = null;
+    var targetVolume = 0.28;
+    audio.loop = true;
+    audio.preload = "metadata";
+
+    var control = document.createElement("button");
+    control.className = "sound-toggle";
+    control.type = "button";
+    control.setAttribute("aria-pressed", "false");
+    control.innerHTML = '<span aria-hidden="true">○</span> <b data-nl="Geluid uit" data-en="Sound off" data-sk="Zvuk vypnutý">Sound off</b>';
+    document.body.appendChild(control);
+
+    function setControl(playing) {
+      control.classList.toggle("is-playing", playing);
+      control.setAttribute("aria-pressed", playing ? "true" : "false");
+      var label = control.querySelector("b");
+      var indicator = control.querySelector("span");
+      label.setAttribute("data-nl", playing ? "Geluid aan" : "Geluid uit");
+      label.setAttribute("data-en", playing ? "Sound on" : "Sound off");
+      label.setAttribute("data-sk", playing ? "Zvuk zapnutý" : "Zvuk vypnutý");
+      var lang = document.documentElement.getAttribute("lang") || DEFAULT_LANG;
+      label.textContent = label.getAttribute("data-" + lang);
+      indicator.textContent = playing ? "●" : "○";
+      control.setAttribute("aria-label", label.textContent);
+    }
+
+    function fadeIn() {
+      cancelAnimationFrame(fadeFrame);
+      audio.volume = 0;
+      var started = performance.now();
+      function step(now) {
+        var progress = Math.min((now - started) / 4000, 1);
+        audio.volume = targetVolume * (1 - Math.pow(1 - progress, 3));
+        if (progress < 1) fadeFrame = requestAnimationFrame(step);
+      }
+      fadeFrame = requestAnimationFrame(step);
+    }
+
+    function playMusic() {
+      audio.play().then(function () {
+        fadeIn();
+        setControl(true);
+        try { localStorage.setItem(SOUND_STORE_KEY, "on"); } catch (e) {}
+      }).catch(function () {
+        setControl(false);
+      });
+    }
+
+    function stopMusic() {
+      cancelAnimationFrame(fadeFrame);
+      audio.pause();
+      audio.currentTime = 0;
+      setControl(false);
+      try { localStorage.setItem(SOUND_STORE_KEY, "off"); } catch (e) {}
+    }
+
+    control.addEventListener("click", function () {
+      if (audio.paused) playMusic(); else stopMusic();
+      if (modal) closeModal();
+    });
+
+    var preference = null;
+    try { preference = localStorage.getItem(SOUND_STORE_KEY); } catch (e) {}
+    if (preference !== null) {
+      setControl(false);
+      return;
+    }
+
+    modal = document.createElement("div");
+    modal.className = "sound-welcome";
+    modal.innerHTML =
+      '<div class="sound-welcome__panel" role="region" aria-labelledby="sound-title">' +
+        '<div class="sound-welcome__speaker" aria-hidden="true"><span>◖</span><i></i><i></i></div>' +
+        '<span class="tag">AUDIO SCAN // 001</span>' +
+        '<h2 id="sound-title" data-nl="We detecteerden een gevaarlijk goede smaak." data-en="We detected dangerously good taste." data-sk="Detegovali sme nebezpečne dobrý vkus.">We detected dangerously good taste.</h2>' +
+        '<p data-nl="Geluidsdecontaminatie activeren?" data-en="Activate sonic decontamination?" data-sk="Aktivovať zvukovú dekontamináciu?">Activate sonic decontamination?</p>' +
+        '<div class="sound-welcome__actions">' +
+          '<button class="btn btn--primary" type="button" data-sound-play data-nl="Start de procedure 🔊" data-en="Start the procedure 🔊" data-sk="Spustiť procedúru 🔊">Start the procedure 🔊</button>' +
+          '<button class="btn btn--ghost" type="button" data-sound-quiet data-nl="Stille modus" data-en="Silent mode" data-sk="Tichý režim">Silent mode</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(modal);
+    revealTimer = window.setTimeout(function () {
+      modal.classList.add("is-visible");
+    }, 6000);
+
+    function closeModal() {
+      if (!modal) return;
+      window.clearTimeout(revealTimer);
+      modal.classList.add("is-closing");
+      window.setTimeout(function () {
+        modal.remove();
+        modal = null;
+      }, 260);
+    }
+
+    modal.querySelector("[data-sound-play]").addEventListener("click", function () {
+      playMusic();
+      closeModal();
+    });
+    modal.querySelector("[data-sound-quiet]").addEventListener("click", function () {
+      stopMusic();
+      closeModal();
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
+    initMusic();
     initLang();
     initReveal();
     initMobileNav();

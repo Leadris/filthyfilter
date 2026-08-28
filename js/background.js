@@ -15,6 +15,8 @@
   var CFG = {
     sporeCount:      700,    // desktop; scaled down on mobile
     sporeCountMob:   320,
+    sporeSizeMin:    4.8,    // sprite diameter in CSS px — V0 parity (old r 0.6..2.6 drawn at r*4 radius)
+    sporeSizeMax:    20.8,
     sporeSpeed:      0.018,  // upward drift (normalized/s)
     sporeParallax:   0.05,   // pointer influence
     scrollParallax:  0.35,   // scroll influence on spores
@@ -176,7 +178,7 @@
     var tone = new Float32Array(sporeN * 3);
     for (var i = 0; i < sporeN; i++) {
       seed[i*2] = Math.random(); seed[i*2+1] = Math.random();
-      rnd[i*4]   = rand(1.4, 3.6) * dpr;          // size
+      rnd[i*4]   = rand(CFG.sporeSizeMin, CFG.sporeSizeMax); // diameter in CSS px; shader multiplies by u_dpr once
       rnd[i*4+1] = rand(0.4, 1.0) * CFG.sporeSpeed; // rise speed
       rnd[i*4+2] = rand(0.002, 0.012);            // sway amp
       rnd[i*4+3] = Math.random() * 6.28;          // phase

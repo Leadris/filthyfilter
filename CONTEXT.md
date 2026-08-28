@@ -20,7 +20,7 @@ This repository **is** the static site — its root is what you deploy.
 ```
 index.html               # homepage (all sections)
 css/styles.css           # full HUD design system + layout + responsive + animations
-js/main.js               # language toggle (NL/EN/SK) + scroll-linked reveal + mobile nav
+js/main.js               # language toggle (NL/EN/SK) + one-shot section fade-in + mobile nav
 js/background.js          # WebGL background (spores + mycelium) + parallax
 assets/favicon.svg
 steden/                  # local-SEO city landing pages (clean URLs /steden/<city>/)
@@ -59,7 +59,9 @@ Process (Inspectie→Detectie→Decontaminatie→Certificering) · Why us + Quic
 ## Animated background — `js/background.js` (raw WebGL1, no deps)
 One fullscreen fixed canvas `#spore-field` renders BOTH layers:
 - **Spores**: GPU point sprites, additive glow, drift upward; parallax via `uPointer`
-  (mouse) and `uScroll` (scroll) in the vertex shader.
+  (mouse) and `uScroll` (scroll) in the vertex shader. Sprite diameter is stored in
+  CSS px (`CFG.sporeSizeMin/Max` ≈ 4.8–20.8, matching the original 2D version's
+  `r 0.6–2.6 × 4` glow radius) and the shader multiplies by `u_dpr` exactly once.
 - **Mycelium**: branch geometry generated once on CPU, revealed by a `uProgress`
   uniform (grow→hold→fade→regrow loop), pinned to the live `.hero` rect.
 - Animates on mobile too (GPU-budgeted: fewer points, clamped DPR, FPS cap).
@@ -69,20 +71,18 @@ One fullscreen fixed canvas `#spore-field` renders BOTH layers:
 - NOTE: an earlier 2D-canvas version caused mobile scroll-freeze; fixed by removing
   `background-attachment: fixed` and moving to GPU/WebGL.
 
-## Section entrance — `initScrollReveal()` in `js/main.js`
-**Scroll-LINKED, JS-driven, works on every browser.** Each inner layer
-(`.section__head`, `.panel:not(.card)`, `.card`, `.step`, `.ffff`, `.specimen`,
-icons) has its opacity + translateY mapped to its position in the viewport, so
-content keeps moving AS YOU SCROLL; different layer types use different entry
-distance + parallax = depth; grid children stagger. Reads all rects then writes
-(no layout thrash); only runs on scroll via rAF; passive listeners.
-- Elements are hidden initially only when `<html>` has `.ff-js-reveal` (added by
-  the script) — so if JS is disabled/fails, content stays visible (no blank page).
-- Respects `prefers-reduced-motion` (returns early → static, visible).
-- IMPORTANT HISTORY: a previous version used CSS `animation-timeline: view()`. It
-  was replaced because that feature isn't supported in all browsers (older
-  Opera/Samsung Internet fell back to a one-shot trigger) — the JS version is
-  universal. Don't reintroduce a CSS-scroll-timeline version without a JS fallback.
+## Section entrance — `initReveal()` in `js/main.js`
+**One-shot fade + slide-up per section, via IntersectionObserver.** Every
+`.wrap.reveal` container starts at `opacity:0; translateY(18px)` (CSS in the
+`REVEAL ANIMATION` block of `styles.css`); when it scrolls into view (threshold
+0.12) the script adds `.in`, which transitions it to `opacity:1; transform:none`
+over .6s, then unobserves it. No scroll-linked motion, no per-child stagger.
+- No IntersectionObserver → all `.reveal` elements get `.in` immediately (visible).
+- Respects `prefers-reduced-motion` (CSS forces `.reveal` visible, no transition).
+- HISTORY: a scroll-LINKED variant (`initScrollReveal()` + `.ff-js-reveal` gate,
+  mapping opacity/translateY to viewport position, per-layer parallax + stagger)
+  existed briefly; reverted to this simpler one-shot fade on request. Before that,
+  a CSS `animation-timeline: view()` version — dropped for patchy browser support.
 
 ## City SEO pages — `steden/`
 5 real target cities in the south of NL (Brabant/Limburg): **Eindhoven, Tilburg,
@@ -109,8 +109,9 @@ Apocalypse**, plus a 6th "submit via WhatsApp" CTA card.
   with a real `<img>`). Each specimen image is currently a styled placeholder
   with a `TODO` comment + `.specimen__img` box; drop real photos into
   `assets/hall/` and swap the placeholder for `<img>`.
-- Cards use the `.specimen` component (registered in `initScrollReveal` for the
-  stagger). Category labels are intentionally English brand terms (not translated).
+- Cards use the `.specimen` component; the section container is `.wrap.reveal` so
+  it fades in with every other section. Category labels are intentionally English
+  brand terms (not translated).
 
 ## ⚠️ Placeholders still to fill (search `TODO` across the repo)
 - Phone number (`tel:`), WhatsApp number (`wa.me/…`, country code, no `+`/spaces),

@@ -408,29 +408,13 @@ img { max-width: 100%; display: block; }
 @media (max-width: 620px) { .hall-grid { grid-template-columns: 1fr; } }
 
 /* =========================================================================
-   SECTION ENTRANCE + LAYERED PARALLAX (JS scroll-linked — universal)
+   REVEAL ANIMATION
    ========================================================================= */
-/* The motion is driven by js/main.js (initScrollReveal): every layer's
-   opacity + translateY is mapped to its position in the viewport, so content
-   keeps moving AS YOU SCROLL, and different layer types move at different
-   speeds (depth). This works on every browser (no scroll-timeline needed).
-
-   Layers start hidden ONLY when JS is active (.ff-js-reveal on <html>), so if
-   JS is disabled or fails, all content stays fully visible (no blank page). */
-.ff-js-reveal .section .section__head,
-.ff-js-reveal .section .panel:not(.card),
-.ff-js-reveal .section .card,
-.ff-js-reveal .section .step,
-.ff-js-reveal .section .ffff,
-.ff-js-reveal .section .specimen,
-.ff-js-reveal .section .card__icon,
-.ff-js-reveal .section .step__icon,
-.ff-js-reveal .section .profile .pi {
-  opacity: 0;
-  will-change: transform, opacity;
-}
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.in { opacity: 1; transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
   html { scroll-behavior: auto; }
 }
 

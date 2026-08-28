@@ -74,72 +74,24 @@
     }
   }
 
-  function indexInParent(el) {
-    var i = 0, n = el;
-    while ((n = n.previousElementSibling)) i++;
-    return i;
-  }
-
-  /* Scroll-LINKED layered reveal — works on every browser (no dependency on CSS
-     scroll-timelines). Each layer's opacity/transform is mapped to its position
-     in the viewport, so content keeps moving AS YOU SCROLL, and different layer
-     types use different entry distance (dist) + parallax (par) = depth. Grid
-     children stagger their entry. Reads all rects then writes (no layout thrash);
-     only runs on scroll via rAF. Respects reduced-motion. */
-  function initScrollReveal() {
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return; // leave everything visible & static
+  /* Section fade-in: each .reveal container fades + slides up once, when it
+     first scrolls into view. One-shot (unobserve after), no scroll-linked
+     motion. Falls back to "just show everything" without IntersectionObserver. */
+  function initReveal() {
+    var els = document.querySelectorAll(".reveal");
+    if (!("IntersectionObserver" in window)) {
+      for (var i = 0; i < els.length; i++) els[i].classList.add("in");
+      return;
     }
-    // [selector, entry distance px, parallax px, isGridChild(stagger)]
-    var defs = [
-      [".section .section__head", 80, 26, false],
-      [".section .panel:not(.card)", 54, 12, false],
-      [".section .card", 72, 16, true],
-      [".section .step", 72, 16, true],
-      [".section .ffff", 64, 16, true],
-      [".section .specimen", 70, 18, true],
-      [".section .card__icon", 42, 34, false],
-      [".section .step__icon", 42, 34, false],
-      [".section .profile .pi", 42, 34, false]
-    ];
-    var layers = [];
-    for (var d = 0; d < defs.length; d++) {
-      var els = document.querySelectorAll(defs[d][0]);
-      for (var i = 0; i < els.length; i++) {
-        layers.push({
-          el: els[i], dist: defs[d][1], par: defs[d][2],
-          delay: defs[d][3] ? indexInParent(els[i]) * 0.06 : 0
-        });
-      }
-    }
-    if (!layers.length) return;
-
-    // hide layers only now that JS will drive them (so no-JS keeps content visible)
-    document.documentElement.classList.add("ff-js-reveal");
-    var scale = (window.matchMedia && window.matchMedia("(max-width: 820px)").matches) ? 0.55 : 1;
-    var ticking = false;
-
-    function update() {
-      ticking = false;
-      var vh = window.innerHeight || 1;
-      var n = layers.length, rects = new Array(n), i, L, r;
-      for (i = 0; i < n; i++) rects[i] = layers[i].el.getBoundingClientRect();  // read pass
-      for (i = 0; i < n; i++) {                                                  // write pass
-        L = layers[i]; r = rects[i];
-        if (r.bottom < -400 || r.top > vh + 400) continue;
-        var e = (vh - r.top) / (vh * 0.82) - L.delay;
-        e = e < 0 ? 0 : e > 1 ? 1 : e;
-        var p = 1 - ((r.top + r.height / 2) / vh) * 2;   // +1 near top, -1 near bottom
-        var ty = (1 - e) * L.dist * scale - p * L.par * scale * 0.6;
-        L.el.style.opacity = e.toFixed(3);
-        L.el.style.transform = "translate3d(0," + ty.toFixed(1) + "px,0)";
-      }
-    }
-    function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-    update();
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          en.target.classList.add("in");
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    for (var k = 0; k < els.length; k++) io.observe(els[k]);
   }
 
   function initMobileNav() {
@@ -156,7 +108,7 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     initLang();
-    initScrollReveal();
+    initReveal();
     initMobileNav();
   });
 })();

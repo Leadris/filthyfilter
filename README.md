@@ -94,7 +94,8 @@ contactformulier (vereist dan een service zoals Formspree of een eigen backend).
 
 ## Publiceren
 
-Upload de **inhoud van de map `filthyfilter/`** naar de webroot van je `.nl`-hosting
-(of een statische host zoals Netlify/Cloudflare Pages). De stads-URL's werken dankzij de
-`index.html` per map (`/steden/eindhoven/` enz.). Enige externe afhankelijkheid: Google Fonts
-(Oswald, Share Tech Mono, Inter). Dien na livegang `sitemap.xml` in via Google Search Console.
+De productieversie staat op `https://whispair.sk/filthyfilter/`. Volg voor het
+exacte SSH-doel, de release-inhoud, rollback en verificatie altijd
+[`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md). De stads-URL's werken dankzij de
+`index.html` per map (`/steden/eindhoven/` enz.). Enige externe afhankelijkheid:
+Google Fonts (Oswald, Share Tech Mono, Inter).

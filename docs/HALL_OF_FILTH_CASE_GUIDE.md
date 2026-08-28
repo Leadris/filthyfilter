@@ -35,6 +35,7 @@ Tento checklist zachytáva pravidlá použité pri spise `FF-SK-TT-0828` a má s
 - Použiť logo alebo produktovú grafiku iba so súhlasom/licenciou a evidovať zdroj.
 - Na konci uviesť partnera, odkaz na jeho oficiálnu stránku a zdroj použitej grafiky.
 - Pri tomto prípade: logo a donutová ilustrácia pochádzajú z verejných assetov `ladonuteriagroup.com`; pred ďalším komerčným šírením je vhodné mať potvrdený partnerský súhlas.
+- Rozšírený model reciprocity, reputačné údaje a pravidlá Google hodnotení sú popísané v `docs/B2B_TRUST_LAYER.md`.
 
 ## 5. Konverzný cieľ
 

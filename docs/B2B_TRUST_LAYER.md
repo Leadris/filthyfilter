@@ -1,5 +1,13 @@
 # Hall of Filth — B2B vrstva dôvery
 
+**Aktualizácia 5. 9. 2026, na pokyn používateľa:** partnerská reputačná karta je
+zrušená. Google skóre a chvála zákazníka sa už nikde nezobrazujú. Na hlavnej
+stránke aj na podstránkach majú byť **len naše vlastné Google recenzie**.
+Sekcia dôvery na spise `FF-SK-TT-0828` preto obsahuje jedinú kartu, našu, a
+sekcia o prevádzke opisuje záťaž zákazky namiesto toho, aby zákazníka
+odporúčala. Časti nižšie, ktoré popisujú dvojitú reputáciu a partnerskú kartu,
+sú tým prekonané; ostávajú ako záznam pôvodného zámeru.
+
 Aktualizácia 5. 9. 2026: značka realizátora je **FilthyFilter by whispAir** podľa `REDESIGN_PLAN.md`. La Donuteria zostáva zákazkou; samostatná sekcia spoluprác je odložená. Nepoužívať neoverený Google profil realizátora ani verejné poznámky o budúcej API integrácii.
 
 ## Zámer

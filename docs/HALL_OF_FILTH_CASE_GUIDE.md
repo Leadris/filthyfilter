@@ -1,5 +1,7 @@
 # Hall of Filth — šablóna budúceho prípadu
 
+**Aktualizácia 5. 9. 2026:** do spisu nepatrí reputácia ani chvála zákazníka. Zákazníka menuj len so súhlasom a vecne, ako kontext zákazky. Zverejňujú sa výhradne naše vlastné Google recenzie.
+
 Tento checklist zachytáva pravidlá použité pri spise `FF-SK-TT-0828` a má sa použiť pri každej ďalšej zákazke s archívnou/reklamnou hodnotou.
 
 ## 1. Povinné fakty o zákazke

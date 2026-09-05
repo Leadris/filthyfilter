@@ -11,8 +11,8 @@ Zachovať dnešný humor a vizuál FilthyFilter, výrazne zlepšiť predstavenie
 - Telefón a WhatsApp: **+421 902 279 094**; `tel:+421902279094`, `https://wa.me/421902279094`.
 - Email: **info@filthyfilter.sk** (používateľ potvrdil presný názov). Existencia a doručovanie schránky ešte nie sú overené.
 - Ceny na dopyt, bez verejného číselného cenníka a cenovej kalkulačky.
-- Statické HTML/CSS/JS, bez frameworku, backendu a buildu. Zachovať nasadenie pod `https://whispair.sk/filthyfilter/`. Emailová doména neznamená sťahovanie webu.
-- SK ako východiskový jazyk v HTML aj pri prvej návšteve. Zachovať manuálne EN/NL a zapamätanú voľbu; všetky preklady ponúkajú rovnakú slovenskú službu.
+- Statické HTML/CSS/JS, bez frameworku, backendu a buildu. **Aktualizované 5. 9. 2026:** doména `filthyfilter.sk` je zaregistrovaná a web ide na jej koreň `https://filthyfilter.sk/`, na tom istom WebHouse účte. Staršia adresa `https://whispair.sk/filthyfilter/` zatiaľ drží predchádzajúce vydanie; jej osud sa rieši samostatne.
+- SK ako východiskový jazyk v HTML aj pri prvej návšteve. **Aktualizované 5. 9. 2026: iba SK a EN, holandčina je odstránená.** Zachovať manuálnu voľbu jazyka a jej zapamätanie; obe jazykové verzie ponúkajú rovnakú slovenskú službu.
 - Žiadne vymyslené IČO, právna identita, recenzie, štatistiky, certifikácie alebo termíny.
 
 ## Git, odovzdanie a nasadenie
@@ -27,7 +27,7 @@ Zachovať dnešný humor a vizuál FilthyFilter, výrazne zlepšiť predstavenie
 
 Zachovať čierne pozadie, meď/zlato, Oswald/Inter/Share Tech Mono, technické rámiky, FFFF a animované pozadie. Nezavádzať svetlý redizajn. Čitateľnosť riešiť kontrastom a rozostupmi. Zachovať reduced-motion a GPU rozpočty. Hudba zostane voliteľná cez malé tlačidlo; automatickú plávajúcu zvukovú výzvu odstrániť.
 
-Navigácia: **Služby · Realizácie · Postup · FFFF · Pre firmy · Otázky · Kontakt**. Zachovať existujúce zmysluplné kotvy (`diensten`, `hall`, `werkwijze`, `ffff`, `contact`), doplniť kotvy pre firmy, FAQ a pôsobnosť. Mobil: kompaktné tlačidlá Zavolať/Nacenenie bez zakrytia obsahu.
+Navigácia: **Služby · Realizácie · Postup · FFFF · Pre firmy · Otázky · Kontakt**. Zachovať existujúce zmysluplné kotvy (`diensten`, `hall`, `werkwijze`, `ffff`, `contact`), doplniť kotvy `pre-firmy`, `faq` a `service-area`. Mobil: kompaktné tlačidlá Zavolať/Nacenenie bez zakrytia obsahu.
 
 Poradie homepage:
 
@@ -66,7 +66,7 @@ Nejde o serverovo odosielaný formulár. Polia: povinná služba (aj „Neviem, 
 
 Kontakty a zostavenie správ držať na jednom mieste v existujúcom JS; HTML má zároveň funkčné priame kontakty aj bez JavaScriptu. Bez nového verejného API. Základné informácie musia zostať čitateľné aj pri zlyhaní skriptov.
 
-Slovenské zdrojové HTML, title, description, OpenGraph, alt a aria popisy. Jazyková voľba EN/NL nemení región služby. Staré `steden/` URL nahradiť jednoduchými statickými presmerovaniami na homepage `#service-area`, s noindex/canonical a náhradným odkazom. Vyradiť ich zo sitemap; zachovať homepage a existujúci spis. Nezavádzať migráciu na filthyfilter.sk.
+Slovenské zdrojové HTML, title, description, OpenGraph, alt a aria popisy. Voľba EN nemení región služby. Staré `steden/` URL nahradiť jednoduchými statickými presmerovaniami na homepage `#service-area`, s noindex/canonical a náhradným odkazom. Vyradiť ich zo sitemap; zachovať homepage a existujúci spis. **Aktualizované 5. 9. 2026:** canonical, OpenGraph, sitemap a robots ukazujú na `https://filthyfilter.sk/`; cesty k assetom zostávajú relatívne, aby web fungoval na koreni aj pod podcestou.
 
 ## Etapy a akceptácia
 
@@ -75,7 +75,7 @@ Slovenské zdrojové HTML, title, description, OpenGraph, alt a aria popisy. Jaz
 - [x] Založiť codex/filthyfilter-redesign.
 - [x] Zapísať úplný plán a pokyny pre Claude.
 - [x] **Etapa 1:** značka, kontakty, slovenský predvolený jazyk, pôsobnosť, vyradenie holandských mestských stránok; aktualizovať dokumentáciu. Overiť a pushnúť.
-- [ ] **Etapa 2:** nový úvod, služby, poradie obsahu, FAQ, firemná ponuka, FFFF texty a očista placeholderov/tvrdení.
+- [x] **Etapa 2:** nový úvod, služby, poradie obsahu, FAQ, firemná ponuka, FFFF texty a očista placeholderov/tvrdení.
 - [ ] **Etapa 3:** zostavenie dopytu, predvýber služby, WhatsApp/email/kopírovanie, mobilné CTA a nenápadný zvuk.
 - [ ] **Etapa 4:** výsledné vizuálne a funkčné QA, metadata, odovzdanie náhľadu a push.
 - [ ] Neskôr: overenie emailovej schránky, posúdenie náhľadu, merge/deploy podľa samostatného zadania.
@@ -86,12 +86,62 @@ Hotovo znamená, že návštevník z úvodu pochopí službu a región, nájde r
 
 ## Aktuálne odovzdanie
 
-**5. 9. 2026 — Codex, etapa 1 dokončená:** Baseline uložený na GitHube, plán/pokyny sú v commite `5cf9e30`. Implementačný commit etapy 1 má názov `feat: establish whispAir branding and Slovak service area`; aktuálny hash zistíš z Git logu. Produkcia sa nemenila.
+**5. 9. 2026 — Claude, etapa 2 dokončená; nasadenie pripravené, nie dokončené.**
+Commit `cf5b605` na vetve `codex/filthyfilter-redesign`.
 
-Hotové: značka a kontakty na homepage aj prepojenie realizátora v spise, odstránenie neovereného Google odkazu realizátora/Place ID poznámky, slovenské zdrojové texty a predvolený jazyk, zachovanie manuálnej jazykovej voľby, spoločný `CONTACT` v JS a priame HTML fallbacky, `#service-area`, šesť starých holandských URL ako noindex presmerovania, sitemap s dvoma URL, aktuálne README/CONTEXT a súvisiace pokyny. Historické časti README/CONTEXT sú výslovne označené; pri rozpore platí tento plán.
+### Nové rozhodnutia používateľa (nadraďujú staršie znenie plánu)
 
-Pri QA sa opravilo pretekanie navigácie na tablete: existujúce kompaktné menu sa používa do 1100 px a jazykový prepínač sa nezmršťuje. Homepage a detail majú verziu CSS/main.js `?v=whispair-foundation-1` kvôli cache a noscript zobrazenie sekcií. Súčasná farebnosť, fonty, WebGL a humor zostali zachované.
+- Web má byť **výrazne bližšie predajnej štruktúre `vycistimklimu.sk`**, ale
+  humor a tmavý medený vizuál zostávajú naše.
+- **Iba slovenčina a angličtina.** Holandčina je odstránená celá, nie odložená.
+- **Doména `filthyfilter.sk` je zaregistrovaná** a beží na tom istom WebHouse
+  účte ako projekty whispAir. Web ide na **koreň novej domény**, nie pod
+  podcestu. Canonical, OpenGraph, sitemap a robots už ukazujú na
+  `https://filthyfilter.sk/`. Cesty k assetom zostali relatívne.
 
-Overenie etapy 1: `node --check js/main.js`, `git diff --check`; jednorazová kontrola 8 HTML dokumentov, 54 lokálnych odkazov/assetov/kotiev, šiestich presmerovaní a dvoch sitemap URL. V prehliadači overené SK/EN/NL vrátane zachovania EN po reload, správne tel/mailto/WhatsApp ciele, mobilné menu, pôsobnosť pri 390/768 px a desktop, presmerovanie Eindhoven → `index.html#service-area`, slovenský detail a načítanie všetkých siedmich img prvkov realizácie. Správy sa neodosielali; doručovanie emailu a funkčnosť WhatsApp účtu sa netestovali. Kompletné video, reduced-motion a celý nový dopytový tok patria do finálneho QA.
+### Hotové v tejto etape
 
-**Ďalší krok pre Claude: etapa 2.** Pokračuj novým hero textom a CTA, piatimi servisnými kartami, presunutím dôkazu práce vyššie, FAQ a firemnou sekciou. Odstráň päť galériových placeholderov a staré nepodložené čísla/tvrdenia (500+, 0 spór, AI percentá, certifikácia), uprav FFFF. Tieto staré texty aj pôvodná zvuková výzva sú zatiaľ vedome ponechané pre ďalšie etapy; etapa 1 nie je hotový redizajn pripravený na nasadenie. Po etape 2 nasleduje dopytový tok a hudba z etapy 3. Nedoplňuj svojvoľne ceny, firemné údaje ani spolupráce. Pred úpravami over pracovný strom; po etape aktualizuj toto odovzdanie a pushni pracovnú vetvu.
+- Nové poradie homepage: úvod so schváleným nadpisom a dvoma CTA, päť
+  servisných kariet, dôkaz pred/po vyššie, postup, prečo my, FFFF, sekcia pre
+  firmy, FAQ, pôsobnosť a kontakt.
+- Odstránené nepodložené tvrdenia: hero čísla 500+ a 0 spór, AI percentá,
+  päť prázdnych kariet „foto čoskoro“, samoudelená certifikácia. „FFFF
+  certifikát“ je teraz **terénny report s FFFF skóre**; FFFF 5 už netvrdí, že
+  práca je mimo našej kompetencie.
+- Servisné CTA predvyplnia WhatsApp alebo e-mail so správnou službou v
+  zvolenom jazyku. Skladá sa to na jednom mieste v `js/main.js`; obyčajné
+  `wa.me` a `mailto` odkazy zostávajú ako fallback bez JavaScriptu. Stránka nič
+  neukladá ani sama neodosiela.
+- Holandčina preč: 197 atribútov `data-nl`, tlačidlo NL, holandské metadáta a
+  holandský text v starých mestských presmerovaniach.
+- Plávajúca zvuková výzva odstránená; hudba zostáva dobrovoľná cez malé
+  tlačidlo. Zmazané aj jej CSS a nepoužívané CSS starých kariet Hall of Filth.
+- Pridané: mobilná lišta Zavolať/Nacenenie, FAQ akordeón, štýly servisných
+  kariet. Verzia CSS/JS `?v=whispair-sales-1`.
+
+### Overené
+
+`node --check js/main.js`, lokálny náhľad na `127.0.0.1:8080`. V prehliadači:
+prepnutie SK↔EN vrátane titulku a description, päť predvyplnených WhatsApp
+odkazov so správnou diakritikou, sedem FAQ položiek, žiadny horizontálny scroll
+pri 1280 px ani 375 px, mobilná CTA lišta a zvukové tlačidlo sa neprekrývajú,
+nula zvyškov `data-nl`. Snímky obrazovky boli čierne kvôli WebGL plátnu v
+zachytávacom prehliadači; rozloženie je overené cez DOM, nie okom. **Vizuálnu
+kontrolu v skutočnom prehliadači ešte treba spraviť.**
+
+### Nasadenie — rozpracované
+
+Cieľ je `/home/jg046600/www_root_filthyfilter_sk` na `93.184.77.193`. Archív
+`filthyfilter-release-cf5b605.tar.gz` je nahratý v `~/tmp`, rollback archív
+pôvodného koreňa tiež. **Rozbalenie sa nevykonalo** — agentovi ho zamietol
+lokálny bezpečnostný klasifikátor. Postup a zostávajúce príkazy sú v
+`docs/DEPLOYMENT.md`.
+
+### Ďalší krok
+
+1. Dokončiť rozbalenie a overiť web na `https://filthyfilter.sk/`.
+2. Rozhodnúť o osude starej adresy `whispair.sk/filthyfilter/`.
+3. Overiť schránku `info@filthyfilter.sk`.
+4. Etapa 3: plnohodnotný dopytový formulár s validáciou, kopírovaním textu a
+   voľbou „Neviem“, ak sa ukáže, že predvyplnené správy nestačia.
+5. Etapa 4: finálne QA a merge do `main`.

@@ -8,14 +8,14 @@ Schválený plán, checklist a aktuálne odovzdanie sú v **[docs/REDESIGN_PLAN.
 - Pracovná vetva: `codex/filthyfilter-redesign`. Produkcia sa nemení automaticky pushom.
 - Značka **FilthyFilter by whispAir**; hlavný trh Slovensko, Senec a okolie do približne 100 km. Dostupnosť a doprava sa potvrdzujú podľa adresy.
 - Telefón/WhatsApp: **+421 902 279 094**. Email: **info@filthyfilter.sk**; pred nasadením treba overiť doručovanie schránky.
-- SK je predvolený jazyk v HTML aj pri prvej návšteve. Manuálna EN/NL voľba zostáva v `ff_lang`; všetky jazyky opisujú slovenskú ponuku. Prekladaj všetky `data-sk/data-en/data-nl` aj viditeľný slovenský text.
+- SK je predvolený jazyk v HTML aj pri prvej návšteve. **Web má iba SK a EN**; holandčina bola 5. 9. 2026 odstránená. Manuálna voľba zostáva v `ff_lang`. Prekladaj `data-sk` aj `data-en` a viditeľný slovenský text.
 - Kontakty sú v `CONTACT` v `js/main.js` a v priamych HTML fallback odkazoch; pri zmene udrž oboje zhodné.
-- `steden/` a päť holandských mestských stránok sú už iba kompatibilné presmerovania na homepage `#service-area`, nie aktívne regióny. Sitemap obsahuje homepage a realizáciu La Donuteria.
-- Statické HTML/CSS/JS, bez backendu, frameworku a buildu. Dopytový formulár, nové poradie a nové servisné karty sú ďalšie etapy podľa plánu.
+- Adresár `steden/` s holandskými mestskými stránkami bol 5. 9. 2026 zrušený. Držal staré URL z filthyfilter.nl, ktoré na novej doméne nikdy neexistovali. Sitemap obsahuje homepage a realizáciu La Donuteria.
+- Statické HTML/CSS/JS, bez backendu, frameworku a buildu. Nové poradie obsahu, servisné karty, FAQ a firemná sekcia sú hotové (etapa 2). Plnohodnotný dopytový formulár je ďalšia etapa; servisné CTA zatiaľ predvyplnia správu do WhatsAppu alebo e-mailu.
 
-Náhľad so zachovaním produkčnej podcesty: `python -m http.server 8080 --bind 127.0.0.1 --directory D:/whispAir-IT`, potom `http://127.0.0.1:8080/filthyfilter/`.
+Lokálny náhľad: `python -m http.server 8080 --bind 127.0.0.1 --directory D:/whispAir-IT`, potom `http://127.0.0.1:8080/filthyfilter/`. Cesty k assetom sú relatívne, takže web funguje na koreni domény aj pod podcestou.
 
-Nasadenie je samostatná etapa podľa [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). Dokumentáciu, CLAUDE.md ani dočasné nástroje nepublikovať. Emailová doména nemení adresu webu `https://whispair.sk/filthyfilter/`.
+Produkcia je **`https://filthyfilter.sk/`**, koreň vlastnej domény na tom istom WebHouse účte. Postup vydania je v [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md); push do vetvy nenasadzuje. Dokumentáciu, CLAUDE.md ani dočasné nástroje nepublikovať. HTTPS zatiaľ čaká na certifikát pre túto doménu.
 
 ## Historická dokumentácia baseline (už neurčuje aktuálny trh ani kontakty)
 

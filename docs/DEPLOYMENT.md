@@ -139,16 +139,17 @@ deployed Git commit.
 ## Last verified deployment
 
 - Date: 2026-09-05
-- Commit: `4bd5cc3`, merged to `main` as `a9088f3`
+- Commit: `ceacb28`
 - Target: `https://filthyfilter.sk/` and `https://dev.filthyfilter.sk/`
-- Change: stage 4, the QA fixes.
-- Verification over HTTPS on both hosts: `/`, both scripts, the stylesheet, the
-  case page and `robots.txt` returned `200`, both serve `v=whispair-qa-2`, and
-  the old `.nl` brand is gone from `background.js`. The case page seal reads
-  "Terénny report". Production has no noindex and a live sitemap; staging has
-  the noindex and a `404` sitemap, so the packages were not swapped.
+- Change: the customer's reputation removed from the case file, and a Google
+  reviews link added that stays hidden until `CONTACT.reviews` is filled in.
+- Verification over HTTPS on both hosts: homepage and case page returned `200`
+  and serve `v=whispair-reviews-2`. No praise wording and no 4,7 or 135+ figures
+  remain. The trust section is headed "Čo o nás hovoria zákazníci" and holds one
+  card. On the live site the reviews block reports hidden with zero height and
+  no review button is visible, which is correct while the profile URL is empty.
 - Rollback archive:
-  `/home/jg046600/tmp/filthyfilter-before-4bd5cc3.tar.gz`
+  `/home/jg046600/tmp/filthyfilter-before-ceacb28.tar.gz`
 - SSH port used: 22050.
 
 ### TLS

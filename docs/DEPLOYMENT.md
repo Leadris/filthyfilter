@@ -16,10 +16,14 @@ WebHouse account as the whispAir projects. Its own document root
 the `webhouse.html` placeholder. The site is served from the root of that
 domain, so no path prefix applies and every asset reference stays relative.
 
-The older location `https://whispair.sk/filthyfilter/`
-(`/home/jg046600/www_root_whispair_sk/filthyfilter`) still holds the previous
-release. Decide separately whether to leave it, redirect it to the new domain,
-or remove it; that is not part of this deployment.
+The older location `https://whispair.sk/filthyfilter/` was removed on
+5 September 2026 on the user's instruction, once the site was live on its own
+domain. `/home/jg046600/www_root_whispair_sk/filthyfilter` no longer exists and
+that path now answers `404`. The final state of that directory is archived at
+`/home/jg046600/tmp/whispair-filthyfilter-subpath-final-backup.tar.gz`,
+21,425,166 bytes. Nothing redirects from the old path, so any inbound link to
+it is now dead. The user plans to link the two brands later, for example under
+`cistenie.whispair.sk`.
 
 The `_sub_whispair_sk` and `_sub_filthyfilter_sk` directories are only for
 subdomains and are not deployment targets for this site.
@@ -153,6 +157,18 @@ deployed Git commit.
   `/home/jg046600/tmp/filthyfilter-before-17a7a47.tar.gz`
 - SSH port used: 22571. The port rotates roughly every two hours; 22892 and
   22050 both expired earlier the same day.
+
+### Mail
+
+Checked on 5 September 2026. `filthyfilter.sk` has MX records pointing at
+WebHouse's six mail servers, the same set as `whispair.sk`, and an SPF record
+of `v=spf1 a mx include:_spf.webhouse.sk -all`. Both `info@filthyfilter.sk` and
+`postmaster@filthyfilter.sk` exist and are active in the hosting panel.
+
+Delivery itself is still unproven: the mailbox reports 0.0 MB, so nothing has
+arrived yet. Send a real message from an outside account before relying on the
+address, since it is published on the site and used by the enquiry builder's
+e-mail button.
 
 ### TLS
 

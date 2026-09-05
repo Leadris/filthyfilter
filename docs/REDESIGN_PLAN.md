@@ -129,19 +129,24 @@ nula zvyškov `data-nl`. Snímky obrazovky boli čierne kvôli WebGL plátnu v
 zachytávacom prehliadači; rozloženie je overené cez DOM, nie okom. **Vizuálnu
 kontrolu v skutočnom prehliadači ešte treba spraviť.**
 
-### Nasadenie — rozpracované
+### Nasadenie — hotové
 
-Cieľ je `/home/jg046600/www_root_filthyfilter_sk` na `93.184.77.193`. Archív
-`filthyfilter-release-cf5b605.tar.gz` je nahratý v `~/tmp`, rollback archív
-pôvodného koreňa tiež. **Rozbalenie sa nevykonalo** — agentovi ho zamietol
-lokálny bezpečnostný klasifikátor. Postup a zostávajúce príkazy sú v
-`docs/DEPLOYMENT.md`.
+Commit `cf5b605` je nasadený na `http://filthyfilter.sk/`, document root
+`/home/jg046600/www_root_filthyfilter_sk`. Overenie a rollback archív sú
+zapísané v `docs/DEPLOYMENT.md`. Placeholder `webhouse.html` je odstránený.
+
+**Otvorená vec: HTTPS.** Server zatiaľ posiela wildcard certifikát WebHouse
+`CN=*.webhouse.sk`, ktorý túto doménu nepokrýva, takže `https://` hlási nezhodu
+mena. Certifikát pre `filthyfilter.sk` treba vystaviť v paneli WebHouse; cez SSH
+sa to spraviť nedá. Dovtedy `https://` adresu nikam neuvádzať.
 
 ### Ďalší krok
 
-1. Dokončiť rozbalenie a overiť web na `https://filthyfilter.sk/`.
-2. Rozhodnúť o osude starej adresy `whispair.sk/filthyfilter/`.
-3. Overiť schránku `info@filthyfilter.sk`.
-4. Etapa 3: plnohodnotný dopytový formulár s validáciou, kopírovaním textu a
+1. Vystaviť certifikát pre `filthyfilter.sk` a znova overiť `https://`.
+2. Vizuálna kontrola živého webu okom; snímky obrazovky agenta sú kvôli WebGL
+   plátnu čierne, takže rozloženie bolo overené cez DOM, nie pohľadom.
+3. Rozhodnúť o osude starej adresy `whispair.sk/filthyfilter/`.
+4. Overiť schránku `info@filthyfilter.sk`.
+5. Etapa 3: plnohodnotný dopytový formulár s validáciou, kopírovaním textu a
    voľbou „Neviem“, ak sa ukáže, že predvyplnené správy nestačia.
-5. Etapa 4: finálne QA a merge do `main`.
+6. Etapa 4: finálne QA a merge do `main`.

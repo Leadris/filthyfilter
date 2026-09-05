@@ -97,30 +97,43 @@ deployed Git commit.
 
 ## Last verified deployment
 
+- Date: 2026-09-05
+- Commit: `cf5b605`
+- Target: `https://filthyfilter.sk/`, document root
+  `/home/jg046600/www_root_filthyfilter_sk`
+- Change: first release on the new domain. Stage 2 of the redesign, the
+  removal of the Dutch language layer, and the move from the
+  `whispair.sk/filthyfilter/` subpath to the root of `filthyfilter.sk`.
+- Verification: `http://filthyfilter.sk/` returned HTTP `200` and 54,517 bytes,
+  matching the released `index.html`. `js/main.js`, `css/styles.css`,
+  `sitemap.xml`, `robots.txt`, the case page and one legacy `steden/` redirect
+  all returned `200`. `backgroundMusic.mp3` is 13,927,582 bytes and
+  `evidence-reel.mp4` is 3,651,056 bytes on disk. In the browser: Slovak
+  default, both language buttons present, zero `data-nl` attributes, five
+  service cards, seven FAQ items, the prefilled WhatsApp message with correct
+  diacritics, canonical `https://filthyfilter.sk/`, no horizontal scroll, and
+  `before-after.jpg` loading at 1200 by 674 pixels.
+- The WebHouse placeholder `webhouse.html` was deleted from the root after the
+  site was confirmed live. It is preserved in the rollback archive.
+- Rollback archive:
+  `/home/jg046600/tmp/filthyfilter-before-cf5b605.tar.gz`
+
+### Open item — TLS certificate
+
+`https://filthyfilter.sk/` currently serves WebHouse's own wildcard
+certificate, `CN=*.webhouse.sk`, which does not cover this domain, so browsers
+show a name mismatch warning. HTTP works correctly. A certificate for
+`filthyfilter.sk` has to be issued from the WebHouse control panel; it cannot
+be done over SSH. Until then, do not advertise the `https://` address.
+
+### Previous deployment
+
 - Date: 2026-08-28
 - Commit: `8c86d29`
-- Target: `https://whispair.sk/filthyfilter/` (previous location)
+- Target: `https://whispair.sk/filthyfilter/`
 - Change: delayed floating background-music prompt
-- Verification: live JavaScript contained `ff_sound_v2` and the six-second
-  delay; `backgroundMusic.mp3` returned HTTP `200`, `audio/mpeg`, and
-  `13,927,582` bytes.
 - Rollback archive:
   `/home/jg046600/tmp/filthyfilter-before-8c86d29.tar.gz`
 
-## Pending deployment — commit `cf5b605`
-
-Prepared on 5 September 2026 and staged on the server, but **not extracted**.
-The extraction step was refused locally by the agent permission classifier, so
-the document root still holds only `webhouse.html`.
-
-Already done:
-
-- Local archive `tmp/filthyfilter-release-cf5b605.tar.gz`, 21,418,883 bytes,
-  36 entries.
-- Uploaded to `/home/jg046600/tmp/filthyfilter-release-cf5b605.tar.gz`.
-- Rollback archive of the untouched root at
-  `/home/jg046600/tmp/filthyfilter-before-cf5b605.tar.gz`.
-
-Remaining: run the extraction and permission commands from step 5, then verify
-over HTTPS per steps 6 and 7. Delete `webhouse.html` from the root once the
-site is confirmed live.
+The old subpath still serves that release. Decide separately whether to
+redirect it to the new domain or remove it.

@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Share+Tech+Mono&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/styles.css?v=whispair-reviews-3">
+  <link rel="stylesheet" href="css/styles.css?v=whispair-link-1">
   <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 </head>
 <body>
@@ -204,9 +204,14 @@
 
     </div>
 
-    <p class="ffff-note"
-       data-en="// The outdoor unit is a separate item depending on access. Installation and equipment sales are not part of this offer."
-       data-sk="// Vonkajšia jednotka je samostatná položka podľa prístupu. Montáž a predaj zariadení nie sú súčasťou tejto ponuky.">// Vonkajšia jednotka je samostatná položka podľa prístupu. Montáž a predaj zariadení nie sú súčasťou tejto ponuky.</p>
+    <!-- The translated text and the link are separate nodes on purpose: the
+         language switch replaces textContent, which would strip any markup
+         nested inside a translated node. -->
+    <p class="ffff-note">
+      <span data-en="// The outdoor unit is a separate item depending on access. Installation and equipment sales are handled by"
+            data-sk="// Vonkajšia jednotka je samostatná položka podľa prístupu. Montáž a predaj zariadení rieši">// Vonkajšia jednotka je samostatná položka podľa prístupu. Montáž a predaj zariadení rieši</span>
+      <a class="ffff-note__link" href="https://whispair.sk/" target="_blank" rel="noopener">whispAir&nbsp;&#8599;</a>
+    </p>
   </div>
 </section>
 
@@ -729,6 +734,6 @@
 
 <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 <script src="js/background.js"></script>
-<script src="js/main.js?v=whispair-reviews-3"></script>
+<script src="js/main.js?v=whispair-link-1"></script>
 </body>
 </html>

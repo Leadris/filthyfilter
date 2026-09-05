@@ -70,6 +70,37 @@ production but against the staging root.
 - Still to confirm on the reporting device: whether the headline is now legible
   on that phone. That failure mode cannot be reproduced from here.
 
+## Internal guide — interne.filthyfilter.sk
+
+- Public URL: `https://interne.filthyfilter.sk/`
+- Remote document root: `/home/jg046600/_sub_filthyfilter_sk/interne`
+- Source in this repository: `interne/`
+
+A single self-contained page for the field team covering the Google review
+funnel: what to say on site, the message templates, what is forbidden, reply
+templates and where to get a printable QR code. No shared stylesheet, no
+scripts beyond its own, so it loads on a phone in a van.
+
+It is kept out of search by three separate means: a `noindex, nofollow,
+noarchive` meta tag, its own `robots.txt` disallowing everything, and the fact
+that nothing on the public site or in the sitemap links to it. It is not
+password protected, so treat the URL as unlisted rather than secret and keep
+anything confidential off it.
+
+It is deployed on its own and is **not** part of the production or staging
+package. Both the release tar and `build_dev.py` list their paths explicitly,
+so `interne/` can never leak onto the public site by accident.
+
+To update it, package and extract just that directory:
+
+```bash
+tar -czf ff-interne.tar.gz -C interne index.html robots.txt
+```
+
+The review link itself lives in the `REVIEW_LINK` constant at the bottom of the
+page. While it is empty the page shows a notice instead of the link and the
+templates leave it out.
+
 ## Authentication note
 
 The FTP credentials in `D:\whispAir-IT\whispair-api\.env` can access application

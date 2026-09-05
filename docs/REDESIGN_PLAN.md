@@ -208,12 +208,24 @@ ani 1360 px.
    nepotvrdil. Adresa je na webe a používa ju tlačidlo Pripraviť e-mail.
 2. **Pozrieť si web na skutočnom telefóne.** Oprava nadpisu je nasadená, ale
    nikto ju na reálnom zariadení nevidel. Chyba sa pôvodne ukázala len tam.
-3. **Dve vety o montáži a predaji.** Web hovorí, že montáž a predaj zariadení
-   nie sú súčasťou ponuky. whispAir oboje robí, takže by mohli posielať tam
-   namiesto slepého konca. Čaká na rozhodnutie používateľa.
-4. **Odložené nápady** vyššie v tomto dokumente, až na pokyn.
+3. **Odložené nápady** vyššie v tomto dokumente, až na pokyn.
+4. **Dvojjazyčnosť bez vlastných URL.** Anglická verzia sa prepína iba v
+   prehliadači, nemá vlastnú adresu. Google preto indexuje výhradne slovenčinu.
+   Ak má angličtina prinášať návštevnosť, treba jej dať vlastnú cestu, napríklad
+   `/en/`, a prepojiť ich cez `hreflang`. Je to samostatná etapa, nie oprava.
 
 ### Vyriešené 5. 9. 2026
+
+- **Montáž a predaj už nekončia slepo.** Poznámka pod servisnými kartami
+  hovorila, že montáž a predaj zariadení nie sú súčasťou ponuky, a tým to
+  končilo. Teraz posiela na whispAir. Veta o vonkajšej jednotke zostala
+  nedotknutá; plán zakazuje tváriť sa, že jej čistenie je automaticky zadarmo.
+
+  **Poznámka k prekladu:** prekladaný text a odkaz sú zámerne dva samostatné
+  uzly. Prepínač jazyka priraďuje `textContent`, takže akékoľvek značky vnorené
+  do prekladaného uzla by sa pri prvom prepnutí zmazali. Kým je takýchto miest
+  málo, je toto správne riešenie. Ak by ich pribudlo, zaviesť radšej samostatný
+  atribút pre HTML než prepisovať celý prepínač.
 
 - **Stará adresa `whispair.sk/filthyfilter/` je zrušená.** Web sa presunul na
   vlastnú doménu, tak sa podcesta zmazala; teraz vracia 404. Záloha posledného

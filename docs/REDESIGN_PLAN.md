@@ -148,6 +148,18 @@ Platí to pre všetkých deväť sekcií homepage. Medzera medzi nadpisom a rám
 viacerých panelov, každý panel nesie vlastný tag ako popisku; nadpis sekcie do
 žiadneho z nich nepatrí.
 
+## FAQ ako akordeón (5. 9. 2026)
+
+Otvorená je vždy najviac jedna odpoveď. Rieši to atribút `name="faq"` na
+všetkých siedmich prvkoch `<details>`, čím ich prehliadač berie ako jednu
+skupinu. Je to funkcia platformy, nie skript, takže klávesnica, focus aj
+vyhľadávanie v stránke fungujú ďalej bez zásahu.
+
+V `js/main.js` je `initFaq()` len ako záloha pre prehliadače, ktoré atribút
+`name` ešte nepodporujú. Naviaže sa výlučne vtedy, keď podpora naozaj chýba, na
+súčasných prehliadačoch nespustí nič. Ak by v budúcnosti pribudol ďalší
+akordeón, dajte jeho prvkom iné meno skupiny, inak by sa navzájom zatvárali.
+
 ## Odložené nápady (zapísané 5. 9. 2026, nezačínať bez pokynu)
 
 Používateľ ich chce mať zapísané a vrátiť sa k nim neskôr. Nie sú súčasťou

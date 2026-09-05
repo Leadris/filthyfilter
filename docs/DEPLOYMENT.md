@@ -174,19 +174,15 @@ deployed Git commit.
 ## Last verified deployment
 
 - Date: 2026-09-05
-- Commit: `64aa2e1`
+- Commit: `dbd9dd9`
 - Target: `https://filthyfilter.sk/` and `https://dev.filthyfilter.sk/`
-- Change: every section heading lifted out of its frame, matching the Pre firmy
-  layout the user picked.
-- Verification over HTTPS on both hosts: `200`, serving `v=whispair-frames-1`,
-  and the new "Ako pracujeme" panel tag present. On the live site all nine
-  sections put the heading outside the panel, the gap between heading and frame
-  is a consistent 40px in each of the four changed sections, and there is no
-  horizontal scroll at 1360px.
+- Change: the FAQ became an exclusive accordion, one answer open at a time.
+- Verification on the live site: all seven items share the name "faq", opening
+  the second then the sixth leaves exactly one open each time, and the page
+  serves `v=whispair-faq-1`.
 - Rollback archive:
-  `/home/jg046600/tmp/filthyfilter-before-64aa2e1.tar.gz`
-- SSH port used: 22306. The port rotates every couple of hours; 22892, 22050
-  and 22571 all expired earlier the same day.
+  `/home/jg046600/tmp/filthyfilter-before-dbd9dd9.tar.gz`
+- SSH port used: 22306.
 
 ### Mail
 

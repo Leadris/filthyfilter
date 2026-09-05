@@ -14,7 +14,12 @@
   var CONTACT = {
     phone: "+421902279094",
     email: "info@filthyfilter.sk",
-    whatsapp: "421902279094"
+    whatsapp: "421902279094",
+    // Google Business Profile. FilthyFilter is the cleaning division of
+    // whispAir and reviews are collected on the one whispAir profile, so this
+    // points there. Leave it empty and every reviews element stays hidden:
+    // better no button than one that leads nowhere.
+    reviews: ""
   };
 
   // Service labels for the prefilled enquiry message. Keys match data-inquiry
@@ -122,6 +127,17 @@
     document.querySelectorAll("a[data-contact]").forEach(function (link) {
       var href = destinations[link.getAttribute("data-contact")];
       if (href) link.setAttribute("href", href);
+    });
+
+    // Reviews live on the Google profile, not on this page. Without a profile
+    // URL there is nothing to link to, so the whole block stays hidden.
+    var hasProfile = !!CONTACT.reviews;
+    document.querySelectorAll("a[data-reviews]").forEach(function (link) {
+      if (hasProfile) link.setAttribute("href", CONTACT.reviews);
+      link.hidden = !hasProfile;
+    });
+    document.querySelectorAll("[data-reviews-block]").forEach(function (block) {
+      block.hidden = !hasProfile;
     });
   }
   var MUSIC_URL = new URL("../assets/backgroundMusic.mp3", document.currentScript.src).href;

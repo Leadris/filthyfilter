@@ -174,14 +174,16 @@ deployed Git commit.
 ## Last verified deployment
 
 - Date: 2026-09-05
-- Commit: `dbd9dd9`
+- Commit: `b0f5cea`
 - Target: `https://filthyfilter.sk/` and `https://dev.filthyfilter.sk/`
-- Change: the FAQ became an exclusive accordion, one answer open at a time.
-- Verification on the live site: all seven items share the name "faq", opening
-  the second then the sixth leaves exactly one open each time, and the page
-  serves `v=whispair-faq-1`.
+- Change: the FFFF tiles turn over to show which P dominates at that level and
+  what the job involves.
+- Verification on the live site, with transitions disabled because this browser
+  freezes them: six tiles, all 188px tall, backs reading PPPP 0 through PPPP 5
+  with the right dominant word, and flipping swaps the faces to opacity 0 and 1.
+  Serving `v=whispair-flip-2`, no horizontal scroll.
 - Rollback archive:
-  `/home/jg046600/tmp/filthyfilter-before-dbd9dd9.tar.gz`
+  `/home/jg046600/tmp/filthyfilter-before-b0f5cea.tar.gz`
 - SSH port used: 22306.
 
 ### Mail

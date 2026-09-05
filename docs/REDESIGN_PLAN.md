@@ -160,6 +160,36 @@ V `js/main.js` je `initFaq()` len ako záloha pre prehliadače, ktoré atribút
 súčasných prehliadačoch nespustí nič. Ak by v budúcnosti pribudol ďalší
 akordeón, dajte jeho prvkom iné meno skupiny, inak by sa navzájom zatvárali.
 
+## Otáčacie dlaždice FFFF (5. 9. 2026)
+
+Používateľ chcel, aby sa dlaždice pri prejdení myšou otočili a na druhej strane
+bol PPPP rating. Postavené s dvomi zmenami oproti zadaniu:
+
+**Na zadnej strane nie je druhé skóre.** FFFF a PPPP sú dve mená tej istej
+škály, ako hovorí aj samotná sekcia, a PPPP sa rozpisuje na štyri slová, nie na
+šesť stupňov. Paralelné skóre by odporovalo textu nad ním a predstieralo
+meranie, ktoré nerobíme. Zadná strana preto odpovedá na otázku, ktorú vtip
+vyvolá: **ktoré z tých štyroch P na danom stupni prevláda a čo v tom prípade
+zákazka obnáša**. Každý riadok vychádza z rozsahu služieb zverejneného vyššie
+na stránke, nič nové sa nesľubuje. Stupeň 5 hovorí, že rozsah sa potvrdí na
+mieste, nie že vieme dopredu, čo tam je.
+
+**Žiadne WebGL a žiadne 3D.** Canvas by stál označiteľný text, prepínanie
+jazyka a prístup pre čítačky obrazovky, a to za efekt, ktorý CSS zvládne samo.
+Verzia s `rotateY` bola postavená a zahodená tiež: závisí od `preserve-3d` a
+`backface-visibility`, a zariadenie, ktoré 3D sploští, by ukázalo obe strany
+cez seba a zrkadlovo. Predná strana sa teraz stiahne na nulovú šírku a zadná sa
+z nuly roztiahne. Vyzerá to ako to isté otočenie, ale používa len 2D. Súbežne
+beží priehľadnosť, takže prehliadač, ktorý transformácie ignoruje, dostane
+čistý prelínací prechod namiesto dvoch textov cez seba.
+
+Ovládanie: myš cez `:hover`, klávesnica cez `:focus-visible`, dotyk klepnutím,
+lebo tam hover neexistuje. Pri obmedzenom pohybe sa strany vymenia bez animácie.
+
+**Poznámka k overovaniu:** prehliadačový panel agenta beží bez GPU, ploští 3D a
+zamrazuje prechody. Cieľové stavy sa preto merajú s vypnutými prechodmi. Plynulosť
+animácie treba pozrieť na skutočnom zariadení.
+
 ## Odložené nápady (zapísané 5. 9. 2026, nezačínať bez pokynu)
 
 Používateľ ich chce mať zapísané a vrátiť sa k nim neskôr. Nie sú súčasťou

@@ -174,7 +174,7 @@ If it was worth it, a short Google review would help us a lot. A few words about
   // The short review link from Business Profile, "Ask for reviews". It opens the
   // star dialog directly, unlike the Maps profile URL. Fill this in and every
   // template below picks it up.
-  var REVIEW_LINK = "";
+  var REVIEW_LINK = "https://g.page/r/Cfxkfq92J6ptEBM/review";
 
   var slot = document.getElementById("link-slot");
   if (REVIEW_LINK) {
@@ -193,14 +193,33 @@ If it was worth it, a short Google review would help us a lot. A few words about
       '<code>REVIEW_LINK</code> na konci tohto súboru. Šablóny nižšie sa ním doplnia samy.</div>';
   }
 
-  // Copying a message template hands over the link with it, so nobody has to
-  // remember to paste it separately.
-  function textFor(el) {
-    var t = el.innerText.trim();
-    if (REVIEW_LINK && el.id.indexOf("m-") === 0 && el.id !== "m-verbal" && el.id !== "m-link") {
-      t += "\n" + REVIEW_LINK;
-    }
-    return t;
+  // The link is written into the visible text of every template, so what the
+  // technician reads is exactly what gets copied. The earlier version appended
+  // it only in the clipboard path, which meant the manual-selection fallback
+  // silently copied the message without the link.
+  if (REVIEW_LINK) {
+    ["m-home", "m-biz", "m-again", "m-en"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = el.textContent.replace(/\s+$/, "") + "\n" + REVIEW_LINK;
+    });
+  }
+
+  function copyText(text) {
+    // A detached textarea so the fallback copies the composed text rather than
+    // whatever happens to be inside the source element.
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.left = "-9999px";
+    ta.style.top = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try { ta.setSelectionRange(0, text.length); } catch (e) {}   // iOS needs this
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) {}
+    document.body.removeChild(ta);
+    return ok;
   }
 
   document.addEventListener("click", function (e) {
@@ -208,32 +227,36 @@ If it was worth it, a short Google review would help us a lot. A few words about
     if (!btn) return;
     var src = document.getElementById(btn.getAttribute("data-copy"));
     if (!src) return;
-    var text = textFor(src);
+    var text = src.innerText.trim();
 
     function done(ok) {
-      var tag = btn.parentNode.querySelector(".said") || document.createElement("span");
-      tag.className = "said";
-      tag.textContent = ok ? "skopírované" : "označte a skopírujte ručne";
-      if (!tag.parentNode) btn.parentNode.appendChild(tag);
+      var tag = btn.parentNode.querySelector(".said");
+      if (!tag) {
+        tag = document.createElement("span");
+        tag.className = "said";
+        btn.parentNode.appendChild(tag);
+      }
+      tag.textContent = ok ? "skopírované" : "označte text a skopírujte ručne";
       window.setTimeout(function () { tag.textContent = ""; }, 2500);
     }
 
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () { done(true); },
-                                              function () { select(src); });
-    } else {
-      select(src);
+    function offline() {
+      var ok = copyText(text);
+      if (!ok) {
+        // Last resort: put the text under the visitor's own selection.
+        var r = document.createRange();
+        r.selectNodeContents(src);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(r);
+      }
+      done(ok);
     }
 
-    function select(el) {
-      var r = document.createRange();
-      r.selectNodeContents(el);
-      var s = window.getSelection();
-      s.removeAllRanges();
-      s.addRange(r);
-      var ok = false;
-      try { ok = document.execCommand("copy"); } catch (err) {}
-      done(ok);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, offline);
+    } else {
+      offline();
     }
   });
 })();

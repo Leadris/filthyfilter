@@ -229,6 +229,28 @@
     for (var k = 0; k < els.length; k++) io.observe(els[k]);
   }
 
+  /* One FAQ answer open at a time.
+
+     Modern browsers do this natively: <details> elements sharing a name
+     attribute behave as one exclusive group, with no script involved. This
+     only fills the gap for browsers that do not support it yet, where the
+     items would otherwise open independently. */
+  function initFaq() {
+    var items = document.querySelectorAll("details.faq__item[name]");
+    if (!items.length) return;
+    if (typeof HTMLDetailsElement !== "undefined" &&
+        "name" in HTMLDetailsElement.prototype) return;
+
+    for (var i = 0; i < items.length; i++) {
+      items[i].addEventListener("toggle", function () {
+        if (!this.open) return;
+        for (var j = 0; j < items.length; j++) {
+          if (items[j] !== this) items[j].open = false;
+        }
+      });
+    }
+  }
+
   function initMobileNav() {
     var toggle = document.querySelector(".nav__toggle");
     var links = document.querySelector(".nav__links");
@@ -464,6 +486,7 @@
     initMusic();
     initLang();
     initInquiry();
+    initFaq();
     initReveal();
     initMobileNav();
   });

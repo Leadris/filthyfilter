@@ -203,23 +203,27 @@ ani 1360 px.
 
 ### Čo zostáva
 
-1. **Doplniť odkaz na hodnotenie do internej príručky.** Vezmite ho z profilu
-   whispAir cez **Ask for reviews** a vložte do `REVIEW_LINK` v
-   `interne/index.html`. Je to krátky odkaz, ktorý otvára rovno okno s
-   hviezdičkami; odkaz na profil v Mapách, ktorý máme na webe, slúži na čítanie
-   recenzií, nie na ich písanie. Sú to dve rôzne adresy.
-2. **Poslať skúšobný e-mail na `info@filthyfilter.sk`.** Schránka existuje a je
+1. **Poslať skúšobný e-mail na `info@filthyfilter.sk`.** Schránka existuje a je
    aktívna, MX aj SPF sedia, ale schránka je prázdna, takže doručenie nikto
    nepotvrdil. Adresa je na webe a používa ju tlačidlo Pripraviť e-mail.
-3. **Pozrieť si web na skutočnom telefóne.** Oprava nadpisu je nasadená, ale
+2. **Pozrieť si web na skutočnom telefóne.** Oprava nadpisu je nasadená, ale
    nikto ju na reálnom zariadení nevidel. Chyba sa pôvodne ukázala len tam.
-4. **Odložené nápady** vyššie v tomto dokumente, až na pokyn.
-5. **Dvojjazyčnosť bez vlastných URL.** Anglická verzia sa prepína iba v
+3. **Odložené nápady** vyššie v tomto dokumente, až na pokyn.
+4. **Dvojjazyčnosť bez vlastných URL.** Anglická verzia sa prepína iba v
    prehliadači, nemá vlastnú adresu. Google preto indexuje výhradne slovenčinu.
    Ak má angličtina prinášať návštevnosť, treba jej dať vlastnú cestu, napríklad
    `/en/`, a prepojiť ich cez `hreflang`. Je to samostatná etapa, nie oprava.
 
 ### Vyriešené 5. 9. 2026
+
+- **Interná príručka k recenziám je online** na `https://interne.filthyfilter.sk/`,
+  zdroj v `interne/`. Obsahuje krátky odkaz na hodnotenie
+  `https://g.page/r/Cfxkfq92J6ptEBM/review`, ktorý otvára rovno okno s
+  hviezdičkami. Že patrí k whispAir je overené z jeho vlastného kódu: dekóduje
+  sa na CID `0x6daa2776af7e64fc`, teda ten istý identifikátor ako v odkaze na
+  profil v Mapách. Sú to dve rôzne adresy s rôznou úlohou. Na verejnom webe je
+  odkaz na profil, kde si záujemcovia recenzie čítajú. V príručke je odkaz na
+  písanie, ktorý na verejný web nepatrí.
 
 - **Montáž a predaj už nekončia slepo.** Poznámka pod servisnými kartami
   hovorila, že montáž a predaj zariadení nie sú súčasťou ponuky, a tým to

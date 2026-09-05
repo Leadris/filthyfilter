@@ -34,6 +34,11 @@
 
 * { box-sizing: border-box; }
 
+/* The hidden attribute must win over any display rule that follows it,
+   otherwise a flex or grid container stays on screen while claiming to
+   be hidden. */
+[hidden] { display: none !important; }
+
 html { scroll-behavior: smooth; }
 
 body {
@@ -577,6 +582,21 @@ img { max-width: 100%; display: block; }
 .svc__foot .svc__price { width: 100%; }
 
 /* =========================================================================
+   GOOGLE REVIEWS — a link out, not a copy of the profile
+   ========================================================================= */
+.reviews { display: flex; align-items: center; gap: 24px; margin-top: 22px; padding: 26px 30px; }
+.reviews__mark { flex: none; width: 42px; height: 42px; color: var(--gold); }
+.reviews__mark svg { width: 100%; height: 100%; fill: currentColor; }
+.reviews__txt { flex: 1; }
+.reviews h3 {
+  margin: 0 0 6px; color: var(--gold);
+  font-family: var(--f-display); font-weight: 600; font-size: 1.24rem;
+  text-transform: uppercase; letter-spacing: .03em;
+}
+.reviews p { margin: 0; font-size: 1.02rem; line-height: 1.6; color: var(--muted); }
+.reviews .btn { flex: none; }
+
+/* =========================================================================
    PROOF / BEFORE-AFTER
    ========================================================================= */
 .proof { display: grid; grid-template-columns: 1.15fr 1fr; gap: 26px; align-items: stretch; }
@@ -734,6 +754,8 @@ summary:focus-visible,
   .hero__facts { grid-template-columns: 1fr 1fr; gap: 14px; }
   .proof__submit { flex-direction: column; align-items: flex-start; gap: 16px; }
   .proof__submit .btn { width: 100%; text-align: center; }
+  .reviews { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .reviews .btn { width: 100%; text-align: center; }
   .profile { grid-template-columns: repeat(2, 1fr); }
   .hero__coords { display: none; }
   .section { padding: 60px 0; }

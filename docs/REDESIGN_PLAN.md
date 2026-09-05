@@ -128,7 +128,7 @@ a výsledok nesmie znieť ako diagnóza.
 - [x] Zapísať úplný plán a pokyny pre Claude.
 - [x] **Etapa 1:** značka, kontakty, slovenský predvolený jazyk, pôsobnosť, vyradenie holandských mestských stránok; aktualizovať dokumentáciu. Overiť a pushnúť. *(Mestské stránky boli 5. 9. 2026 zrušené úplne, nielen presmerované.)*
 - [x] **Etapa 2:** nový úvod, služby, poradie obsahu, FAQ, firemná ponuka, FFFF texty a očista placeholderov/tvrdení.
-- [ ] **Etapa 3:** zostavenie dopytu, predvýber služby, WhatsApp/email/kopírovanie, mobilné CTA a nenápadný zvuk.
+- [x] **Etapa 3:** zostavenie dopytu, predvýber služby, WhatsApp/email/kopírovanie, mobilné CTA a nenápadný zvuk.
 - [ ] **Etapa 4:** výsledné vizuálne a funkčné QA, metadata, odovzdanie náhľadu a push.
 - [ ] Neskôr: overenie emailovej schránky, posúdenie náhľadu, merge/deploy podľa samostatného zadania.
 
@@ -202,8 +202,8 @@ v paneli sa nič nastavovať nemuselo. Staging kópia má vždy zablokované
 indexovanie: `robots.txt` so zákazom všetkého, `noindex` meta v oboch HTML a bez
 sitemap. Canonical zostáva na ostrú doménu. Postup je v `docs/DEPLOYMENT.md`.
 
-Ostrá doména beží na `d3455bc`. Staging beží na `e174b09`, teda PPPP Rating
-a oprava nadpisu v úvode.
+Ostrá doména aj staging bežia na `40380b9`, teda etapa 3 vrátane PPPP Rating
+a opravy nadpisu.
 
 **Pravidlo pre efekty, po nahlásení z telefónu 5. 9. 2026:** text musí byť
 čitateľný aj bez efektu. Nadpis v úvode mal farbu len z prechodu orezaného do
@@ -220,10 +220,12 @@ pôsobiť stiesnene.
 
 ### Ďalší krok
 
-1. Vizuálna kontrola živého webu okom; snímky obrazovky agenta sú kvôli WebGL
-   plátnu čierne, takže rozloženie bolo overené cez DOM, nie pohľadom.
-2. Rozhodnúť o osude starej adresy `whispair.sk/filthyfilter/`.
-3. Overiť schránku `info@filthyfilter.sk`.
-4. Etapa 3: plnohodnotný dopytový formulár s validáciou, kopírovaním textu a
-   voľbou „Neviem“, ak sa ukáže, že predvyplnené správy nestačia.
-5. Etapa 4: finálne QA a merge do `main`.
+1. Etapa 4: finálne QA a merge do `main`. Kontrola klávesnicou a čítačkou,
+   obmedzený pohyb, prejsť fotky, video a metadáta, vyhľadať zvyšky po
+   Klimuj.sk a nepodložených tvrdeniach.
+2. Overiť, či schránka `info@filthyfilter.sk` naozaj doručuje. Zatiaľ to nikto
+   netestoval, pritom je na stránke ako kontakt.
+3. Rozhodnúť o osude starej adresy `whispair.sk/filthyfilter/`.
+4. Vizuálna kontrola živého webu na skutočnom telefóne. Chyba s nadpisom sa
+   ukázala až tam, nie v agentovom prehliadači.
+5. Odložené nápady vyššie, až na pokyn.

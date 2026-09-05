@@ -139,21 +139,23 @@ deployed Git commit.
 ## Last verified deployment
 
 - Date: 2026-09-05
-- Commit: `d3455bc`
-- Target: `https://filthyfilter.sk/`, document root
-  `/home/jg046600/www_root_filthyfilter_sk`
-- Change: the three-panel quick pick in the services section plus the
-  readability and spacing pass.
-- Verification: `/`, `js/main.js`, `css/styles.css`, the case page,
-  `sitemap.xml`, `robots.txt` and the before/after image all returned `200`.
-  The homepage carries `styles.css?v=whispair-sales-3`, has no noindex meta and
-  `robots.txt` allows crawling, confirming the production package was shipped
-  rather than the staging one. In the browser at 1360px: headline 83.2px, hero
-  sentence in Inter, lead copy 18.6px, three quick-pick panels, seven FAQ
-  items, canonical on the live domain, hero block 801px, no horizontal scroll.
+- Commit: `40380b9`
+- Target: `https://filthyfilter.sk/` and `https://dev.filthyfilter.sk/`, both
+  updated in the same pass.
+- Change: stage 3, the enquiry builder. Also carries the PPPP Rating, the
+  Slovak reading of FFFF, and the hero headline fix.
+- Verification over HTTPS on both hosts: `/`, `js/main.js`, `css/styles.css`,
+  the case page and `robots.txt` all returned `200`, both serve
+  `styles.css?v=whispair-sales-9`, and both contain the form. Production has no
+  noindex and a live `sitemap.xml`; staging has the noindex and returns `404`
+  for the sitemap, so the two packages did not get swapped. Driving the live
+  form: empty submit raises the validation error, a filled form composes the
+  Slovak message with correct diacritics, the WhatsApp target is well formed,
+  and the status line says the message is waiting in WhatsApp rather than
+  claiming it was sent.
 - Rollback archive:
-  `/home/jg046600/tmp/filthyfilter-before-d3455bc.tar.gz`
-- SSH port used: 22050. The port rotates; 22892 expired earlier the same day.
+  `/home/jg046600/tmp/filthyfilter-before-40380b9.tar.gz`
+- SSH port used: 22050.
 
 ### TLS
 

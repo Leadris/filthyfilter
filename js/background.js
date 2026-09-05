@@ -1,5 +1,5 @@
 /* =========================================================================
-   FilthyFilter.nl — WebGL background (spores + mycelium) + parallax
+   FilthyFilter by whispAir — WebGL background (spores + mycelium) + parallax
    Raw WebGL1, no dependencies. One fullscreen canvas (#spore-field) renders
    BOTH layers. Animates on mobile too (GPU-budgeted). Respects reduced-motion.
    Falls back to a static 2D frame if WebGL is unavailable / context is lost.

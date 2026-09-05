@@ -203,13 +203,18 @@ ani 1360 px.
 
 ### Čo zostáva
 
-1. **Poslať skúšobný e-mail na `info@filthyfilter.sk`.** Schránka existuje a je
+1. **Doplniť odkaz na hodnotenie do internej príručky.** Vezmite ho z profilu
+   whispAir cez **Ask for reviews** a vložte do `REVIEW_LINK` v
+   `interne/index.html`. Je to krátky odkaz, ktorý otvára rovno okno s
+   hviezdičkami; odkaz na profil v Mapách, ktorý máme na webe, slúži na čítanie
+   recenzií, nie na ich písanie. Sú to dve rôzne adresy.
+2. **Poslať skúšobný e-mail na `info@filthyfilter.sk`.** Schránka existuje a je
    aktívna, MX aj SPF sedia, ale schránka je prázdna, takže doručenie nikto
    nepotvrdil. Adresa je na webe a používa ju tlačidlo Pripraviť e-mail.
-2. **Pozrieť si web na skutočnom telefóne.** Oprava nadpisu je nasadená, ale
+3. **Pozrieť si web na skutočnom telefóne.** Oprava nadpisu je nasadená, ale
    nikto ju na reálnom zariadení nevidel. Chyba sa pôvodne ukázala len tam.
-3. **Odložené nápady** vyššie v tomto dokumente, až na pokyn.
-4. **Dvojjazyčnosť bez vlastných URL.** Anglická verzia sa prepína iba v
+4. **Odložené nápady** vyššie v tomto dokumente, až na pokyn.
+5. **Dvojjazyčnosť bez vlastných URL.** Anglická verzia sa prepína iba v
    prehliadači, nemá vlastnú adresu. Google preto indexuje výhradne slovenčinu.
    Ak má angličtina prinášať návštevnosť, treba jej dať vlastnú cestu, napríklad
    `/en/`, a prepojiť ich cez `hreflang`. Je to samostatná etapa, nie oprava.

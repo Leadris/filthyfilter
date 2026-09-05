@@ -1,0 +1,3 @@
+# Internal guide for FilthyFilter by whispAir. Not for indexing.
+User-agent: *
+Disallow: /

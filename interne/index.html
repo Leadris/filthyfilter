@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Recenzie — interná príručka | FilthyFilter</title>
+<style>
+  :root{
+    --bg:#0a0706; --panel:#140f0b; --line:#4a3017; --line-2:#7a4f23;
+    --copper:#c8842f; --gold:#e8b057; --cream:#efe6d6; --muted:#c2b49c;
+    --dim:#998a74; --danger:#c0533b; --ok:#8fa54e;
+    --mono:"Share Tech Mono",ui-monospace,Consolas,monospace;
+    --body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:0 0 60px;background:var(--bg);color:var(--cream);
+       font:16px/1.65 var(--body);-webkit-text-size-adjust:100%}
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px}
+  header{border-bottom:1px solid var(--line);padding:28px 0 22px;margin-bottom:34px}
+  .kicker{font:0.7rem var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:0 0 8px}
+  h1{margin:0 0 8px;font-size:1.7rem;line-height:1.2}
+  .sub{margin:0;color:var(--muted);font-size:1rem}
+  h2{margin:44px 0 6px;font-size:1.25rem;color:var(--gold);
+     border-top:1px solid var(--line);padding-top:26px}
+  h2:first-of-type{border-top:0;padding-top:0;margin-top:34px}
+  h3{margin:26px 0 8px;font-size:1rem;color:var(--cream)}
+  p{margin:0 0 14px;color:var(--muted)}
+  p.lead{color:var(--cream)}
+  ul{margin:0 0 14px;padding-left:22px;color:var(--muted)}
+  li{margin-bottom:8px}
+  b{color:var(--cream)}
+  a{color:var(--gold)}
+
+  .card{border:1px solid var(--line);background:var(--panel);
+        border-radius:4px;padding:18px 18px 14px;margin:0 0 16px}
+  .card--link{border-color:var(--line-2)}
+  .card--warn{border-left:3px solid var(--danger)}
+  .card--ok{border-left:3px solid var(--ok)}
+
+  .msg{white-space:pre-wrap;font-size:1rem;line-height:1.6;color:var(--cream);margin:0 0 12px}
+  .btn{display:inline-block;border:1px solid var(--line-2);background:transparent;
+       color:var(--gold);font:0.78rem var(--mono);letter-spacing:.1em;text-transform:uppercase;
+       padding:11px 16px;border-radius:3px;cursor:pointer;min-height:44px}
+  .btn:hover{background:rgba(200,132,47,.12)}
+  .btn--go{background:linear-gradient(180deg,var(--gold),var(--copper));color:#1a1006;
+           border-color:var(--copper);font-weight:700;text-decoration:none;
+           display:inline-flex;align-items:center}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .said{font:0.75rem var(--mono);color:var(--ok);margin-left:4px}
+  code{font-family:var(--mono);color:var(--gold);word-break:break-all;font-size:.9rem}
+  .todo{border:1px solid var(--danger);background:rgba(192,83,59,.1);
+        padding:14px 16px;border-radius:4px;margin:0 0 16px;color:var(--cream)}
+  footer{margin-top:52px;padding-top:20px;border-top:1px solid var(--line);
+         font:0.72rem var(--mono);color:var(--dim);letter-spacing:.06em}
+  @media (max-width:520px){ h1{font-size:1.45rem} .btn{width:100%;text-align:center} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="kicker">Interné // nezverejňovať</p>
+  <h1>Recenzie na Google</h1>
+  <p class="sub">Čo povedať, čo poslať a čo nikdy nerobiť. Stránka je neindexovaná a nikde z webu na ňu nevedie odkaz.</p>
+</header>
+
+<h2>1. Odkaz na hodnotenie</h2>
+<div id="link-slot"></div>
+<p>Tento odkaz otvorí zákazníkovi rovno okno s hviezdičkami. Neposielajte ľudí na profil v Mapách, tam musia tlačidlo hľadať a väčšina to vzdá.</p>
+
+<h2>2. Čo povedať na mieste</h2>
+<p class="lead">Povedzte to nahlas, kým ste ešte u zákazníka. Samotná správa bez ľudskej prosby funguje slabo.</p>
+<div class="card">
+  <p class="msg" id="m-verbal">Ak ste s tým dnes spokojní, veľmi nám pomôže krátke hodnotenie na Google. Pošlem vám naň odkaz do správy, je to na jeden klik.</p>
+  <button class="btn" data-copy="m-verbal">Kopírovať</button>
+</div>
+
+<h2>3. Správa po zákazke</h2>
+<p>Pošlite ju ešte pred odchodom, kým je výsledok na očiach a fotky v telefóne. O tri dni neskôr je nadšenie preč.</p>
+
+<h3>Domácnosť</h3>
+<div class="card">
+  <p class="msg" id="m-home">Dobrý deň, ďakujem za dnešok. Posielam fotky pred a po.
+
+Ak vám to dávalo zmysel, pomôže nám krátke hodnotenie na Google. Stačí pár slov o tom, čo sme čistili. Zaberie to minútu:</p>
+  <button class="btn" data-copy="m-home">Kopírovať aj s odkazom</button>
+</div>
+
+<h3>Firma alebo prevádzka</h3>
+<div class="card">
+  <p class="msg" id="m-biz">Dobrý deň, klimatizácie máme hotové, fotky pred a po posielam v prílohe. Terénny report s FFFF skóre pripájam tiež.
+
+Ak ste s priebehom spokojní, budeme vďační za krátke hodnotenie na Google. Pomáha nám to viac než akákoľvek reklama:</p>
+  <button class="btn" data-copy="m-biz">Kopírovať aj s odkazom</button>
+</div>
+
+<h3>Pripomenutie, najviac raz</h3>
+<div class="card">
+  <p class="msg" id="m-again">Dobrý deň, nechcem otravovať, len pripomínam ten odkaz na hodnotenie, keby ste mali chvíľu. A ak ste medzitým na niečo narazili, napíšte radšej rovno mne a vyriešim to:</p>
+  <button class="btn" data-copy="m-again">Kopírovať aj s odkazom</button>
+</div>
+
+<h3>Anglicky</h3>
+<div class="card">
+  <p class="msg" id="m-en">Hello, thank you for today. I am sending the before and after photos.
+
+If it was worth it, a short Google review would help us a lot. A few words about what we cleaned is enough. It takes a minute:</p>
+  <button class="btn" data-copy="m-en">Kopírovať aj s odkazom</button>
+</div>
+
+<h2>4. Čo nikdy nerobiť</h2>
+<div class="card card--warn">
+  <p class="lead"><b>Netrieďte zákazníkov podľa spokojnosti.</b></p>
+  <p>Nepýtajte sa najprv „ako sme sa vám páčili“ a nespokojných neposielajte na súkromný formulár namiesto Google. Volá sa to review gating a Google to zakazuje. Trestom býva zmazanie recenzií alebo obmedzenie profilu. Odkaz dostane každý zákazník rovnako.</p>
+</div>
+<div class="card card--warn">
+  <p class="lead"><b>Nič za recenziu.</b></p>
+  <p>Žiadna zľava, žiadne losovanie, žiadna služba navyše. Je to zakázané a na webe máme napísané, že to nerobíme.</p>
+</div>
+<div class="card card--warn">
+  <p class="lead"><b>Nediktujte znenie.</b></p>
+  <p>Poproste o konkrétnosť, nie o text. Rovnako znejúce recenzie Google filtruje a je to podvod na ďalších zákazníkoch.</p>
+</div>
+<div class="card card--ok">
+  <p class="lead"><b>Toto naopak robte.</b></p>
+  <p>Pri odovzdaní sa spýtajte, či je všetko v poriadku, a ak nie je, vyriešte to na mieste. To nie je filtrovanie, to je servis. Vyriešený zákazník väčšinou zlú recenziu nepíše vôbec.</p>
+</div>
+
+<h2>5. Odpovede na recenzie</h2>
+<p>Odpovedzte na každú, aj na zlú, a radšej do dňa či dvoch. Rýchlosť a vecnosť odpovede číta každý ďalší záujemca.</p>
+
+<h3>Päť hviezdičiek</h3>
+<div class="card">
+  <p class="msg" id="r-5">Ďakujeme. Teší nás, že rozdiel bolo cítiť hneď. Keby klíma o sezónu začala znova voňať inak, ozvite sa.</p>
+  <button class="btn" data-copy="r-5">Kopírovať</button>
+</div>
+
+<h3>Tri až štyri hviezdičky</h3>
+<div class="card">
+  <p class="msg" id="r-4">Ďakujeme za hodnotenie aj za to, že ste napísali, čo by šlo lepšie. Berieme si to k srdcu. Ak chcete, pozrieme sa na to znova, stačí sa ozvať.</p>
+  <button class="btn" data-copy="r-4">Kopírovať</button>
+</div>
+
+<h3>Negatívna</h3>
+<div class="card">
+  <p class="msg" id="r-1">Mrzí nás to a chceme to napraviť. Ozvite sa prosím na 0902 279 094 alebo na info@filthyfilter.sk a dohodneme sa, ako to dáme do poriadku.</p>
+  <button class="btn" data-copy="r-1">Kopírovať</button>
+</div>
+<p>Nehádajte sa a nevysvetľujte v odpovedi celý priebeh zákazky. Krátko, vecne, s ponukou nápravy. Zvyšok doriešte telefonicky.</p>
+
+<h2>6. QR kód na tlač</h2>
+<p>Na kartičku, faktúru alebo dodávku. Nerobte ho cez náhodné generátory, Google ho pre váš profil vyrobí sám aj s tlačovými podkladmi:</p>
+<p><a class="btn btn--go" href="https://marketingkit.withgoogle.com/" target="_blank" rel="noopener">Google Marketing Kit &#8599;</a></p>
+<p>Prihláste sa účtom, ktorý spravuje profil whispAir, a stiahnite si materiál s QR kódom. Vedie na to isté miesto ako odkaz vyššie.</p>
+
+<h2>7. Čo sledovať</h2>
+<ul>
+  <li><b>Koľkých ste sa spýtali oproti tomu, koľko recenzií pribudlo.</b> Ak sa pýtate každého a nepribúda nič, problém je v načasovaní alebo v odkaze, nie v zákazníkoch.</li>
+  <li><b>Či v recenziách zaznieva čistenie.</b> Profil whispAir je vedený ako predajňa, takže slovo čistenie v texte recenzií je to, čo ho postupne prepne aj na servisné dopyty.</li>
+  <li><b>Podiel odpovedaných recenzií.</b> Cieľ je sto percent.</li>
+</ul>
+
+<footer>
+  Interný dokument FilthyFilter by whispAir · nezverejňovať a neodkazovať z verejného webu
+</footer>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // The short review link from Business Profile, "Ask for reviews". It opens the
+  // star dialog directly, unlike the Maps profile URL. Fill this in and every
+  // template below picks it up.
+  var REVIEW_LINK = "";
+
+  var slot = document.getElementById("link-slot");
+  if (REVIEW_LINK) {
+    slot.innerHTML =
+      '<div class="card card--link">' +
+        '<p class="msg" id="m-link">' + REVIEW_LINK + '</p>' +
+        '<div class="row">' +
+          '<a class="btn btn--go" href="' + REVIEW_LINK + '" target="_blank" rel="noopener">Otvoriť</a>' +
+          '<button class="btn" data-copy="m-link">Kopírovať odkaz</button>' +
+        '</div>' +
+      '</div>';
+  } else {
+    slot.innerHTML =
+      '<div class="todo"><b>Odkaz zatiaľ nie je doplnený.</b><br>' +
+      'Vezmite ho z profilu whispAir cez <b>Ask for reviews</b> a vložte do premennej ' +
+      '<code>REVIEW_LINK</code> na konci tohto súboru. Šablóny nižšie sa ním doplnia samy.</div>';
+  }
+
+  // Copying a message template hands over the link with it, so nobody has to
+  // remember to paste it separately.
+  function textFor(el) {
+    var t = el.innerText.trim();
+    if (REVIEW_LINK && el.id.indexOf("m-") === 0 && el.id !== "m-verbal" && el.id !== "m-link") {
+      t += "\n" + REVIEW_LINK;
+    }
+    return t;
+  }
+
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest("[data-copy]");
+    if (!btn) return;
+    var src = document.getElementById(btn.getAttribute("data-copy"));
+    if (!src) return;
+    var text = textFor(src);
+
+    function done(ok) {
+      var tag = btn.parentNode.querySelector(".said") || document.createElement("span");
+      tag.className = "said";
+      tag.textContent = ok ? "skopírované" : "označte a skopírujte ručne";
+      if (!tag.parentNode) btn.parentNode.appendChild(tag);
+      window.setTimeout(function () { tag.textContent = ""; }, 2500);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); },
+                                              function () { select(src); });
+    } else {
+      select(src);
+    }
+
+    function select(el) {
+      var r = document.createRange();
+      r.selectNodeContents(el);
+      var s = window.getSelection();
+      s.removeAllRanges();
+      s.addRange(r);
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (err) {}
+      done(ok);
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -66,7 +66,7 @@ Nejde o serverovo odosielaný formulár. Polia: povinná služba (aj „Neviem, 
 
 Kontakty a zostavenie správ držať na jednom mieste v existujúcom JS; HTML má zároveň funkčné priame kontakty aj bez JavaScriptu. Bez nového verejného API. Základné informácie musia zostať čitateľné aj pri zlyhaní skriptov.
 
-Slovenské zdrojové HTML, title, description, OpenGraph, alt a aria popisy. Voľba EN nemení región služby. Staré `steden/` URL nahradiť jednoduchými statickými presmerovaniami na homepage `#service-area`, s noindex/canonical a náhradným odkazom. Vyradiť ich zo sitemap; zachovať homepage a existujúci spis. **Aktualizované 5. 9. 2026:** canonical, OpenGraph, sitemap a robots ukazujú na `https://filthyfilter.sk/`; cesty k assetom zostávajú relatívne, aby web fungoval na koreni aj pod podcestou.
+Slovenské zdrojové HTML, title, description, OpenGraph, alt a aria popisy. Voľba EN nemení región služby. **Aktualizované 5. 9. 2026: adresár `steden/` je zrušený.** Šesť holandských mestských presmerovaní držalo staré URL z filthyfilter.nl. Na doméne `filthyfilter.sk` také URL nikdy neexistovali, takže nemali čo zachovávať a boli len mätúcim zvyškom. Sitemap obsahuje homepage a existujúci spis. **Aktualizované 5. 9. 2026:** canonical, OpenGraph, sitemap a robots ukazujú na `https://filthyfilter.sk/`; cesty k assetom zostávajú relatívne, aby web fungoval na koreni aj pod podcestou.
 
 ## Etapy a akceptácia
 
@@ -74,7 +74,7 @@ Slovenské zdrojové HTML, title, description, OpenGraph, alt a aria popisy. Vo�
 - [x] Vytvoriť a pushnúť anotovaný tag baseline-v1.
 - [x] Založiť codex/filthyfilter-redesign.
 - [x] Zapísať úplný plán a pokyny pre Claude.
-- [x] **Etapa 1:** značka, kontakty, slovenský predvolený jazyk, pôsobnosť, vyradenie holandských mestských stránok; aktualizovať dokumentáciu. Overiť a pushnúť.
+- [x] **Etapa 1:** značka, kontakty, slovenský predvolený jazyk, pôsobnosť, vyradenie holandských mestských stránok; aktualizovať dokumentáciu. Overiť a pushnúť. *(Mestské stránky boli 5. 9. 2026 zrušené úplne, nielen presmerované.)*
 - [x] **Etapa 2:** nový úvod, služby, poradie obsahu, FAQ, firemná ponuka, FFFF texty a očista placeholderov/tvrdení.
 - [ ] **Etapa 3:** zostavenie dopytu, predvýber služby, WhatsApp/email/kopírovanie, mobilné CTA a nenápadný zvuk.
 - [ ] **Etapa 4:** výsledné vizuálne a funkčné QA, metadata, odovzdanie náhľadu a push.
@@ -134,6 +134,8 @@ kontrolu v skutočnom prehliadači ešte treba spraviť.**
 Commit `cf5b605` je nasadený na `http://filthyfilter.sk/`, document root
 `/home/jg046600/www_root_filthyfilter_sk`. Overenie a rollback archív sú
 zapísané v `docs/DEPLOYMENT.md`. Placeholder `webhouse.html` je odstránený.
+Rovnako je odstránený aj adresár `steden/` s holandskými presmerovaniami, z repa
+aj zo živého roota; `/steden/` vracia 404.
 
 **Otvorená vec: HTTPS.** Server zatiaľ posiela wildcard certifikát WebHouse
 `CN=*.webhouse.sk`, ktorý túto doménu nepokrýva, takže `https://` hlási nezhodu

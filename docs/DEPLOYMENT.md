@@ -43,7 +43,6 @@ assets/
 css/
 js/
 hall/
-steden/
 ```
 
 Do not publish `.git`, `docs`, `tmp`, `README.md`, `CONTEXT.md`, `CLAUDE.md`, or local tooling.
@@ -57,7 +56,7 @@ deployed Git commit.
 2. Create a clean local archive:
 
    ```powershell
-   tar.exe -czf "tmp\filthyfilter-release-<COMMIT>.tar.gz" index.html robots.txt sitemap.xml assets css js hall steden
+   tar.exe -czf "tmp\filthyfilter-release-<COMMIT>.tar.gz" index.html robots.txt sitemap.xml assets css js hall
    ```
 
 3. Upload the archive to the server staging directory:
@@ -106,8 +105,7 @@ deployed Git commit.
   `whispair.sk/filthyfilter/` subpath to the root of `filthyfilter.sk`.
 - Verification: `http://filthyfilter.sk/` returned HTTP `200` and 54,517 bytes,
   matching the released `index.html`. `js/main.js`, `css/styles.css`,
-  `sitemap.xml`, `robots.txt`, the case page and one legacy `steden/` redirect
-  all returned `200`. `backgroundMusic.mp3` is 13,927,582 bytes and
+  `sitemap.xml`, `robots.txt` and the case page all returned `200`. `backgroundMusic.mp3` is 13,927,582 bytes and
   `evidence-reel.mp4` is 3,651,056 bytes on disk. In the browser: Slovak
   default, both language buttons present, zero `data-nl` attributes, five
   service cards, seven FAQ items, the prefilled WhatsApp message with correct
@@ -115,6 +113,10 @@ deployed Git commit.
   `before-after.jpg` loading at 1200 by 674 pixels.
 - The WebHouse placeholder `webhouse.html` was deleted from the root after the
   site was confirmed live. It is preserved in the rollback archive.
+- The `steden/` directory of Dutch city redirects was removed from the release
+  and from the live root on the same day. Those paths held old
+  `filthyfilter.nl` URLs and never existed on this domain, so there was nothing
+  for them to preserve. `/steden/` and `/steden/eindhoven/` now return `404`.
 - Rollback archive:
   `/home/jg046600/tmp/filthyfilter-before-cf5b605.tar.gz`
 

@@ -19,7 +19,7 @@
     // whispAir and reviews are collected on the one whispAir profile, so this
     // points there. Leave it empty and every reviews element stays hidden:
     // better no button than one that leads nowhere.
-    reviews: ""
+    reviews: "https://www.google.com/maps/place/whispAir/@48.2049312,17.3510103,17z/data=!3m1!4b1!4m6!3m5!1s0x476c85d17c386543:0x6daa2776af7e64fc!8m2!3d48.2049312!4d17.3510103!16s%2Fg%2F11ftb828lv"
   };
 
   // Service labels for the prefilled enquiry message. Keys match data-inquiry

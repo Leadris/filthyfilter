@@ -137,6 +137,17 @@ sa nemusí zobraziť.
 hodnoteniami, aj odsek chváliaci donutky a zmrzlinu. Sekcia o prevádzke teraz
 vecne opisuje záťaž zákazky. `docs/B2B_TRUST_LAYER.md` je označený za prekonaný.
 
+## Pravidlo pre rámovanie sekcií (5. 9. 2026)
+
+Používateľ si vybral rozvrhnutie sekcie **Pre firmy** ako vzor. Tag, nadpis a
+úvodný odsek sedia na pozadí, orámovaný je len obsah pod nimi. Rám nikdy
+neobopína celú sekciu aj s nadpisom.
+
+Platí to pre všetkých deväť sekcií homepage. Medzera medzi nadpisom a rámom je
+40 px, čo dáva `.section__head { margin-bottom: 40px }`. Ak má sekcia mriežku
+viacerých panelov, každý panel nesie vlastný tag ako popisku; nadpis sekcie do
+žiadneho z nich nepatrí.
+
 ## Odložené nápady (zapísané 5. 9. 2026, nezačínať bez pokynu)
 
 Používateľ ich chce mať zapísané a vrátiť sa k nim neskôr. Nie sú súčasťou

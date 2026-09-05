@@ -36,7 +36,7 @@ hall/
 steden/
 ```
 
-Do not publish `.git`, `docs`, `tmp`, `README.md`, `CONTEXT.md`, or local tooling.
+Do not publish `.git`, `docs`, `tmp`, `README.md`, `CONTEXT.md`, `CLAUDE.md`, or local tooling.
 
 ## Deployment procedure
 
@@ -89,4 +89,3 @@ deployed Git commit.
   `13,927,582` bytes.
 - Rollback archive:
   `/home/jg046600/tmp/filthyfilter-before-8c86d29.tar.gz`
-

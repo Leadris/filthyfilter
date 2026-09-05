@@ -74,7 +74,7 @@ Slovenské zdrojové HTML, title, description, OpenGraph, alt a aria popisy. Jaz
 - [x] Vytvoriť a pushnúť anotovaný tag baseline-v1.
 - [x] Založiť codex/filthyfilter-redesign.
 - [x] Zapísať úplný plán a pokyny pre Claude.
-- [ ] **Etapa 1:** značka, kontakty, slovenský predvolený jazyk, pôsobnosť, vyradenie holandských mestských stránok; aktualizovať dokumentáciu. Overiť a pushnúť.
+- [x] **Etapa 1:** značka, kontakty, slovenský predvolený jazyk, pôsobnosť, vyradenie holandských mestských stránok; aktualizovať dokumentáciu. Overiť a pushnúť.
 - [ ] **Etapa 2:** nový úvod, služby, poradie obsahu, FAQ, firemná ponuka, FFFF texty a očista placeholderov/tvrdení.
 - [ ] **Etapa 3:** zostavenie dopytu, predvýber služby, WhatsApp/email/kopírovanie, mobilné CTA a nenápadný zvuk.
 - [ ] **Etapa 4:** výsledné vizuálne a funkčné QA, metadata, odovzdanie náhľadu a push.
@@ -86,4 +86,12 @@ Hotovo znamená, že návštevník z úvodu pochopí službu a región, nájde r
 
 ## Aktuálne odovzdanie
 
-**5. 9. 2026 — Codex:** Baseline uložený na GitHube; pracovná vetva založená. Etapa 1 prebieha. Etapy 2–4 nie sú implementované. Produkcia sa nemení. Po dokončení etapy 1 sa tento odsek aktualizuje s overením a presným ďalším krokom.
+**5. 9. 2026 — Codex, etapa 1 dokončená:** Baseline uložený na GitHube, plán/pokyny sú v commite `5cf9e30`. Implementačný commit etapy 1 má názov `feat: establish whispAir branding and Slovak service area`; aktuálny hash zistíš z Git logu. Produkcia sa nemenila.
+
+Hotové: značka a kontakty na homepage aj prepojenie realizátora v spise, odstránenie neovereného Google odkazu realizátora/Place ID poznámky, slovenské zdrojové texty a predvolený jazyk, zachovanie manuálnej jazykovej voľby, spoločný `CONTACT` v JS a priame HTML fallbacky, `#service-area`, šesť starých holandských URL ako noindex presmerovania, sitemap s dvoma URL, aktuálne README/CONTEXT a súvisiace pokyny. Historické časti README/CONTEXT sú výslovne označené; pri rozpore platí tento plán.
+
+Pri QA sa opravilo pretekanie navigácie na tablete: existujúce kompaktné menu sa používa do 1100 px a jazykový prepínač sa nezmršťuje. Homepage a detail majú verziu CSS/main.js `?v=whispair-foundation-1` kvôli cache a noscript zobrazenie sekcií. Súčasná farebnosť, fonty, WebGL a humor zostali zachované.
+
+Overenie etapy 1: `node --check js/main.js`, `git diff --check`; jednorazová kontrola 8 HTML dokumentov, 54 lokálnych odkazov/assetov/kotiev, šiestich presmerovaní a dvoch sitemap URL. V prehliadači overené SK/EN/NL vrátane zachovania EN po reload, správne tel/mailto/WhatsApp ciele, mobilné menu, pôsobnosť pri 390/768 px a desktop, presmerovanie Eindhoven → `index.html#service-area`, slovenský detail a načítanie všetkých siedmich img prvkov realizácie. Správy sa neodosielali; doručovanie emailu a funkčnosť WhatsApp účtu sa netestovali. Kompletné video, reduced-motion a celý nový dopytový tok patria do finálneho QA.
+
+**Ďalší krok pre Claude: etapa 2.** Pokračuj novým hero textom a CTA, piatimi servisnými kartami, presunutím dôkazu práce vyššie, FAQ a firemnou sekciou. Odstráň päť galériových placeholderov a staré nepodložené čísla/tvrdenia (500+, 0 spór, AI percentá, certifikácia), uprav FFFF. Tieto staré texty aj pôvodná zvuková výzva sú zatiaľ vedome ponechané pre ďalšie etapy; etapa 1 nie je hotový redizajn pripravený na nasadenie. Po etape 2 nasleduje dopytový tok a hudba z etapy 3. Nedoplňuj svojvoľne ceny, firemné údaje ani spolupráce. Pred úpravami over pracovný strom; po etape aktualizuj toto odovzdanie a pushni pracovnú vetvu.

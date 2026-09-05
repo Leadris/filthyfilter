@@ -1,6 +1,6 @@
 /* =========================================================================
-   FilthyFilter.nl — language toggle (NL/EN) + small UI niceties
-   No dependencies. Translatable nodes carry data-nl / data-en.
+   FilthyFilter by whispAir — language toggle (SK/EN/NL) + small UI niceties
+   No dependencies. Translatable nodes carry data-sk / data-en / data-nl.
    ========================================================================= */
 (function () {
   "use strict";
@@ -9,21 +9,40 @@
   // Version the preference when the welcome experience changes so returning
   // visitors get one chance to see the new prompt.
   var SOUND_STORE_KEY = "ff_sound_v2";
-  var DEFAULT_LANG = "en";
+  var DEFAULT_LANG = "sk";
+  // Shared destination data for contact links and the planned inquiry builder.
+  // Keep static HTML fallbacks in sync so direct contact works without JS.
+  var CONTACT = {
+    phone: "+421902279094",
+    email: "info@filthyfilter.sk",
+    whatsapp: "421902279094"
+  };
+
+  function initContact() {
+    var destinations = {
+      phone: "tel:" + CONTACT.phone,
+      email: "mailto:" + CONTACT.email,
+      whatsapp: "https://wa.me/" + CONTACT.whatsapp
+    };
+    document.querySelectorAll("a[data-contact]").forEach(function (link) {
+      var href = destinations[link.getAttribute("data-contact")];
+      if (href) link.setAttribute("href", href);
+    });
+  }
   var MUSIC_URL = new URL("../assets/backgroundMusic.mp3", document.currentScript.src).href;
 
   var META = {
     nl: {
-      title: "FilthyFilter.nl — Airco Decontaminatie Divisie",
-      desc: "Professionele reiniging van airconditioning. Wij sporen de schimmel op en ruimen ’m op. Vraag een FFFF-meting aan."
+      title: "Aircoreiniging en service — Senec en omgeving | FilthyFilter by whispAir",
+      desc: "Aircoreiniging, onderhoud en service voor woningen en bedrijven. Senec en omgeving, tot ongeveer 100 km. Prijs op basis van de werkzaamheden."
     },
     en: {
-      title: "FilthyFilter.nl — Airco Decontamination Division",
-      desc: "Professional air-conditioning cleaning. We detect the fungus and evict it. Request your FFFF assessment."
+      title: "AC cleaning and service — Senec and surroundings | FilthyFilter by whispAir",
+      desc: "AC cleaning, maintenance and servicing for homes and businesses. Senec and surroundings, up to approximately 100 km. Price based on the scope of work."
     },
     sk: {
-      title: "FilthyFilter.nl — Divízia dekontaminácie klímy",
-      desc: "Profesionálne čistenie klimatizácií. Pleseň nájdeme a vysťahujeme. Vyžiadajte si svoje FFFF meranie."
+      title: "Čistenie a servis klimatizácií — Senec a okolie | FilthyFilter by whispAir",
+      desc: "Čistenie, údržba a servis klimatizácií pre domácnosti a firmy. Senec a okolie do približne 100 km. FilthyFilter by whispAir — cena podľa rozsahu."
     }
   };
 
@@ -67,16 +86,10 @@
     }
   }
 
-  function systemLang() {
-    var raw = (navigator.language || "").toLowerCase();
-    var lang = raw.split("-")[0];
-    return (lang === "nl" || lang === "en" || lang === "sk") ? lang : DEFAULT_LANG;
-  }
-
   function initLang() {
     var selected = null;
     try { selected = localStorage.getItem(STORE_KEY); } catch (e) {}
-    applyLang(selected || systemLang(), false);
+    applyLang(selected || DEFAULT_LANG, false);
 
     var btns = document.querySelectorAll(".langswitch button");
     for (var i = 0; i < btns.length; i++) {
@@ -229,6 +242,7 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
+    initContact();
     initMusic();
     initLang();
     initReveal();

@@ -1,4 +1,25 @@
-# FilthyFilter.nl
+# FilthyFilter by whispAir
+
+## Aktuálny stav — 5. 9. 2026
+
+Schválený plán, checklist a aktuálne odovzdanie sú v **[docs/REDESIGN_PLAN.md](docs/REDESIGN_PLAN.md)**. Claude začína súborom **[CLAUDE.md](CLAUDE.md)**. Tieto pokyny nahrádzajú historické rozhodnutia nižšie.
+
+- Baseline pôvodného webu: tag `baseline-v1` na `99b956c`.
+- Pracovná vetva: `codex/filthyfilter-redesign`. Produkcia sa nemení automaticky pushom.
+- Značka **FilthyFilter by whispAir**; hlavný trh Slovensko, Senec a okolie do približne 100 km. Dostupnosť a doprava sa potvrdzujú podľa adresy.
+- Telefón/WhatsApp: **+421 902 279 094**. Email: **info@filthyfilter.sk**; pred nasadením treba overiť doručovanie schránky.
+- SK je predvolený jazyk v HTML aj pri prvej návšteve. Manuálna EN/NL voľba zostáva v `ff_lang`; všetky jazyky opisujú slovenskú ponuku. Prekladaj všetky `data-sk/data-en/data-nl` aj viditeľný slovenský text.
+- Kontakty sú v `CONTACT` v `js/main.js` a v priamych HTML fallback odkazoch; pri zmene udrž oboje zhodné.
+- `steden/` a päť holandských mestských stránok sú už iba kompatibilné presmerovania na homepage `#service-area`, nie aktívne regióny. Sitemap obsahuje homepage a realizáciu La Donuteria.
+- Statické HTML/CSS/JS, bez backendu, frameworku a buildu. Dopytový formulár, nové poradie a nové servisné karty sú ďalšie etapy podľa plánu.
+
+Náhľad so zachovaním produkčnej podcesty: `python -m http.server 8080 --bind 127.0.0.1 --directory D:/whispAir-IT`, potom `http://127.0.0.1:8080/filthyfilter/`.
+
+Nasadenie je samostatná etapa podľa [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). Dokumentáciu, CLAUDE.md ani dočasné nástroje nepublikovať. Emailová doména nemení adresu webu `https://whispair.sk/filthyfilter/`.
+
+## Historická dokumentácia baseline (už neurčuje aktuálny trh ani kontakty)
+
+Nasledujúci pôvodný opis zachytáva vznik projektu. Pri rozpore platí aktuálny plán vyššie; neobnovovať holandské kontakty, jazykové predvoľby ani mestské ponuky.
 
 Statische, **drietalige (NL/EN/SK)** website voor airco-reiniging, in een dark sci-fi /
 HUD-stijl met de signature **FFFF Rating™** (*FilthyFilter Fungus Fun Factor*).

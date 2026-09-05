@@ -46,7 +46,7 @@ Tento checklist zachytáva pravidlá použité pri spise `FF-SK-TT-0828` a má s
 ## 6. Publikačný checklist
 
 - Tri jazykové verzie sú kompletné a významovo zhodné.
-- Prvá návšteva rešpektuje jazyk zariadenia; nepodporované jazyky používajú angličtinu. Manuálna voľba sa zapamätá.
+- Prvá návšteva používa slovenčinu. Manuálna voľba SK/EN/NL sa zapamätá; všetky preklady opisujú slovenskú ponuku.
 - Funkčný preklik z celej Hall of Filth karty.
 - Popisné `alt` texty, titulok, meta description, canonical URL a OpenGraph obrázok.
 - Prípad je v sitemap a všetky cesty fungujú aj pri nasadení v podadresári.

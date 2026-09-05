@@ -312,6 +312,8 @@ img { max-width: 100%; display: block; }
   position: absolute; right: 12px; top: 6px; font-family: var(--f-display); font-weight: 700;
   font-size: 3.4rem; color: rgba(255,255,255,0.04); line-height: 1;
 }
+.ffff-note__link { color: var(--gold); border-bottom: 1px solid var(--bronze); }
+.ffff-note__link:hover { color: var(--gold-hi); border-bottom-color: var(--gold); }
 .ffff-note { margin-top: 22px; font-family: var(--f-mono); font-size: 0.78rem; line-height: 1.6; color: var(--muted-dim); letter-spacing: 0.08em; }
 
 /* =========================================================================

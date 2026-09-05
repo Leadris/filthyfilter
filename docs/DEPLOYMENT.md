@@ -139,22 +139,16 @@ deployed Git commit.
 ## Last verified deployment
 
 - Date: 2026-09-05
-- Commit: `40380b9`
-- Target: `https://filthyfilter.sk/` and `https://dev.filthyfilter.sk/`, both
-  updated in the same pass.
-- Change: stage 3, the enquiry builder. Also carries the PPPP Rating, the
-  Slovak reading of FFFF, and the hero headline fix.
-- Verification over HTTPS on both hosts: `/`, `js/main.js`, `css/styles.css`,
-  the case page and `robots.txt` all returned `200`, both serve
-  `styles.css?v=whispair-sales-9`, and both contain the form. Production has no
-  noindex and a live `sitemap.xml`; staging has the noindex and returns `404`
-  for the sitemap, so the two packages did not get swapped. Driving the live
-  form: empty submit raises the validation error, a filled form composes the
-  Slovak message with correct diacritics, the WhatsApp target is well formed,
-  and the status line says the message is waiting in WhatsApp rather than
-  claiming it was sent.
+- Commit: `4bd5cc3`, merged to `main` as `a9088f3`
+- Target: `https://filthyfilter.sk/` and `https://dev.filthyfilter.sk/`
+- Change: stage 4, the QA fixes.
+- Verification over HTTPS on both hosts: `/`, both scripts, the stylesheet, the
+  case page and `robots.txt` returned `200`, both serve `v=whispair-qa-2`, and
+  the old `.nl` brand is gone from `background.js`. The case page seal reads
+  "Terénny report". Production has no noindex and a live sitemap; staging has
+  the noindex and a `404` sitemap, so the packages were not swapped.
 - Rollback archive:
-  `/home/jg046600/tmp/filthyfilter-before-40380b9.tar.gz`
+  `/home/jg046600/tmp/filthyfilter-before-4bd5cc3.tar.gz`
 - SSH port used: 22050.
 
 ### TLS

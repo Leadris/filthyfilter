@@ -129,8 +129,8 @@ a výsledok nesmie znieť ako diagnóza.
 - [x] **Etapa 1:** značka, kontakty, slovenský predvolený jazyk, pôsobnosť, vyradenie holandských mestských stránok; aktualizovať dokumentáciu. Overiť a pushnúť. *(Mestské stránky boli 5. 9. 2026 zrušené úplne, nielen presmerované.)*
 - [x] **Etapa 2:** nový úvod, služby, poradie obsahu, FAQ, firemná ponuka, FFFF texty a očista placeholderov/tvrdení.
 - [x] **Etapa 3:** zostavenie dopytu, predvýber služby, WhatsApp/email/kopírovanie, mobilné CTA a nenápadný zvuk.
-- [ ] **Etapa 4:** výsledné vizuálne a funkčné QA, metadata, odovzdanie náhľadu a push.
-- [ ] Neskôr: overenie emailovej schránky, posúdenie náhľadu, merge/deploy podľa samostatného zadania.
+- [x] **Etapa 4:** výsledné vizuálne a funkčné QA, metadata, odovzdanie náhľadu a push.
+- [x] Merge do `main` (`a9088f3`) a produkčný deploy. Zostáva overenie emailovej schránky.
 
 Finálne QA: desktop + 390/768 px, bez horizontálneho scrollu; mobilné menu a CTA neprekrývajú obsah; klávesnica, focus, labely a reduced-motion. Všetky service CTA predvyberajú správny dopyt. Otestovať validáciu, „Neviem“, diakritiku, zmenu jazyka a linky bez reálneho odoslania. Overiť fotografie, video, presmerovania a cesty pod `/filthyfilter/`, title/canonical/OG/sitemap. Vyhľadať Klimuj.sk, holandské kontakty, nulové čísla, neoverené tvrdenia. Zbytočne nepridávať testovaciu infraštruktúru pre textové úpravy; JS správanie overiť zmysluplnými scenármi.
 
@@ -138,94 +138,40 @@ Hotovo znamená, že návštevník z úvodu pochopí službu a región, nájde r
 
 ## Aktuálne odovzdanie
 
-**5. 9. 2026 — Claude, etapa 2 dokončená; nasadenie pripravené, nie dokončené.**
-Commit `cf5b605` na vetve `codex/filthyfilter-redesign`.
+**5. 9. 2026 — všetky štyri etapy sú hotové.** `main` je na `a9088f3`, ostrá
+doména aj staging bežia na `4bd5cc3`.
 
-### Nové rozhodnutia používateľa (nadraďujú staršie znenie plánu)
+Web je na koreni `https://filthyfilter.sk/` s platným certifikátom, staging na
+`https://dev.filthyfilter.sk/` so zákazom indexovania. Postup vydania, obsah
+balíkov a rozdiely stagingu sú v `docs/DEPLOYMENT.md`.
 
-- Web má byť **výrazne bližšie predajnej štruktúre `vycistimklimu.sk`**, ale
-  humor a tmavý medený vizuál zostávajú naše.
-- **Iba slovenčina a angličtina.** Holandčina je odstránená celá, nie odložená.
-- **Doména `filthyfilter.sk` je zaregistrovaná** a beží na tom istom WebHouse
-  účte ako projekty whispAir. Web ide na **koreň novej domény**, nie pod
-  podcestu. Canonical, OpenGraph, sitemap a robots už ukazujú na
-  `https://filthyfilter.sk/`. Cesty k assetom zostali relatívne.
+### Čo etapa 4 našla a opravila
 
-### Hotové v tejto etape
-
-- Nové poradie homepage: úvod so schváleným nadpisom a dvoma CTA, päť
-  servisných kariet, dôkaz pred/po vyššie, postup, prečo my, FFFF, sekcia pre
-  firmy, FAQ, pôsobnosť a kontakt.
-- Odstránené nepodložené tvrdenia: hero čísla 500+ a 0 spór, AI percentá,
-  päť prázdnych kariet „foto čoskoro“, samoudelená certifikácia. „FFFF
-  certifikát“ je teraz **terénny report s FFFF skóre**; FFFF 5 už netvrdí, že
-  práca je mimo našej kompetencie.
-- Servisné CTA predvyplnia WhatsApp alebo e-mail so správnou službou v
-  zvolenom jazyku. Skladá sa to na jednom mieste v `js/main.js`; obyčajné
-  `wa.me` a `mailto` odkazy zostávajú ako fallback bez JavaScriptu. Stránka nič
-  neukladá ani sama neodosiela.
-- Holandčina preč: 197 atribútov `data-nl`, tlačidlo NL, holandské metadáta a
-  holandský text v starých mestských presmerovaniach.
-- Plávajúca zvuková výzva odstránená; hudba zostáva dobrovoľná cez malé
-  tlačidlo. Zmazané aj jej CSS a nepoužívané CSS starých kariet Hall of Filth.
-- Pridané: mobilná lišta Zavolať/Nacenenie, FAQ akordeón, štýly servisných
-  kariet. Verzia CSS/JS `?v=whispair-sales-1`.
+Mŕtvy CSS blok po zrušených mestských stránkach, ktorého zvyšné pravidlo
+`.faq` potichu ovplyvňovalo nové FAQ. Starú značku `.nl` v hlavičke
+`background.js`. Pečať na spise, ktorá stále hovorila „certifikát“ namiesto
+„report“. Chýbajúce `og:url` a `og:locale` na spise. Potlačený focus outline na
+poliach formulára, ktorý by v režime vysokého kontrastu zmizol. A rozťahané
+panely rýchleho výberu na tablete.
 
 ### Overené
 
-`node --check js/main.js`, lokálny náhľad na `127.0.0.1:8080`. V prehliadači:
-prepnutie SK↔EN vrátane titulku a description, päť predvyplnených WhatsApp
-odkazov so správnou diakritikou, sedem FAQ položiek, žiadny horizontálny scroll
-pri 1280 px ani 375 px, mobilná CTA lišta a zvukové tlačidlo sa neprekrývajú,
-nula zvyškov `data-nl`. Snímky obrazovky boli čierne kvôli WebGL plátnu v
-zachytávacom prehliadači; rozloženie je overené cez DOM, nie okom. **Vizuálnu
-kontrolu v skutočnom prehliadači ešte treba spraviť.**
+Žiadny Klimuj.sk, holandské atribúty, `filthyfilter.nl` vo vydaných súboroch,
+vymyslené počty ani AI percentá. Všetkých 27 lokálnych odkazov, assetov a
+kotiev sedí. Jeden `h1` na stránku, obrázky majú alt alebo sú označené ako
+dekoratívne, povinné polia sú označené pre asistenčné technológie a chybové
+hlásenia sa ohlasujú. Prekladové atribúty sedia 224 párov na homepage a 56 na
+spise, po prepnutí do angličtiny nezostal nepreložený uzol. Médiá na spise sa
+načítajú vrátane oboch zdrojov videa. Žiadny horizontálny scroll pri 390, 768
+ani 1360 px.
 
-### Nasadenie — hotové
+### Čo zostáva, a nie je to kód
 
-Commit `cf5b605` je nasadený na `http://filthyfilter.sk/`, document root
-`/home/jg046600/www_root_filthyfilter_sk`. Overenie a rollback archív sú
-zapísané v `docs/DEPLOYMENT.md`. Placeholder `webhouse.html` je odstránený.
-Rovnako je odstránený aj adresár `steden/` s holandskými presmerovaniami, z repa
-aj zo živého roota; `/steden/` vracia 404.
-
-**HTTPS je vyriešené (5. 9. 2026).** Certifikát Let's Encrypt pre
-`filthyfilter.sk` bol vystavený o 10:32 UTC a pokrýva aj dev subdoménu. HTTP
-teraz odpovedá `301` na HTTPS adresu, takže pri overovaní vždy volaj `https://`,
-inak uvidíš len presmerovanie.
-
-### Staging — dev.filthyfilter.sk
-
-Nové veci pred nasadením na ostro idú na `http://dev.filthyfilter.sk/`, root
-`/home/jg046600/_sub_filthyfilter_sk/dev`. Subdoménu Apache zobral automaticky,
-v paneli sa nič nastavovať nemuselo. Staging kópia má vždy zablokované
-indexovanie: `robots.txt` so zákazom všetkého, `noindex` meta v oboch HTML a bez
-sitemap. Canonical zostáva na ostrú doménu. Postup je v `docs/DEPLOYMENT.md`.
-
-Ostrá doména aj staging bežia na `40380b9`, teda etapa 3 vrátane PPPP Rating
-a opravy nadpisu.
-
-**Pravidlo pre efekty, po nahlásení z telefónu 5. 9. 2026:** text musí byť
-čitateľný aj bez efektu. Nadpis v úvode mal farbu len z prechodu orezaného do
-písmen a pri zlyhaní výplne zostali len jeho tiene. Plná farba je základ, efekt
-sa vrství navrch. Na text s `background-clip: text` nedávaj `filter`, vytvára
-vlastnú kompozitnú vrstvu a na Androide tam výplň vypadáva.
-
-**Pravidlo pre typografiu, potvrdené používateľom 5. 9. 2026:** ozdobná HUD
-vrstva zostáva ako je, teda mono verzálky, zvislé súradnice v úvode, FFFF kódy,
-čísla krokov, `//` poznámky a meta popisky. Vecný text, ktorý má návštevník
-naozaj prečítať, musí byť väčší a s väčšími rozostupmi. Úvodná veta patrí do
-čitateľného rezu Inter, nie do úzkeho nadpisového Oswaldu. Priestor nesmie
-pôsobiť stiesnene.
-
-### Ďalší krok
-
-1. Etapa 4: finálne QA a merge do `main`. Kontrola klávesnicou a čítačkou,
-   obmedzený pohyb, prejsť fotky, video a metadáta, vyhľadať zvyšky po
-   Klimuj.sk a nepodložených tvrdeniach.
-2. Overiť, či schránka `info@filthyfilter.sk` naozaj doručuje. Zatiaľ to nikto
-   netestoval, pritom je na stránke ako kontakt.
-3. Rozhodnúť o osude starej adresy `whispair.sk/filthyfilter/`.
-4. Vizuálna kontrola živého webu na skutočnom telefóne. Chyba s nadpisom sa
-   ukázala až tam, nie v agentovom prehliadači.
-5. Odložené nápady vyššie, až na pokyn.
+1. **Overiť schránku `info@filthyfilter.sk`.** Je na stránke ako kontakt a
+   nikto zatiaľ netestoval, či doručuje. Toto je jediná otvorená vec, ktorá
+   môže stáť zákazku.
+2. **Rozhodnúť o starej adrese `whispair.sk/filthyfilter/`.** Stále tam leží
+   staršie vydanie. Buď presmerovať na novú doménu, alebo zmazať.
+3. **Pozrieť si web na skutočnom telefóne.** Chyba s nadpisom sa ukázala až
+   tam, nie v agentovom prehliadači.
+4. **Odložené nápady** vyššie v tomto dokumente, až na pokyn.

@@ -251,6 +251,23 @@
     }
   }
 
+  /* Touch has no hover, so a tap flips the tile instead. Pointer devices keep
+     using :hover and the keyboard uses :focus-visible; this only adds the case
+     CSS cannot express. */
+  function initFlipTiles() {
+    var tiles = document.querySelectorAll(".ffff");
+    for (var i = 0; i < tiles.length; i++) {
+      tiles[i].addEventListener("click", function () {
+        this.classList.toggle("is-flipped");
+      });
+      tiles[i].addEventListener("keydown", function (e) {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        e.preventDefault();
+        this.classList.toggle("is-flipped");
+      });
+    }
+  }
+
   function initMobileNav() {
     var toggle = document.querySelector(".nav__toggle");
     var links = document.querySelector(".nav__links");
@@ -487,6 +504,7 @@
     initLang();
     initInquiry();
     initFaq();
+    initFlipTiles();
     initReveal();
     initMobileNav();
   });

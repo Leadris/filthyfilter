@@ -1,13 +1,12 @@
 /* =========================================================================
-   FilthyFilter by whispAir — language toggle (SK/EN/NL) + small UI niceties
-   No dependencies. Translatable nodes carry data-sk / data-en / data-nl.
+   FilthyFilter by whispAir — language toggle (SK/EN) + small UI niceties
+   No dependencies. Translatable nodes carry data-sk / data-en.
    ========================================================================= */
 (function () {
   "use strict";
 
   var STORE_KEY = "ff_lang";
-  // Version the preference when the welcome experience changes so returning
-  // visitors get one chance to see the new prompt.
+  // Music never autoplays; the key only remembers the visitor's last choice.
   var SOUND_STORE_KEY = "ff_sound_v2";
   var DEFAULT_LANG = "sk";
   // Shared destination data for contact links and the planned inquiry builder.
@@ -17,6 +16,56 @@
     email: "info@filthyfilter.sk",
     whatsapp: "421902279094"
   };
+
+  // Service labels for the prefilled enquiry message. Keys match data-inquiry
+  // in the HTML; the plain wa.me/mailto href stays as the no-JS fallback.
+  var SERVICES = {
+    nastenna:    { sk: "Hĺbkové čistenie nástennej jednotky", en: "Deep clean - wall unit" },
+    kazetova:    { sk: "Hĺbkové čistenie kazetovej jednotky", en: "Deep clean - cassette unit" },
+    udrzba:      { sk: "Preventívna údržba",                  en: "Preventive maintenance" },
+    diagnostika: { sk: "Diagnostika a servis",                en: "Diagnostics and service" },
+    firmy:       { sk: "Pravidelný servis pre firmy",         en: "Recurring service for businesses" }
+  };
+
+  var INQUIRY_TEMPLATE = {
+    sk: function (service) {
+      return [
+        "Dobrý deň, mám záujem o: " + service + ".",
+        "Obec / PSČ: ",
+        "Počet jednotiek: ",
+        "Čo ma trápi: ",
+        "Preferovaný termín: "
+      ].join("\n");
+    },
+    en: function (service) {
+      return [
+        "Hello, I am interested in: " + service + ".",
+        "Town / postcode: ",
+        "Number of units: ",
+        "The problem: ",
+        "Preferred date: "
+      ].join("\n");
+    }
+  };
+
+  // Rewrite every service CTA so the visitor's messaging app opens with the
+  // right service already named. Nothing is stored or sent by the page itself.
+  function updateInquiryLinks(lang) {
+    var links = document.querySelectorAll("a[data-inquiry]");
+    for (var i = 0; i < links.length; i++) {
+      var key = links[i].getAttribute("data-inquiry");
+      var service = SERVICES[key] && SERVICES[key][lang];
+      if (!service) continue;
+      var body = INQUIRY_TEMPLATE[lang](service);
+      if (links[i].getAttribute("data-contact") === "email") {
+        links[i].setAttribute("href", "mailto:" + CONTACT.email +
+          "?subject=" + encodeURIComponent(service) + "&body=" + encodeURIComponent(body));
+      } else {
+        links[i].setAttribute("href", "https://wa.me/" + CONTACT.whatsapp +
+          "?text=" + encodeURIComponent(body));
+      }
+    }
+  }
 
   function initContact() {
     var destinations = {
@@ -32,10 +81,6 @@
   var MUSIC_URL = new URL("../assets/backgroundMusic.mp3", document.currentScript.src).href;
 
   var META = {
-    nl: {
-      title: "Aircoreiniging en service — Senec en omgeving | FilthyFilter by whispAir",
-      desc: "Aircoreiniging, onderhoud en service voor woningen en bedrijven. Senec en omgeving, tot ongeveer 100 km. Prijs op basis van de werkzaamheden."
-    },
     en: {
       title: "AC cleaning and service — Senec and surroundings | FilthyFilter by whispAir",
       desc: "AC cleaning, maintenance and servicing for homes and businesses. Senec and surroundings, up to approximately 100 km. Price based on the scope of work."
@@ -47,12 +92,12 @@
   };
 
   function applyLang(lang, persist) {
-    if (lang !== "nl" && lang !== "en" && lang !== "sk") lang = DEFAULT_LANG;
+    if (lang !== "en" && lang !== "sk") lang = DEFAULT_LANG;
 
     document.documentElement.setAttribute("lang", lang);
 
     // swap text content
-    var nodes = document.querySelectorAll("[data-nl][data-en]");
+    var nodes = document.querySelectorAll("[data-en][data-sk]");
     for (var i = 0; i < nodes.length; i++) {
       var el = nodes[i];
       var val = el.getAttribute("data-" + lang);
@@ -80,6 +125,8 @@
       btns[j].classList.toggle("active", btns[j].getAttribute("data-lang") === lang);
       btns[j].setAttribute("aria-pressed", btns[j].getAttribute("data-lang") === lang ? "true" : "false");
     }
+
+    updateInquiryLinks(lang);
 
     if (persist) {
       try { localStorage.setItem(STORE_KEY, lang); } catch (e) {}
@@ -134,8 +181,6 @@
   function initMusic() {
     var audio = new Audio(MUSIC_URL);
     var fadeFrame = 0;
-    var revealTimer = 0;
-    var modal = null;
     var targetVolume = 0.28;
     audio.loop = true;
     audio.preload = "metadata";
@@ -144,7 +189,7 @@
     control.className = "sound-toggle";
     control.type = "button";
     control.setAttribute("aria-pressed", "false");
-    control.innerHTML = '<span aria-hidden="true">○</span> <b data-nl="Geluid uit" data-en="Sound off" data-sk="Zvuk vypnutý">Sound off</b>';
+    control.innerHTML = '<span aria-hidden="true">○</span> <b data-en="Sound off" data-sk="Zvuk vypnutý">Zvuk vypnutý</b>';
     document.body.appendChild(control);
 
     function setControl(playing) {
@@ -152,7 +197,6 @@
       control.setAttribute("aria-pressed", playing ? "true" : "false");
       var label = control.querySelector("b");
       var indicator = control.querySelector("span");
-      label.setAttribute("data-nl", playing ? "Geluid aan" : "Geluid uit");
       label.setAttribute("data-en", playing ? "Sound on" : "Sound off");
       label.setAttribute("data-sk", playing ? "Zvuk zapnutý" : "Zvuk vypnutý");
       var lang = document.documentElement.getAttribute("lang") || DEFAULT_LANG;
@@ -193,52 +237,10 @@
 
     control.addEventListener("click", function () {
       if (audio.paused) playMusic(); else stopMusic();
-      if (modal) closeModal();
     });
 
-    var preference = null;
-    try { preference = localStorage.getItem(SOUND_STORE_KEY); } catch (e) {}
-    if (preference !== null) {
-      setControl(false);
-      return;
-    }
+    setControl(false);
 
-    modal = document.createElement("div");
-    modal.className = "sound-welcome";
-    modal.innerHTML =
-      '<div class="sound-welcome__panel" role="region" aria-labelledby="sound-title">' +
-        '<div class="sound-welcome__speaker" aria-hidden="true"><span>◖</span><i></i><i></i></div>' +
-        '<span class="tag">AUDIO SCAN // 001</span>' +
-        '<h2 id="sound-title" data-nl="We detecteerden een gevaarlijk goede smaak." data-en="We detected dangerously good taste." data-sk="Detegovali sme nebezpečne dobrý vkus.">We detected dangerously good taste.</h2>' +
-        '<p data-nl="Geluidsdecontaminatie activeren?" data-en="Activate sonic decontamination?" data-sk="Aktivovať zvukovú dekontamináciu?">Activate sonic decontamination?</p>' +
-        '<div class="sound-welcome__actions">' +
-          '<button class="btn btn--primary" type="button" data-sound-play data-nl="Start de procedure 🔊" data-en="Start the procedure 🔊" data-sk="Spustiť procedúru 🔊">Start the procedure 🔊</button>' +
-          '<button class="btn btn--ghost" type="button" data-sound-quiet data-nl="Stille modus" data-en="Silent mode" data-sk="Tichý režim">Silent mode</button>' +
-        '</div>' +
-      '</div>';
-    document.body.appendChild(modal);
-    revealTimer = window.setTimeout(function () {
-      modal.classList.add("is-visible");
-    }, 6000);
-
-    function closeModal() {
-      if (!modal) return;
-      window.clearTimeout(revealTimer);
-      modal.classList.add("is-closing");
-      window.setTimeout(function () {
-        modal.remove();
-        modal = null;
-      }, 260);
-    }
-
-    modal.querySelector("[data-sound-play]").addEventListener("click", function () {
-      playMusic();
-      closeModal();
-    });
-    modal.querySelector("[data-sound-quiet]").addEventListener("click", function () {
-      stopMusic();
-      closeModal();
-    });
   }
 
   document.addEventListener("DOMContentLoaded", function () {

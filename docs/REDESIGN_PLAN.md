@@ -68,6 +68,58 @@ Kontakty a zostavenie správ držať na jednom mieste v existujúcom JS; HTML m�
 
 Slovenské zdrojové HTML, title, description, OpenGraph, alt a aria popisy. Voľba EN nemení región služby. **Aktualizované 5. 9. 2026: adresár `steden/` je zrušený.** Šesť holandských mestských presmerovaní držalo staré URL z filthyfilter.nl. Na doméne `filthyfilter.sk` také URL nikdy neexistovali, takže nemali čo zachovávať a boli len mätúcim zvyškom. Sitemap obsahuje homepage a existujúci spis. **Aktualizované 5. 9. 2026:** canonical, OpenGraph, sitemap a robots ukazujú na `https://filthyfilter.sk/`; cesty k assetom zostávajú relatívne, aby web fungoval na koreni aj pod podcestou.
 
+## Audit formulára na vycistimklimu.sk (5. 9. 2026)
+
+Zisťované kvôli etape 3. Ich formulár odosielajú na server a má šesť polí v
+tomto poradí: **Meno**, **Telefón**, **E-mail**, **Lokalita čistenia** (všetky
+povinné), **Typ služby** ako rozbaľovací zoznam a nepovinná **Správa**.
+Odoslanie má dve tlačidlá, „Odoslať objednávku →“ a „Odoslať cez WhatsApp“.
+Súhlas so spracovaním údajov ani poznámka o súkromí pri formulári nie sú.
+Možnosti v type služby: hĺbkové čistenie nástennej, hĺbkové čistenie stropnej,
+profylaktický servis stropnej, expresný termín do 24 h, firemný servis dohodou,
+iné. Samostatne od formulára majú kalkulačku, ktorá z typu jednotky a počtu
+kusov vypočíta orientačnú cenu s DPH.
+
+**Čo z toho preberáme:** poradie od služby cez lokalitu k voľnému popisu, jeden
+rozbaľovací zoznam služieb namiesto dlhého zoznamu prepínačov, a druhé tlačidlo
+na WhatsApp vedľa hlavného.
+
+**Čo nepreberáme a prečo:**
+
+- **Kalkulačku a orientačnú cenu.** Verejné ceny sú v tomto pláne vylúčené a
+  nemáme ich čím podložiť.
+- **Expresný termín do 24 h.** Urgentný termín negarantujeme.
+- **Povinné meno, telefón a e-mail.** Ich formulár ich potrebuje, lebo inak by
+  im prišla anonymná správa na server. My server nemáme. Zákazník dokončuje
+  odoslanie vo vlastnom WhatsApse alebo e-maile, takže kontakt dostaneme aj tak
+  a pýtať si ho vopred je zbytočné trenie. Meno necháme ako nepovinné pre
+  prípad, že si text len skopíruje a pošle inak.
+
+Výsledná zostava polí pre etapu 3, spojená s pôvodným zadaním: typ služby
+(povinné, vrátane „Neviem, potrebujem poradiť“), počet jednotiek (vrátane
+„Neviem“, inak celé kladné číslo), obec alebo PSČ (povinné), meno (nepovinné),
+čo vás trápi (nepovinné), preferovaný termín (nepovinné). Akcie: Pokračovať cez
+WhatsApp, Pripraviť e-mail, Kopírovať text, Zavolať.
+
+## Odložené nápady (zapísané 5. 9. 2026, nezačínať bez pokynu)
+
+Používateľ ich chce mať zapísané a vrátiť sa k nim neskôr. Nie sú súčasťou
+etáp 3 a 4.
+
+1. **Ohodnoť si vlastnú klímu.** Päť otázok s ikonami, bez písania: kedy sa
+   naposledy čistila, či je cítiť zápach, či kvapká, či hučí viac ako predtým,
+   a či je v kuchyni, u fajčiara alebo so zvieratami. Výsledkom je skóre
+   FFFF/PPPP s vtipným verdiktom a tlačidlo, ktoré otvorí dopyt aj so skóre a
+   odpoveďami. Beží celé v prehliadači, nič sa neukladá ani neodosiela.
+2. **Posuvník na fotke pred a po.** Dnes je to statická koláž. Ťahacia
+   deliaca čiara predĺži čas strávený pri dôkaze. Najlacnejšia z týchto troch.
+3. **Hádaj skóre.** Fotka z archívu, návštevník tipne FFFF, odhalíme správnu
+   hodnotu a jednou vetou povieme, čo tam naozaj rástlo. Potrebuje aspoň päť
+   až šesť odfotených zákaziek; s jedinou realizáciou to nemá z čoho žiť.
+
+Pri všetkých platí, že skóre je naša vizuálna škála s nadsádzkou, nie meranie,
+a výsledok nesmie znieť ako diagnóza.
+
 ## Etapy a akceptácia
 
 - [x] Overiť čistý strom, remote main a baseline commit.

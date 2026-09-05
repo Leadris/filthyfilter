@@ -139,28 +139,21 @@ deployed Git commit.
 ## Last verified deployment
 
 - Date: 2026-09-05
-- Commit: `cf5b605`
+- Commit: `d3455bc`
 - Target: `https://filthyfilter.sk/`, document root
   `/home/jg046600/www_root_filthyfilter_sk`
-- Change: first release on the new domain. Stage 2 of the redesign, the
-  removal of the Dutch language layer, and the move from the
-  `whispair.sk/filthyfilter/` subpath to the root of `filthyfilter.sk`.
-- Verification: `http://filthyfilter.sk/` returned HTTP `200` and 54,517 bytes,
-  matching the released `index.html`. `js/main.js`, `css/styles.css`,
-  `sitemap.xml`, `robots.txt` and the case page all returned `200`. `backgroundMusic.mp3` is 13,927,582 bytes and
-  `evidence-reel.mp4` is 3,651,056 bytes on disk. In the browser: Slovak
-  default, both language buttons present, zero `data-nl` attributes, five
-  service cards, seven FAQ items, the prefilled WhatsApp message with correct
-  diacritics, canonical `https://filthyfilter.sk/`, no horizontal scroll, and
-  `before-after.jpg` loading at 1200 by 674 pixels.
-- The WebHouse placeholder `webhouse.html` was deleted from the root after the
-  site was confirmed live. It is preserved in the rollback archive.
-- The `steden/` directory of Dutch city redirects was removed from the release
-  and from the live root on the same day. Those paths held old
-  `filthyfilter.nl` URLs and never existed on this domain, so there was nothing
-  for them to preserve. `/steden/` and `/steden/eindhoven/` now return `404`.
+- Change: the three-panel quick pick in the services section plus the
+  readability and spacing pass.
+- Verification: `/`, `js/main.js`, `css/styles.css`, the case page,
+  `sitemap.xml`, `robots.txt` and the before/after image all returned `200`.
+  The homepage carries `styles.css?v=whispair-sales-3`, has no noindex meta and
+  `robots.txt` allows crawling, confirming the production package was shipped
+  rather than the staging one. In the browser at 1360px: headline 83.2px, hero
+  sentence in Inter, lead copy 18.6px, three quick-pick panels, seven FAQ
+  items, canonical on the live domain, hero block 801px, no horizontal scroll.
 - Rollback archive:
-  `/home/jg046600/tmp/filthyfilter-before-cf5b605.tar.gz`
+  `/home/jg046600/tmp/filthyfilter-before-d3455bc.tar.gz`
+- SSH port used: 22050. The port rotates; 22892 expired earlier the same day.
 
 ### Open item — TLS certificate
 

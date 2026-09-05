@@ -150,8 +150,8 @@ v paneli sa nič nastavovať nemuselo. Staging kópia má vždy zablokované
 indexovanie: `robots.txt` so zákazom všetkého, `noindex` meta v oboch HTML a bez
 sitemap. Canonical zostáva na ostrú doménu. Postup je v `docs/DEPLOYMENT.md`.
 
-Aktuálne na stagingu: commit `e4438e2`, teda trojica rýchleho výberu plus
-čitateľnostná úprava. Ostrá `filthyfilter.sk` stále beží na `cf5b605`.
+Staging aj ostrá doména bežia na `d3455bc`, teda trojica rýchleho výberu plus
+čitateľnostná úprava.
 
 **Pravidlo pre typografiu, potvrdené používateľom 5. 9. 2026:** ozdobná HUD
 vrstva zostáva ako je, teda mono verzálky, zvislé súradnice v úvode, FFFF kódy,
@@ -162,12 +162,11 @@ pôsobiť stiesnene.
 
 ### Ďalší krok
 
-1. Posúdiť trojicu rýchleho výberu na stagingu a rozhodnúť o nasadení na ostro.
-2. Vystaviť certifikát pre `filthyfilter.sk` a znova overiť `https://`.
-3. Vizuálna kontrola živého webu okom; snímky obrazovky agenta sú kvôli WebGL
+1. Vystaviť certifikát pre `filthyfilter.sk` a znova overiť `https://`.
+2. Vizuálna kontrola živého webu okom; snímky obrazovky agenta sú kvôli WebGL
    plátnu čierne, takže rozloženie bolo overené cez DOM, nie pohľadom.
-4. Rozhodnúť o osude starej adresy `whispair.sk/filthyfilter/`.
-5. Overiť schránku `info@filthyfilter.sk`.
-6. Etapa 3: plnohodnotný dopytový formulár s validáciou, kopírovaním textu a
+3. Rozhodnúť o osude starej adresy `whispair.sk/filthyfilter/`.
+4. Overiť schránku `info@filthyfilter.sk`.
+5. Etapa 3: plnohodnotný dopytový formulár s validáciou, kopírovaním textu a
    voľbou „Neviem“, ak sa ukáže, že predvyplnené správy nestačia.
-7. Etapa 4: finálne QA a merge do `main`.
+6. Etapa 4: finálne QA a merge do `main`.

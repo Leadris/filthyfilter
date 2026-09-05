@@ -174,15 +174,16 @@ deployed Git commit.
 ## Last verified deployment
 
 - Date: 2026-09-05
-- Commit: `4cdf64b`
+- Commit: `a7d13c1`
 - Target: `https://filthyfilter.sk/` and `https://dev.filthyfilter.sk/`
-- Change: the case-page landmark brought forward, and a dormant landmark layer
-  prepared on the homepage.
-- Verification: both hosts serve `v=whispair-place-1` and the case hero rule
-  carries the new blur, saturation and opacity. Locally the homepage layer
-  resolves to `background-image: none` and makes no extra request.
+- Change: hero repaired after the previous commit broke it, and the supplied
+  illustration installed as the homepage landmark.
+- Verification on the live site: `assets/hero-airco.jpg` returns `200` at
+  282,560 bytes on both hosts, the layer applies it at opacity .55 behind a 5px
+  blur, and the headline is back to static positioning with no filter, 245px
+  tall in an 801px hero. No horizontal scroll.
 - Rollback archive:
-  `/home/jg046600/tmp/filthyfilter-before-4cdf64b.tar.gz`
+  `/home/jg046600/tmp/filthyfilter-before-a7d13c1.tar.gz`
 - SSH port used: 22306.
 
 ### Mail

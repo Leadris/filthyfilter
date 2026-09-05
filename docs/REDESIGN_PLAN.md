@@ -202,10 +202,23 @@ prehliadač si nič nevyžiada a vrstva je neviditeľná. Prekryv nad ňou je la
 pre homepage, nie skopírovaný: tmavý vľavo pod nadpisom, presvetlený vpravo,
 dole prechádza do pozadia.
 
-**Čaká na obrázok od používateľa.** Odporúčaný motív je Senec, keďže je to naša
-uvedená pôsobnosť a značka. Požiadavky: na šírku, aspoň 1600 px, súmrak alebo
-noc s teplými svetlami, jednoduchá silueta, žiadny čitateľný text, logá ani
-tváre. Musí byť vlastný alebo riadne licencovaný. Ukladať ako JPEG, nie PNG.
+**Na homepage je obrázok od používateľa** v `assets/hero-airco.jpg`, ilustrácia
+vonkajšej jednotky v záhrade. Pred vložením prešiel tromi úpravami:
+
+1. **Značka výrobcu je rozostrená.** Je to cudzia ochranná známka a na
+   komerčnej stránke by pôsobila ako vzťah s výrobcom, ktorý netvrdíme. Pri
+   5 px rozostrení v CSS by tabuľka zostala čitateľná ako logo. Ak je whispAir
+   autorizovaným predajcom tej značky a chce ju tam mať, dá sa to vrátiť.
+2. **Farebnosť stiahnutá do palety:** sýtosť na 22 %, stmavené a otočené do
+   medenej. Originál je svetlá zelená scéna za denného svetla, ktorá by aj pod
+   prekryvom bila s tmavým úvodom.
+3. **PNG na progresívny JPEG**, 1600 px na šírku, z 2,95 MB na 283 kB.
+
+**Technická poznámka:** obrázok sa nastavuje inline na prvku, nie cez CSS
+premennú. Relatívna `url()` vnútri custom property sa vyhodnocuje voči
+štýlopisu, ktorý ju používa, takže `assets/hero-airco.jpg` sa zmenilo na
+`css/assets/hero-airco.jpg` a vracalo 404. Inline na prvku sa vyhodnotí voči
+dokumentu, čo funguje na koreni domény aj pod podcestou.
 
 **Poznámka k formátu:** `trnava-dusk.png` má 1 391 689 bajtov. Ako JPEG pri
 kvalite 72 by mal 47 207 bajtov, teda o 97 % menej, a pri rozostrení 5 px to

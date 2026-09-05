@@ -471,6 +471,10 @@ img { max-width: 100%; display: block; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
   html { scroll-behavior: auto; }
+  .pick { transition: border-color .3s ease; }
+  .pick:hover, .pick:focus-within { transform: none; }
+  .proof__media img { transition: none; }
+  .proof__media:hover img { transform: none; }
 }
 
 /* =========================================================================
@@ -486,23 +490,91 @@ img { max-width: 100%; display: block; }
 }
 
 /* =========================================================================
+   QUICK PICK — three service panels side by side.
+   No tilting. The block lifts slightly and lights up with a gradient in its
+   own service colour, carried by the --acc variable set inline per card.
+   ========================================================================= */
+.pick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
+
+.pick {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 30px 26px 26px;
+  overflow: hidden;
+  transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+}
+
+/* the coloured wash, painted behind the content and faded in on hover/focus */
+.pick__wash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .3s ease;
+  background:
+    radial-gradient(115% 80% at 50% 0%, var(--acc) 0%, transparent 60%),
+    linear-gradient(180deg, transparent 45%, var(--acc) 190%);
+  mix-blend-mode: screen;
+}
+
+/* accent hairline along the top edge, always faintly on, brighter on hover */
+.pick::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--acc), transparent);
+  opacity: .35;
+  transition: opacity .3s ease;
+}
+
+.pick:hover,
+.pick:focus-within {
+  transform: translateY(-6px);
+  border-color: var(--acc);
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.45), 0 16px 38px rgba(0,0,0,0.55);
+}
+.pick:hover .pick__wash,
+.pick:focus-within .pick__wash { opacity: .17; }
+.pick:hover::after,
+.pick:focus-within::after { opacity: 1; }
+
+/* content sits above the wash */
+.pick > *:not(.pick__wash) { position: relative; z-index: 1; }
+
+.pick .card__icon { color: var(--acc); transition: color .3s ease; }
+.pick h3 {
+  font-family: var(--f-display); font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.03em; font-size: 1.12rem; line-height: 1.2;
+  margin: 0 0 10px; color: var(--gold);
+}
+.pick:hover h3, .pick:focus-within h3 { color: var(--acc); }
+.pick .svc__scope li::before { color: var(--acc); }
+.pick .svc__price { color: var(--acc); }
+.pick .svc__foot { flex-direction: column; align-items: stretch; margin-top: auto; }
+.pick .svc__foot .btn { width: 100%; text-align: center; }
+
+/* Heading that introduces the two secondary services below the quick pick. */
+.svc-more {
+  margin: 46px 0 18px;
+  font-family: var(--f-display); font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.04em; font-size: 1.15rem; color: var(--muted);
+}
+
+/* =========================================================================
    SERVICE CARDS
    ========================================================================= */
-.svc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.svc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
 .svc { display: flex; flex-direction: column; padding: 24px 20px 22px; }
 .svc h3 { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; font-size: 1.08rem; line-height: 1.2; margin: 0 0 10px; color: var(--gold); }
 .svc__lead { margin: 0; font-size: 0.9rem; color: var(--muted); }
 .svc__scope { list-style: none; margin: 16px 0 0; padding: 0; }
 .svc__scope li { position: relative; padding: 6px 0 6px 20px; font-size: 0.86rem; color: var(--cream); border-bottom: 1px dashed var(--bronze-dim); }
 .svc__scope li::before { content: "+"; position: absolute; left: 0; top: 6px; font-family: var(--f-mono); color: var(--copper); }
-.svc__foot { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; margin-top: auto; padding-top: 20px; }
+.svc__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: auto; padding-top: 20px; }
 .svc__price { font-family: var(--f-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); }
-.svc__foot .btn { width: 100%; text-align: center; }
-/* The business card spans the leftover columns and drops the checklist. */
-.svc--wide { grid-column: span 4; }
-.svc--wide .svc__foot { flex-direction: row; flex-wrap: wrap; align-items: center; }
-.svc--wide .svc__foot .btn { width: auto; }
-.svc--wide .svc__price { margin-right: auto; }
+.svc__foot .svc__price { width: 100%; }
 
 /* =========================================================================
    PROOF / BEFORE-AFTER
@@ -547,8 +619,7 @@ img { max-width: 100%; display: block; }
    RESPONSIVE
    ========================================================================= */
 @media (max-width: 980px) {
-  .svc-grid { grid-template-columns: repeat(2, 1fr); }
-  .svc--wide { grid-column: span 2; }
+  .pick-grid { grid-template-columns: 1fr; }
   .proof { grid-template-columns: 1fr; }
   .steps { grid-template-columns: repeat(2, 1fr); }
   .ffff-grid { grid-template-columns: repeat(2, 1fr); }
@@ -568,8 +639,8 @@ img { max-width: 100%; display: block; }
   .langswitch { margin-left: auto; }
 }
 @media (max-width: 620px) {
-  .svc-grid, .steps, .ffff-grid { grid-template-columns: 1fr; }
-  .svc--wide { grid-column: span 1; }
+  .pick-grid, .svc-grid, .steps, .ffff-grid { grid-template-columns: 1fr; }
+  .pick { padding: 26px 22px 24px; }
   .hero__facts { grid-template-columns: 1fr 1fr; gap: 14px; }
   .proof__submit { flex-direction: column; align-items: flex-start; gap: 16px; }
   .proof__submit .btn { width: 100%; text-align: center; }

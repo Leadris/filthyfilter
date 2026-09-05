@@ -201,13 +201,28 @@ spise, po prepnutí do angličtiny nezostal nepreložený uzol. Médiá na spise
 načítajú vrátane oboch zdrojov videa. Žiadny horizontálny scroll pri 390, 768
 ani 1360 px.
 
-### Čo zostáva, a nie je to kód
+### Čo zostáva
 
-1. **Overiť schránku `info@filthyfilter.sk`.** Je na stránke ako kontakt a
-   nikto zatiaľ netestoval, či doručuje. Toto je jediná otvorená vec, ktorá
-   môže stáť zákazku.
-2. **Rozhodnúť o starej adrese `whispair.sk/filthyfilter/`.** Stále tam leží
-   staršie vydanie. Buď presmerovať na novú doménu, alebo zmazať.
-3. **Pozrieť si web na skutočnom telefóne.** Chyba s nadpisom sa ukázala až
-   tam, nie v agentovom prehliadači.
+1. **Poslať skúšobný e-mail na `info@filthyfilter.sk`.** Schránka existuje a je
+   aktívna, MX aj SPF sedia, ale schránka je prázdna, takže doručenie nikto
+   nepotvrdil. Adresa je na webe a používa ju tlačidlo Pripraviť e-mail.
+2. **Pozrieť si web na skutočnom telefóne.** Oprava nadpisu je nasadená, ale
+   nikto ju na reálnom zariadení nevidel. Chyba sa pôvodne ukázala len tam.
+3. **Dve vety o montáži a predaji.** Web hovorí, že montáž a predaj zariadení
+   nie sú súčasťou ponuky. whispAir oboje robí, takže by mohli posielať tam
+   namiesto slepého konca. Čaká na rozhodnutie používateľa.
 4. **Odložené nápady** vyššie v tomto dokumente, až na pokyn.
+
+### Vyriešené 5. 9. 2026
+
+- **Stará adresa `whispair.sk/filthyfilter/` je zrušená.** Web sa presunul na
+  vlastnú doménu, tak sa podcesta zmazala; teraz vracia 404. Záloha posledného
+  stavu je na serveri v
+  `tmp/whispair-filthyfilter-subpath-final-backup.tar.gz`. Presmerovanie sa
+  nenastavilo, staré odkazy sú teda mŕtve. Prepojenie značiek príde neskôr,
+  používateľ uvažuje o `cistenie.whispair.sk`.
+- **Google profil.** Rozhodnuté je jeden profil, whispAir. Do profilu pribudla
+  vedľajšia kategória `Air conditioning repair shop` a služby s čistením;
+  hlavná kategória zostáva predajňa, lebo whispAir je primárne predaj a e-shop.
+  Telefón 0902 279 094 je spoločný pre obe značky, čo je ďalší dôvod nezakladať
+  FilthyFilter samostatne.

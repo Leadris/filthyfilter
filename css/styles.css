@@ -80,29 +80,7 @@ img { max-width: 100%; display: block; }
   pointer-events: none;
 }
 /* hero layers get GPU-friendly transforms for pointer parallax */
-.hero__title, /* Local landmark behind the hero, the same treatment as the case page.
-
-   It paints only when --hero-bg is set on the .hero element, so while there is
-   no image the browser requests nothing and the layer is invisible. Set it to
-   url("assets/senec-dusk.jpg") to switch it on. */
-.hero__place {
-  position: absolute; inset: -24px;
-  background: var(--hero-bg, none) center/cover no-repeat;
-  filter: blur(5px) saturate(.86);
-  transform: scale(1.04);
-  opacity: .55;
-  pointer-events: none;
-  z-index: 0;
-}
-/* Keeps the headline legible over it: dark on the left where the text sits,
-   clearing toward the right, and fading into the page at the bottom. */
-.hero__place::after {
-  content: ""; position: absolute; inset: 0;
-  background:
-    linear-gradient(90deg, rgba(10,7,6,.94) 0%, rgba(10,7,6,.72) 46%, rgba(10,7,6,.28) 100%),
-    linear-gradient(0deg, var(--bg) 0%, transparent 55%);
-}
-
+.hero__title,
 .hero__rings { will-change: transform; }
 
 .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 26px; position: relative; z-index: 1; }
@@ -205,6 +183,36 @@ img { max-width: 100%; display: block; }
     conic-gradient(from 0deg, rgba(200,132,47,0.18), transparent 25%, rgba(200,132,47,0.18) 50%, transparent 75%, rgba(200,132,47,0.18));
   mask-image: radial-gradient(circle, #000 0 55%, transparent 72%);
 }
+/* Local landmark behind the hero, the same treatment as the case page.
+
+   The image is set inline on the element, not through a custom property. A
+   relative url() inside a custom property is resolved against the stylesheet
+   that uses it, so "assets/x.jpg" became "css/assets/x.jpg" and 404'd. Inline
+   on the element it resolves against the document, which is correct whether
+   the site sits at a domain root or under a subpath.
+
+   With no inline background-image the layer paints nothing and costs no
+   request, so it stays dormant until an image is given. */
+.hero__place {
+  position: absolute; inset: -24px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: blur(5px) saturate(.86);
+  transform: scale(1.04);
+  opacity: .55;
+  pointer-events: none;
+  z-index: 0;
+}
+/* Keeps the headline legible over it: dark on the left where the text sits,
+   clearing toward the right, and fading into the page at the bottom. */
+.hero__place::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    linear-gradient(90deg, rgba(10,7,6,.94) 0%, rgba(10,7,6,.72) 46%, rgba(10,7,6,.28) 100%),
+    linear-gradient(0deg, var(--bg) 0%, transparent 55%);
+}
+
 .hero__coords {
   position: absolute; left: 0; top: 84px;
   font-family: var(--f-mono); font-size: 0.66rem; letter-spacing: 0.22em;

@@ -174,16 +174,15 @@ deployed Git commit.
 ## Last verified deployment
 
 - Date: 2026-09-05
-- Commit: `b0f5cea`
+- Commit: `4cdf64b`
 - Target: `https://filthyfilter.sk/` and `https://dev.filthyfilter.sk/`
-- Change: the FFFF tiles turn over to show which P dominates at that level and
-  what the job involves.
-- Verification on the live site, with transitions disabled because this browser
-  freezes them: six tiles, all 188px tall, backs reading PPPP 0 through PPPP 5
-  with the right dominant word, and flipping swaps the faces to opacity 0 and 1.
-  Serving `v=whispair-flip-2`, no horizontal scroll.
+- Change: the case-page landmark brought forward, and a dormant landmark layer
+  prepared on the homepage.
+- Verification: both hosts serve `v=whispair-place-1` and the case hero rule
+  carries the new blur, saturation and opacity. Locally the homepage layer
+  resolves to `background-image: none` and makes no extra request.
 - Rollback archive:
-  `/home/jg046600/tmp/filthyfilter-before-b0f5cea.tar.gz`
+  `/home/jg046600/tmp/filthyfilter-before-4cdf64b.tar.gz`
 - SSH port used: 22306.
 
 ### Mail

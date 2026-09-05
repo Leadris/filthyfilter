@@ -190,6 +190,27 @@ lebo tam hover neexistuje. Pri obmedzenom pohybe sa strany vymenia bez animácie
 zamrazuje prechody. Cieľové stavy sa preto merajú s vypnutými prechodmi. Plynulosť
 animácie treba pozrieť na skutočnom zariadení.
 
+## Vrstva s dominantou miesta (5. 9. 2026)
+
+Na spise je za úvodom rozmazaná trnavská dominanta. Používateľovi sa páči, tak
+je teraz výraznejšia: rozostrenie 7 na 5 px, sýtosť .72 na .86, priehľadnosť
+.48 na .62. Prekryv nad ňou sa nemenil, práve on drží kontrast textu.
+
+Rovnaká vrstva je pripravená aj na homepage ako `.hero__place`. **Zapne sa až
+vtedy, keď sa na `.hero` nastaví premenná `--hero-bg`.** Kým je prázdna,
+prehliadač si nič nevyžiada a vrstva je neviditeľná. Prekryv nad ňou je ladený
+pre homepage, nie skopírovaný: tmavý vľavo pod nadpisom, presvetlený vpravo,
+dole prechádza do pozadia.
+
+**Čaká na obrázok od používateľa.** Odporúčaný motív je Senec, keďže je to naša
+uvedená pôsobnosť a značka. Požiadavky: na šírku, aspoň 1600 px, súmrak alebo
+noc s teplými svetlami, jednoduchá silueta, žiadny čitateľný text, logá ani
+tváre. Musí byť vlastný alebo riadne licencovaný. Ukladať ako JPEG, nie PNG.
+
+**Poznámka k formátu:** `trnava-dusk.png` má 1 391 689 bajtov. Ako JPEG pri
+kvalite 72 by mal 47 207 bajtov, teda o 97 % menej, a pri rozostrení 5 px to
+nikto nerozozná. Prekódovanie čaká na pokyn, je to cudzí asset.
+
 ## Odložené nápady (zapísané 5. 9. 2026, nezačínať bez pokynu)
 
 Používateľ ich chce mať zapísané a vrátiť sa k nim neskôr. Nie sú súčasťou

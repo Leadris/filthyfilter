@@ -143,20 +143,16 @@ deployed Git commit.
 ## Last verified deployment
 
 - Date: 2026-09-05
-- Commit: `17a7a47`
+- Commit: `4fe2d23`
 - Target: `https://filthyfilter.sk/` and `https://dev.filthyfilter.sk/`
-- Change: the reviews button now points at the whispAir Google profile, so
-  both the homepage block and the case-file button are live.
-- Verification over HTTPS on both hosts: homepage and case page returned `200`
-  and serve `v=whispair-reviews-3`. `main.js` carries the profile CID and none
-  of the session parameters. In the browser on the live site the reviews block
-  is visible at 1128x146 with a `_blank` `noopener` link to the profile, the
-  case file shows both trust actions, only our card remains, and no praise
-  wording or 4,7 figure is left.
+- Change: installation and equipment sales enquiries now point at whispAir
+  instead of dead-ending.
+- Verification over HTTPS on both hosts: `200`, serving `v=whispair-link-1`,
+  the old "nie sú súčasťou tejto ponuky" wording gone and the whispAir link
+  present. Locally the link and its href survive switching to English and back.
 - Rollback archive:
-  `/home/jg046600/tmp/filthyfilter-before-17a7a47.tar.gz`
-- SSH port used: 22571. The port rotates roughly every two hours; 22892 and
-  22050 both expired earlier the same day.
+  `/home/jg046600/tmp/filthyfilter-before-4fe2d23.tar.gz`
+- SSH port used: 22571.
 
 ### Mail
 

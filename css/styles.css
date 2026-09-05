@@ -4,6 +4,8 @@
    ========================================================================= */
 
 :root {
+  color-scheme: dark;
+
   /* palette */
   --bg:        #0a0706;
   --bg-2:      #0f0b08;
@@ -182,17 +184,36 @@ img { max-width: 100%; display: block; }
 }
 .hero__inner { position: relative; z-index: 2; max-width: 760px; }
 
+/* The headline is solid gold first. The metallic gradient below is decoration
+   layered on top, never the thing that makes the text visible. The previous
+   version had it the other way round: the glyphs were transparent and the
+   "fallback" colour could never apply, because -webkit-text-fill-color beats
+   color in exactly the browsers that support the clip. When the clipped fill
+   failed to paint, the headline came out as nothing but its own shadows. */
 .hero__title {
   font-family: var(--f-display); font-weight: 700;
   font-size: clamp(2.5rem, 7vw, 5.2rem);
   line-height: 0.98; letter-spacing: 0.01em; margin: 14px 0 12px;
   text-transform: uppercase;
-  background: linear-gradient(180deg, #fff6e2 0%, var(--gold-hi) 22%, var(--gold) 52%, #b9802f 74%, #8a5a26 100%);
-  -webkit-background-clip: text; background-clip: text;
-  color: var(--gold-hi);                 /* solid fallback if clip unsupported */
-  -webkit-text-fill-color: transparent;  /* only applies where clip works */
-  text-shadow: 0 2px 0 rgba(0,0,0,0.4);
-  filter: drop-shadow(0 6px 14px rgba(200,132,47,0.25));
+  color: var(--gold-hi);
+  /* Separation from the moving background, plus the copper glow that used to
+     come from a filter. A filter on this element forces its own compositing
+     layer, which is where the clipped fill stops painting on Android. */
+  text-shadow: 0 2px 12px rgba(0,0,0,0.62), 0 6px 20px rgba(200,132,47,0.24);
+}
+
+/* Enhancement only, and only from tablet up. The darkest stop is now copper
+   rather than the old #8a5a26, so no line of a wrapped headline lands in a
+   brown that disappears against the black background. */
+@media (min-width: 721px) {
+  @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+    .hero__title {
+      background: linear-gradient(180deg, #fff6e2 0%, var(--gold-hi) 18%, var(--gold) 48%, #d99b45 78%, var(--copper) 100%);
+      -webkit-background-clip: text;
+              background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
 }
 .hero__sub {
   font-family: var(--f-mono); font-size: clamp(0.82rem, 2vw, 1.05rem);

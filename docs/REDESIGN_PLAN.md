@@ -150,8 +150,15 @@ v paneli sa nič nastavovať nemuselo. Staging kópia má vždy zablokované
 indexovanie: `robots.txt` so zákazom všetkého, `noindex` meta v oboch HTML a bez
 sitemap. Canonical zostáva na ostrú doménu. Postup je v `docs/DEPLOYMENT.md`.
 
-Aktuálne na stagingu: commit `7e3a91b`, teda trojica rýchleho výberu služby.
-Ostrá `filthyfilter.sk` stále beží na `cf5b605`.
+Aktuálne na stagingu: commit `e4438e2`, teda trojica rýchleho výberu plus
+čitateľnostná úprava. Ostrá `filthyfilter.sk` stále beží na `cf5b605`.
+
+**Pravidlo pre typografiu, potvrdené používateľom 5. 9. 2026:** ozdobná HUD
+vrstva zostáva ako je, teda mono verzálky, zvislé súradnice v úvode, FFFF kódy,
+čísla krokov, `//` poznámky a meta popisky. Vecný text, ktorý má návštevník
+naozaj prečítať, musí byť väčší a s väčšími rozostupmi. Úvodná veta patrí do
+čitateľného rezu Inter, nie do úzkeho nadpisového Oswaldu. Priestor nesmie
+pôsobiť stiesnene.
 
 ### Ďalší krok
 

@@ -54,15 +54,17 @@ production but against the staging root.
 ### Last staging deploy
 
 - Date: 2026-09-05
-- Commit: `7e3a91b`
-- Change: three-panel quick pick in the services section.
-- Verification: `/`, `js/main.js`, `css/styles.css`, the case page, the
-  before/after image, the favicon and `backgroundMusic.mp3` all returned `200`.
-  `sitemap.xml` correctly returned `404`. `robots.txt` served the blanket
-  disallow and the homepage carried the noindex meta. In the browser: three
-  quick-pick panels with the three accent colours, two secondary cards, seven
-  FAQ items, canonical on the live domain, no horizontal scroll. Production on
-  `filthyfilter.sk` was untouched and still serves commit `cf5b605`.
+- Commit: `e4438e2`
+- Change: three-panel quick pick, then a readability and spacing pass.
+- Verification on `dev.filthyfilter.sk` at 1360px: the hero sentence is in the
+  body face at 20.5px, lead copy 18.6px, FAQ questions 18.9px, headline down to
+  83.2px, section padding 88px, hero block 801px tall inside a 900px viewport,
+  three quick-pick panels, no horizontal scroll. The decorative tags still
+  render in Share Tech Mono, so the HUD layer is intact. The noindex meta and
+  the blanket robots disallow are in place. Production still serves
+  `whispair-sales-1`, so it was untouched.
+- Note: the SSH port rotates. 22892 expired mid-session and was replaced by
+  22050. Always get the current port before a deploy.
 
 ## Authentication note
 

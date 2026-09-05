@@ -1,4 +1,22 @@
-# FilthyFilter.nl — Project Context
+# FilthyFilter by whispAir — Project Context
+
+## Current handoff — 2026-09-05
+
+**Read `docs/REDESIGN_PLAN.md` first.** It is the approved implementation brief, checklist and live handoff for Codex/Claude; see also `CLAUDE.md`. It supersedes historical decisions below. User instructions take precedence.
+
+- Keep the existing dark copper/gold HUD visual design and humor. Brand: **FilthyFilter by whispAir**; do not use Klimuj.sk or Dutch business details.
+- Main market: Slovakia. Senec and surroundings, up to approximately 100 km; availability and travel costs by address.
+- Phone/WhatsApp: +421 902 279 094. Email: info@filthyfilter.sk (delivery still unverified).
+- Slovak source HTML and default language. **The site ships SK and EN only**; the Dutch layer was removed on 2026-09-05. Keep the remembered manual selection; both languages describe the same Slovak service area.
+- Static HTML/CSS/JS. Shared contact destinations are in `CONTACT` in `js/main.js`, with functional matching HTML fallback links.
+- The legacy `steden/` directory was deleted on 2026-09-05. It held old filthyfilter.nl URLs that never existed on the new domain. La Donuteria remains a case study. Collaboration section is deferred.
+- Baseline tag: `baseline-v1` on `99b956c85f6c857475340ad7be76914f7d24f003`. Work branch: `codex/filthyfilter-redesign`.
+- Production is `https://filthyfilter.sk/`, the root of its own domain on the same WebHouse account. Branch pushes do not deploy. See `docs/DEPLOYMENT.md` for the release process and the outstanding TLS certificate.
+- Stages 1 and 2 are done: branding, the reordered content, service cards, proof section, FAQ, business section and the audio simplification. The full inquiry form with validation is still open. Check the plan before continuing.
+
+## Historical baseline context
+
+The original notes below explain the site's history, not current brand/market/language policy. The baseline tag preserves the complete original implementation.
 
 > Purpose of this file: a self-contained brief so the project context can be
 > recovered later (by a human or an AI assistant) straight from the repo,

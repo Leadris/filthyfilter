@@ -1,10 +1,12 @@
 # Hall of Filth — B2B vrstva dôvery
 
+Aktualizácia 5. 9. 2026: značka realizátora je **FilthyFilter by whispAir** podľa `REDESIGN_PLAN.md`. La Donuteria zostáva zákazkou; samostatná sekcia spoluprác je odložená. Nepoužívať neoverený Google profil realizátora ani verejné poznámky o budúcej API integrácii.
+
 ## Zámer
 
 Každý publikovaný prípad má byť viac než reklama na čistenie. Má vytvoriť samostatnú mikrostránku s archívnou hodnotou, ktorá súčasne:
 
-1. dokazuje vykonanú prácu FilthyFilter/Klimuj.sk,
+1. dokazuje vykonanú prácu FilthyFilter by whispAir,
 2. predstavuje zákazníka ako prevádzku, ktorá sa stará aj o neviditeľné detaily,
 3. posiela návštevníkov na oficiálne kanály oboch firiem,
 4. drží reputácie oboch strán jasne oddelené a overiteľné.
@@ -34,7 +36,7 @@ Pri spise `FF-SK-TT-0828` používame konzervatívny verejný údaj **4,7/5 a 13
 
 ## Obsah našej reputačnej karty
 
-- názov realizátora `Klimuj.sk × FilthyFilter`,
+- názov realizátora `FilthyFilter by whispAir`,
 - odkaz na služby a samostatný odkaz na Google profil,
 - aktuálne skóre a počet hodnotení až po potvrdení oficiálneho Google Place ID,
 - najviac dve recenzie relevantné k prípadu: odbornosť, čistota práce, komunikácia alebo servis,
@@ -90,9 +92,9 @@ next_review_data_check:
 
 - [x] partnerova karta s dátumovaným verejným reputačným signálom,
 - [x] oddelená karta realizátora založená na dôkaze práce,
-- [x] odkazy na La Donuteria, Klimuj.sk a vyhľadanie v Google Maps,
+- [x] odkazy na La Donuteria, naše služby a Google Maps hostiteľa; neoverený profil realizátora odstránený,
 - [x] transparentnostná doložka bez výmeny recenzie za protihodnotu,
 - [ ] potvrdiť presný Google Place ID La Donuteria,
-- [ ] potvrdiť presný Google Place ID Klimuj.sk/realizátora,
+- [ ] potvrdiť presný Google Place ID whispAir/realizátora,
 - [ ] po súhlase pridať priamu vetu La Donuterie o vykonanej práci,
 - [ ] po API integrácii nahradiť dátumovaný snapshot živými údajmi v súlade s pravidlami Google.

@@ -101,6 +101,33 @@ Výsledná zostava polí pre etapu 3, spojená s pôvodným zadaním: typ služb
 čo vás trápi (nepovinné), preferovaný termín (nepovinné). Akcie: Pokračovať cez
 WhatsApp, Pripraviť e-mail, Kopírovať text, Zavolať.
 
+## Google recenzie (rozhodnuté 5. 9. 2026)
+
+**Situácia:** whispAir je na Google registrovaný ako firma, FilthyFilter nie.
+FilthyFilter je pritom samostatná doména a samostatná stránka.
+
+**Rozhodnutie používateľa:** ostáva **jeden profil, whispAir**. FilthyFilter
+zostáva značkou čistiacej divízie, nezakladá sa mu vlastný zápis. Do profilu
+whispAir treba doplniť službu čistenie klimatizácií. Dôvod: whispAir je podľa
+vlastnej stránky klimatizačná firma, teda ten istý odbor, takže hodnotenia sedia
+a nerozdeľujú sa medzi dva profily. Dva zápisy tej istej firmy na rovnakej
+adrese navyše riskujú zlúčenie alebo pozastavenie.
+
+**Zobrazenie:** len tlačidlo na profil. Žiadne skóre, počty ani citácie na
+stránke. Web nemá backend, takže čísla by sa museli udržiavať ručne a starli by
+bez povšimnutia. Google Places API sme zamietli, kľúč by bol v prehliadači
+verejný a plán zakazuje nové API.
+
+**Stav v kóde:** blok recenzií je na homepage pri dôkazoch a rovnaké tlačidlo je
+v našej karte na spise. Cieľová adresa je v `CONTACT.reviews` v `js/main.js`,
+vedľa telefónu, e-mailu a WhatsAppu. Kým je prázdna, celý blok aj tlačidlo sa
+samy skryjú. **Zostáva doplniť odkaz na profil whispAir na Google Maps** a je to
+hotové; nič iné sa meniť nemusí.
+
+**Zrušené:** partnerská reputačná karta La Donuteria so skóre 4,7 a viac než 135
+hodnoteniami, aj odsek chváliaci donutky a zmrzlinu. Sekcia o prevádzke teraz
+vecne opisuje záťaž zákazky. `docs/B2B_TRUST_LAYER.md` je označený za prekonaný.
+
 ## Odložené nápady (zapísané 5. 9. 2026, nezačínať bez pokynu)
 
 Používateľ ich chce mať zapísané a vrátiť sa k nim neskôr. Nie sú súčasťou

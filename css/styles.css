@@ -80,7 +80,30 @@ img { max-width: 100%; display: block; }
   pointer-events: none;
 }
 /* hero layers get GPU-friendly transforms for pointer parallax */
-.hero__title, .hero__rings { will-change: transform; }
+.hero__title, /* Local landmark behind the hero, the same treatment as the case page.
+
+   It paints only when --hero-bg is set on the .hero element, so while there is
+   no image the browser requests nothing and the layer is invisible. Set it to
+   url("assets/senec-dusk.jpg") to switch it on. */
+.hero__place {
+  position: absolute; inset: -24px;
+  background: var(--hero-bg, none) center/cover no-repeat;
+  filter: blur(5px) saturate(.86);
+  transform: scale(1.04);
+  opacity: .55;
+  pointer-events: none;
+  z-index: 0;
+}
+/* Keeps the headline legible over it: dark on the left where the text sits,
+   clearing toward the right, and fading into the page at the bottom. */
+.hero__place::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    linear-gradient(90deg, rgba(10,7,6,.94) 0%, rgba(10,7,6,.72) 46%, rgba(10,7,6,.28) 100%),
+    linear-gradient(0deg, var(--bg) 0%, transparent 55%);
+}
+
+.hero__rings { will-change: transform; }
 
 .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 26px; position: relative; z-index: 1; }
 
@@ -432,7 +455,9 @@ img { max-width: 100%; display: block; }
    HALL OF FILTH — CASE FILE
    ========================================================================= */
 .case-hero { position: relative; min-height: 650px; display: grid; align-items: end; overflow: hidden; padding: 90px 0 54px; }
-.case-hero__city { position: absolute; inset: -24px; background: var(--case-bg) center/cover no-repeat; filter: blur(7px) saturate(.72); transform: scale(1.04); opacity: .48; }
+/* The landmark reads as a place rather than a texture: less blur, more of
+   its own colour. The gradient over it still carries the text contrast. */
+.case-hero__city { position: absolute; inset: -24px; background: var(--case-bg) center/cover no-repeat; filter: blur(5px) saturate(.86); transform: scale(1.04); opacity: .62; }
 .case-hero::after { content:""; position:absolute; inset:0; background: linear-gradient(90deg, rgba(10,7,6,.96) 0%, rgba(10,7,6,.76) 48%, rgba(10,7,6,.3) 100%), linear-gradient(0deg, var(--bg) 0%, transparent 52%); }
 .case-hero__grid { position:relative; z-index:2; display:grid; grid-template-columns:minmax(0,1.45fr) minmax(250px,.55fr); gap:42px; align-items:end; }
 .case-kicker { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:14px; }

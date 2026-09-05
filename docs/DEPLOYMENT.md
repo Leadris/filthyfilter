@@ -24,6 +24,46 @@ or remove it; that is not part of this deployment.
 The `_sub_whispair_sk` and `_sub_filthyfilter_sk` directories are only for
 subdomains and are not deployment targets for this site.
 
+## Staging — dev.filthyfilter.sk
+
+- Public URL: `http://dev.filthyfilter.sk/`
+- Remote document root: `/home/jg046600/_sub_filthyfilter_sk/dev`
+
+Subdomains on this account live at `_sub_<domain>/<name>`, the same convention
+as `dev.whispair.sk`. DNS already resolves every subdomain to the server and
+Apache picks the directory up as soon as it exists, so no control-panel step
+was needed. Before the directory existed, `dev.filthyfilter.sk` simply served
+the main document root.
+
+The staging copy is the production release with three differences, and they
+have to be reapplied on every staging deploy:
+
+1. `robots.txt` is replaced with a blanket `Disallow: /`.
+2. Both HTML documents get `<meta name="robots" content="noindex, nofollow">`
+   after the viewport meta.
+3. `sitemap.xml` is left out of the package.
+
+The canonical links keep pointing at `https://filthyfilter.sk/`, so a crawler
+that reaches staging anyway is told where the real page is.
+
+`scripts` for this are not committed; the staging package is built by copying
+`index.html`, `robots.txt`, `assets/`, `css/`, `js/` and `hall/`, applying the
+three changes above, then following the same upload, extract and chmod steps as
+production but against the staging root.
+
+### Last staging deploy
+
+- Date: 2026-09-05
+- Commit: `7e3a91b`
+- Change: three-panel quick pick in the services section.
+- Verification: `/`, `js/main.js`, `css/styles.css`, the case page, the
+  before/after image, the favicon and `backgroundMusic.mp3` all returned `200`.
+  `sitemap.xml` correctly returned `404`. `robots.txt` served the blanket
+  disallow and the homepage carried the noindex meta. In the browser: three
+  quick-pick panels with the three accent colours, two secondary cards, seven
+  FAQ items, canonical on the live domain, no horizontal scroll. Production on
+  `filthyfilter.sk` was untouched and still serves commit `cf5b605`.
+
 ## Authentication note
 
 The FTP credentials in `D:\whispAir-IT\whispair-api\.env` can access application

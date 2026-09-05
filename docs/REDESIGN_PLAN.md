@@ -142,13 +142,25 @@ aj zo živého roota; `/steden/` vracia 404.
 mena. Certifikát pre `filthyfilter.sk` treba vystaviť v paneli WebHouse; cez SSH
 sa to spraviť nedá. Dovtedy `https://` adresu nikam neuvádzať.
 
+### Staging — dev.filthyfilter.sk
+
+Nové veci pred nasadením na ostro idú na `http://dev.filthyfilter.sk/`, root
+`/home/jg046600/_sub_filthyfilter_sk/dev`. Subdoménu Apache zobral automaticky,
+v paneli sa nič nastavovať nemuselo. Staging kópia má vždy zablokované
+indexovanie: `robots.txt` so zákazom všetkého, `noindex` meta v oboch HTML a bez
+sitemap. Canonical zostáva na ostrú doménu. Postup je v `docs/DEPLOYMENT.md`.
+
+Aktuálne na stagingu: commit `7e3a91b`, teda trojica rýchleho výberu služby.
+Ostrá `filthyfilter.sk` stále beží na `cf5b605`.
+
 ### Ďalší krok
 
-1. Vystaviť certifikát pre `filthyfilter.sk` a znova overiť `https://`.
-2. Vizuálna kontrola živého webu okom; snímky obrazovky agenta sú kvôli WebGL
+1. Posúdiť trojicu rýchleho výberu na stagingu a rozhodnúť o nasadení na ostro.
+2. Vystaviť certifikát pre `filthyfilter.sk` a znova overiť `https://`.
+3. Vizuálna kontrola živého webu okom; snímky obrazovky agenta sú kvôli WebGL
    plátnu čierne, takže rozloženie bolo overené cez DOM, nie pohľadom.
-3. Rozhodnúť o osude starej adresy `whispair.sk/filthyfilter/`.
-4. Overiť schránku `info@filthyfilter.sk`.
-5. Etapa 3: plnohodnotný dopytový formulár s validáciou, kopírovaním textu a
+4. Rozhodnúť o osude starej adresy `whispair.sk/filthyfilter/`.
+5. Overiť schránku `info@filthyfilter.sk`.
+6. Etapa 3: plnohodnotný dopytový formulár s validáciou, kopírovaním textu a
    voľbou „Neviem“, ak sa ukáže, že predvyplnené správy nestačia.
-6. Etapa 4: finálne QA a merge do `main`.
+7. Etapa 4: finálne QA a merge do `main`.

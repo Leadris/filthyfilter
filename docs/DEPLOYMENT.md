@@ -139,18 +139,20 @@ deployed Git commit.
 ## Last verified deployment
 
 - Date: 2026-09-05
-- Commit: `ceacb28`
+- Commit: `17a7a47`
 - Target: `https://filthyfilter.sk/` and `https://dev.filthyfilter.sk/`
-- Change: the customer's reputation removed from the case file, and a Google
-  reviews link added that stays hidden until `CONTACT.reviews` is filled in.
+- Change: the reviews button now points at the whispAir Google profile, so
+  both the homepage block and the case-file button are live.
 - Verification over HTTPS on both hosts: homepage and case page returned `200`
-  and serve `v=whispair-reviews-2`. No praise wording and no 4,7 or 135+ figures
-  remain. The trust section is headed "Čo o nás hovoria zákazníci" and holds one
-  card. On the live site the reviews block reports hidden with zero height and
-  no review button is visible, which is correct while the profile URL is empty.
+  and serve `v=whispair-reviews-3`. `main.js` carries the profile CID and none
+  of the session parameters. In the browser on the live site the reviews block
+  is visible at 1128x146 with a `_blank` `noopener` link to the profile, the
+  case file shows both trust actions, only our card remains, and no praise
+  wording or 4,7 figure is left.
 - Rollback archive:
-  `/home/jg046600/tmp/filthyfilter-before-ceacb28.tar.gz`
-- SSH port used: 22050.
+  `/home/jg046600/tmp/filthyfilter-before-17a7a47.tar.gz`
+- SSH port used: 22571. The port rotates roughly every two hours; 22892 and
+  22050 both expired earlier the same day.
 
 ### TLS
 

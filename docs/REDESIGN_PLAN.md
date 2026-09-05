@@ -118,11 +118,20 @@ stránke. Web nemá backend, takže čísla by sa museli udržiavať ručne a st
 bez povšimnutia. Google Places API sme zamietli, kľúč by bol v prehliadači
 verejný a plán zakazuje nové API.
 
-**Stav v kóde:** blok recenzií je na homepage pri dôkazoch a rovnaké tlačidlo je
-v našej karte na spise. Cieľová adresa je v `CONTACT.reviews` v `js/main.js`,
-vedľa telefónu, e-mailu a WhatsAppu. Kým je prázdna, celý blok aj tlačidlo sa
-samy skryjú. **Zostáva doplniť odkaz na profil whispAir na Google Maps** a je to
-hotové; nič iné sa meniť nemusí.
+**Stav v kóde:** hotové a nasadené. Blok recenzií je na homepage pri dôkazoch a
+rovnaké tlačidlo je v našej karte na spise. Cieľová adresa je v
+`CONTACT.reviews` v `js/main.js`, vedľa telefónu, e-mailu a WhatsAppu; keby sa
+vyprázdnila, blok aj tlačidlo sa samy skryjú.
+
+Z odkazu, ktorý dal používateľ, sú odstránené parametre `hl`, `entry` a `g_ep`.
+Sú viazané na jednu návštevu a na verziu Máp, takže by časom prestali platiť.
+Zostala časť s názvom firmy a identifikátorom miesta
+`0x476c85d17c386543:0x6daa2776af7e64fc`. Kratší tvar `?cid=` by sa dal odvodiť,
+ale overiť, kam vedie, sa nedá bez preklikania súhlasovej steny Google.
+
+**Zostáva používateľovi:** doplniť do profilu whispAir službu čistenie
+klimatizácií. Profil je vedený ako montáž a servis, takže na dopyt po čistení
+sa nemusí zobraziť.
 
 **Zrušené:** partnerská reputačná karta La Donuteria so skóre 4,7 a viac než 135
 hodnoteniami, aj odsek chváliaci donutky a zmrzlinu. Sekcia o prevádzke teraz

@@ -137,10 +137,10 @@ zapísané v `docs/DEPLOYMENT.md`. Placeholder `webhouse.html` je odstránený.
 Rovnako je odstránený aj adresár `steden/` s holandskými presmerovaniami, z repa
 aj zo živého roota; `/steden/` vracia 404.
 
-**Otvorená vec: HTTPS.** Server zatiaľ posiela wildcard certifikát WebHouse
-`CN=*.webhouse.sk`, ktorý túto doménu nepokrýva, takže `https://` hlási nezhodu
-mena. Certifikát pre `filthyfilter.sk` treba vystaviť v paneli WebHouse; cez SSH
-sa to spraviť nedá. Dovtedy `https://` adresu nikam neuvádzať.
+**HTTPS je vyriešené (5. 9. 2026).** Certifikát Let's Encrypt pre
+`filthyfilter.sk` bol vystavený o 10:32 UTC a pokrýva aj dev subdoménu. HTTP
+teraz odpovedá `301` na HTTPS adresu, takže pri overovaní vždy volaj `https://`,
+inak uvidíš len presmerovanie.
 
 ### Staging — dev.filthyfilter.sk
 
@@ -150,8 +150,14 @@ v paneli sa nič nastavovať nemuselo. Staging kópia má vždy zablokované
 indexovanie: `robots.txt` so zákazom všetkého, `noindex` meta v oboch HTML a bez
 sitemap. Canonical zostáva na ostrú doménu. Postup je v `docs/DEPLOYMENT.md`.
 
-Staging aj ostrá doména bežia na `d3455bc`, teda trojica rýchleho výberu plus
-čitateľnostná úprava.
+Ostrá doména beží na `d3455bc`. Staging beží na `e174b09`, teda PPPP Rating
+a oprava nadpisu v úvode.
+
+**Pravidlo pre efekty, po nahlásení z telefónu 5. 9. 2026:** text musí byť
+čitateľný aj bez efektu. Nadpis v úvode mal farbu len z prechodu orezaného do
+písmen a pri zlyhaní výplne zostali len jeho tiene. Plná farba je základ, efekt
+sa vrství navrch. Na text s `background-clip: text` nedávaj `filter`, vytvára
+vlastnú kompozitnú vrstvu a na Androide tam výplň vypadáva.
 
 **Pravidlo pre typografiu, potvrdené používateľom 5. 9. 2026:** ozdobná HUD
 vrstva zostáva ako je, teda mono verzálky, zvislé súradnice v úvode, FFFF kódy,
@@ -162,11 +168,10 @@ pôsobiť stiesnene.
 
 ### Ďalší krok
 
-1. Vystaviť certifikát pre `filthyfilter.sk` a znova overiť `https://`.
-2. Vizuálna kontrola živého webu okom; snímky obrazovky agenta sú kvôli WebGL
+1. Vizuálna kontrola živého webu okom; snímky obrazovky agenta sú kvôli WebGL
    plátnu čierne, takže rozloženie bolo overené cez DOM, nie pohľadom.
-3. Rozhodnúť o osude starej adresy `whispair.sk/filthyfilter/`.
-4. Overiť schránku `info@filthyfilter.sk`.
-5. Etapa 3: plnohodnotný dopytový formulár s validáciou, kopírovaním textu a
+2. Rozhodnúť o osude starej adresy `whispair.sk/filthyfilter/`.
+3. Overiť schránku `info@filthyfilter.sk`.
+4. Etapa 3: plnohodnotný dopytový formulár s validáciou, kopírovaním textu a
    voľbou „Neviem“, ak sa ukáže, že predvyplnené správy nestačia.
-6. Etapa 4: finálne QA a merge do `main`.
+5. Etapa 4: finálne QA a merge do `main`.

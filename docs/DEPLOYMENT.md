@@ -26,7 +26,7 @@ subdomains and are not deployment targets for this site.
 
 ## Staging — dev.filthyfilter.sk
 
-- Public URL: `http://dev.filthyfilter.sk/`
+- Public URL: `https://dev.filthyfilter.sk/`
 - Remote document root: `/home/jg046600/_sub_filthyfilter_sk/dev`
 
 Subdomains on this account live at `_sub_<domain>/<name>`, the same convention
@@ -54,17 +54,17 @@ production but against the staging root.
 ### Last staging deploy
 
 - Date: 2026-09-05
-- Commit: `e4438e2`
-- Change: three-panel quick pick, then a readability and spacing pass.
-- Verification on `dev.filthyfilter.sk` at 1360px: the hero sentence is in the
-  body face at 20.5px, lead copy 18.6px, FAQ questions 18.9px, headline down to
-  83.2px, section padding 88px, hero block 801px tall inside a 900px viewport,
-  three quick-pick panels, no horizontal scroll. The decorative tags still
-  render in Share Tech Mono, so the HUD layer is intact. The noindex meta and
-  the blanket robots disallow are in place. Production still serves
-  `whispair-sales-1`, so it was untouched.
-- Note: the SSH port rotates. 22892 expired mid-session and was replaced by
-  22050. Always get the current port before a deploy.
+- Commit: `e174b09`
+- Change: the PPPP Rating, the Slovak reading of FFFF, and the fix for the
+  hero headline that rendered as a dark ghost on the user's phone.
+- Verification over HTTPS: the page serves `styles.css?v=whispair-sales-5`, the
+  headline rule carries no filter, `color-scheme: dark` is set, the @supports
+  guard and the 721px branch are both present, and the old `#8a5a26` stop is
+  gone from the gradient. Locally at 375px the headline computes to solid
+  `#f6da9a` with no gradient, no clip and no filter; at 1360px the gradient is
+  clipped to the text as before.
+- Still to confirm on the reporting device: whether the headline is now legible
+  on that phone. That failure mode cannot be reproduced from here.
 
 ## Authentication note
 
@@ -155,13 +155,12 @@ deployed Git commit.
   `/home/jg046600/tmp/filthyfilter-before-d3455bc.tar.gz`
 - SSH port used: 22050. The port rotates; 22892 expired earlier the same day.
 
-### Open item — TLS certificate
+### TLS
 
-`https://filthyfilter.sk/` currently serves WebHouse's own wildcard
-certificate, `CN=*.webhouse.sk`, which does not cover this domain, so browsers
-show a name mismatch warning. HTTP works correctly. A certificate for
-`filthyfilter.sk` has to be issued from the WebHouse control panel; it cannot
-be done over SSH. Until then, do not advertise the `https://` address.
+Resolved on 2026-09-05. A Let's Encrypt certificate for `filthyfilter.sk` was
+issued at 10:32 UTC and covers the dev subdomain as well. HTTP now answers
+`301` to the HTTPS address on both hosts, so always verify over `https://`;
+plain HTTP checks will only show you the redirect.
 
 ### Previous deployment
 

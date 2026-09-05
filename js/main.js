@@ -28,26 +28,75 @@
     obhliadka:   { sk: "Neviem, potrebujem poradiť",          en: "Not sure, I need advice" }
   };
 
-  var INQUIRY_TEMPLATE = {
-    sk: function (service) {
-      return [
-        "Dobrý deň, mám záujem o: " + service + ".",
-        "Obec / PSČ: ",
-        "Počet jednotiek: ",
-        "Čo ma trápi: ",
-        "Preferovaný termín: "
-      ].join("\n");
+  // Field labels used when composing the message. The message is plain text,
+  // because it has to survive being pasted into WhatsApp, a mail client or a
+  // text field, none of which agree on anything richer.
+  var FIELDS = {
+    sk: {
+      intro: "Dobrý deň, mám záujem o:",
+      place: "Obec / PSČ",
+      units: "Počet jednotiek",
+      unitsUnknown: "neviem",
+      name: "Meno",
+      problem: "Čo ma trápi",
+      date: "Preferovaný termín",
+      subject: "Dopyt z filthyfilter.sk"
     },
-    en: function (service) {
-      return [
-        "Hello, I am interested in: " + service + ".",
-        "Town / postcode: ",
-        "Number of units: ",
-        "The problem: ",
-        "Preferred date: "
-      ].join("\n");
+    en: {
+      intro: "Hello, I am interested in:",
+      place: "Town / postcode",
+      units: "Number of units",
+      unitsUnknown: "not sure",
+      name: "Name",
+      problem: "The problem",
+      date: "Preferred date",
+      subject: "Enquiry from filthyfilter.sk"
     }
   };
+
+  // Services that make sense to count. Diagnostics and "not sure" do not.
+  var COUNTABLE = { nastenna: 1, kazetova: 1, udrzba: 1, firmy: 1 };
+
+  // Build the message from whatever the visitor actually filled in. Empty
+  // fields are left out rather than sent as blank lines, so a two-line enquiry
+  // stays a two-line enquiry.
+  function buildMessage(data, lang) {
+    var L = FIELDS[lang] || FIELDS.sk;
+    var service = (SERVICES[data.service] && SERVICES[data.service][lang]) || "";
+    var lines = [];
+    if (service) lines.push(L.intro + " " + service + ".");
+    if (data.place) lines.push(L.place + ": " + data.place);
+    if (data.unitsUnknown) lines.push(L.units + ": " + L.unitsUnknown);
+    else if (data.units) lines.push(L.units + ": " + data.units);
+    if (data.name) lines.push(L.name + ": " + data.name);
+    if (data.problem) lines.push(L.problem + ": " + data.problem);
+    if (data.date) lines.push(L.date + ": " + data.date);
+    return lines.join("\n");
+  }
+
+  // A blank template for the service cards, so the visitor lands in their app
+  // with the prompts already written out.
+  function buildTemplate(service, lang) {
+    var L = FIELDS[lang] || FIELDS.sk;
+    var name = (SERVICES[service] && SERVICES[service][lang]) || "";
+    return [
+      L.intro + " " + name + ".",
+      L.place + ": ",
+      L.units + ": ",
+      L.problem + ": ",
+      L.date + ": "
+    ].join("\n");
+  }
+
+  function waLink(text) {
+    return "https://wa.me/" + CONTACT.whatsapp + "?text=" + encodeURIComponent(text);
+  }
+  function mailLink(text, lang) {
+    var L = FIELDS[lang] || FIELDS.sk;
+    return "mailto:" + CONTACT.email +
+      "?subject=" + encodeURIComponent(L.subject) +
+      "&body=" + encodeURIComponent(text);
+  }
 
   // Rewrite every service CTA so the visitor's messaging app opens with the
   // right service already named. Nothing is stored or sent by the page itself.
@@ -55,16 +104,12 @@
     var links = document.querySelectorAll("a[data-inquiry]");
     for (var i = 0; i < links.length; i++) {
       var key = links[i].getAttribute("data-inquiry");
-      var service = SERVICES[key] && SERVICES[key][lang];
-      if (!service) continue;
-      var body = INQUIRY_TEMPLATE[lang](service);
-      if (links[i].getAttribute("data-contact") === "email") {
-        links[i].setAttribute("href", "mailto:" + CONTACT.email +
-          "?subject=" + encodeURIComponent(service) + "&body=" + encodeURIComponent(body));
-      } else {
-        links[i].setAttribute("href", "https://wa.me/" + CONTACT.whatsapp +
-          "?text=" + encodeURIComponent(body));
-      }
+      if (!SERVICES[key]) continue;
+      var body = buildTemplate(key, lang);
+      links[i].setAttribute("href",
+        links[i].getAttribute("data-contact") === "email"
+          ? mailLink(body, lang)
+          : waLink(body));
     }
   }
 
@@ -128,6 +173,7 @@
     }
 
     updateInquiryLinks(lang);
+    document.dispatchEvent(new CustomEvent("ff:langchange"));
 
     if (persist) {
       try { localStorage.setItem(STORE_KEY, lang); } catch (e) {}
@@ -244,10 +290,164 @@
 
   }
 
+  /* ---------------------------------------------------------------------
+     Enquiry builder. No server, no storage: the page composes a plain-text
+     message and hands it to the visitor's own WhatsApp or mail client, where
+     they send it themselves and can attach photos. The page never claims the
+     message was delivered, because it has no way of knowing.
+     --------------------------------------------------------------------- */
+  function initInquiry() {
+    var form = document.getElementById("inquiry-form");
+    if (!form) return;
+
+    var els = {
+      service: document.getElementById("inq-service"),
+      place: document.getElementById("inq-place"),
+      units: document.getElementById("inq-units"),
+      unitsUnknown: document.getElementById("inq-units-unknown"),
+      unitsField: document.getElementById("inq-units-field"),
+      name: document.getElementById("inq-name"),
+      problem: document.getElementById("inq-problem"),
+      date: document.getElementById("inq-date"),
+      preview: document.getElementById("inq-preview"),
+      status: document.getElementById("inq-status")
+    };
+
+    function lang() {
+      return document.documentElement.getAttribute("lang") === "en" ? "en" : "sk";
+    }
+
+    function read() {
+      var countable = !!COUNTABLE[els.service.value];
+      return {
+        service: els.service.value,
+        place: els.place.value.trim(),
+        units: countable && !els.unitsUnknown.checked ? els.units.value.trim() : "",
+        unitsUnknown: countable && els.unitsUnknown.checked,
+        name: els.name.value.trim(),
+        problem: els.problem.value.trim(),
+        date: els.date.value.trim()
+      };
+    }
+
+    function setError(id, on) {
+      var err = document.getElementById(id + "-err");
+      var input = document.getElementById(id);
+      if (err) err.hidden = !on;
+      if (input) input.setAttribute("aria-invalid", on ? "true" : "false");
+    }
+
+    // Units only apply where counting them means something.
+    function syncUnits() {
+      var countable = !!COUNTABLE[els.service.value];
+      els.unitsField.hidden = !countable;
+      els.units.disabled = !countable || els.unitsUnknown.checked;
+      if (els.unitsUnknown.checked) els.units.value = "";
+    }
+
+    function validate() {
+      var d = read();
+      var ok = true;
+      var first = null;
+
+      if (!d.service) { setError("inq-service", true); ok = false; first = first || els.service; }
+      else setError("inq-service", false);
+
+      if (!d.place) { setError("inq-place", true); ok = false; first = first || els.place; }
+      else setError("inq-place", false);
+
+      // A count is optional, but if one is given it has to be a whole
+      // positive number rather than "a few" or "3.5".
+      var badUnits = d.units !== "" && !/^[1-9][0-9]*$/.test(d.units);
+      if (badUnits) { setError("inq-units", true); ok = false; first = first || els.units; }
+      else setError("inq-units", false);
+
+      if (!ok && first) first.focus();
+      return ok;
+    }
+
+    // Errors are only raised when the visitor tries to continue, but they are
+    // cleared as soon as the field is fixed. Leaving a red line under a field
+    // the visitor has already corrected is just nagging.
+    function clearResolved() {
+      var d = read();
+      if (d.service) setError("inq-service", false);
+      if (d.place) setError("inq-place", false);
+      if (d.units === "" || /^[1-9][0-9]*$/.test(d.units)) setError("inq-units", false);
+    }
+
+    function refresh() {
+      syncUnits();
+      clearResolved();
+      els.preview.value = buildMessage(read(), lang());
+    }
+
+    function say(key) {
+      var msg = {
+        sk: {
+          wa: "Správa je pripravená vo WhatsApse. Odoslať ju musíte tam.",
+          mail: "Správa je pripravená v poštovom klientovi. Odoslať ju musíte tam.",
+          copied: "Text je skopírovaný. Vložte ho, kam potrebujete.",
+          manual: "Kopírovanie sa nepodarilo. Text je vyššie, označte a skopírujte ho ručne."
+        },
+        en: {
+          wa: "The message is waiting in WhatsApp. You send it from there.",
+          mail: "The message is waiting in your mail client. You send it from there.",
+          copied: "The text is copied. Paste it wherever you need.",
+          manual: "Copying failed. The text is above; select and copy it by hand."
+        }
+      };
+      els.status.textContent = (msg[lang()] || msg.sk)[key];
+    }
+
+    form.addEventListener("input", refresh);
+    form.addEventListener("change", refresh);
+
+    document.getElementById("inq-whatsapp").addEventListener("click", function () {
+      if (!validate()) return;
+      window.open(waLink(buildMessage(read(), lang())), "_blank", "noopener");
+      say("wa");
+    });
+
+    document.getElementById("inq-email").addEventListener("click", function () {
+      if (!validate()) return;
+      window.location.href = mailLink(buildMessage(read(), lang()), lang());
+      say("mail");
+    });
+
+    document.getElementById("inq-copy").addEventListener("click", function () {
+      if (!validate()) return;
+      var text = buildMessage(read(), lang());
+      els.preview.value = text;
+      // The clipboard API is unavailable over plain HTTP and in some
+      // browsers, so fall back to selecting the text for a manual copy.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () { say("copied"); },
+                                                 function () { selectPreview(); });
+      } else {
+        selectPreview();
+      }
+    });
+
+    function selectPreview() {
+      els.preview.focus();
+      els.preview.select();
+      var done = false;
+      try { done = document.execCommand("copy"); } catch (e) {}
+      say(done ? "copied" : "manual");
+    }
+
+    // Language changes have to redraw the preview, since the message is
+    // composed in whichever language the visitor is reading.
+    document.addEventListener("ff:langchange", refresh);
+    refresh();
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initContact();
     initMusic();
     initLang();
+    initInquiry();
     initReveal();
     initMobileNav();
   });

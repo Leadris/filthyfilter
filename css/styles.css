@@ -350,7 +350,7 @@ img { max-width: 100%; display: block; }
 /* =========================================================================
    CONTACT
    ========================================================================= */
-.contact { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+.contact { display: grid; grid-template-columns: 1.25fr 1fr; gap: 26px; align-items: start; }
 .contact__big { padding: 36px; }
 .contact__big h3 { font-family: var(--f-display); font-weight: 700; font-size: 1.8rem; text-transform: uppercase; margin: 0 0 6px; color: var(--gold); }
 .contact__methods { list-style: none; margin: 22px 0 0; padding: 0; }
@@ -661,6 +661,75 @@ img { max-width: 100%; display: block; }
 .mobile-cta { display: none; }
 
 /* =========================================================================
+   ENQUIRY BUILDER
+   Controls are 16px or larger on purpose: anything smaller makes iOS Safari
+   zoom the page when a field is focused.
+   ========================================================================= */
+.inquiry { display: flex; flex-direction: column; }
+.inquiry__noscript {
+  margin: 0 0 20px; padding: 14px 16px;
+  border: 1px solid var(--copper); color: var(--cream); font-size: 1rem;
+}
+.inquiry__form { display: flex; flex-direction: column; gap: 20px; }
+
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field > label {
+  font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--gold);
+}
+.field input[type="text"],
+.field input[type="number"],
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 13px 14px;
+  font-family: var(--f-body); font-size: 1rem; line-height: 1.5;
+  color: var(--cream);
+  background: rgba(8,6,5,0.72);
+  border: 1px solid var(--bronze-dim);
+  border-radius: var(--radius);
+  transition: border-color .2s, box-shadow .2s;
+  -webkit-appearance: none; appearance: none;
+}
+.field textarea { resize: vertical; min-height: 92px; }
+.field select {
+  /* the native arrow disappears with appearance:none, so draw one */
+  background-image: linear-gradient(45deg, transparent 50%, var(--copper) 50%),
+                    linear-gradient(135deg, var(--copper) 50%, transparent 50%);
+  background-position: right 18px center, right 12px center;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 40px;
+}
+.field select option { background: var(--panel); color: var(--cream); }
+.field input::placeholder, .field textarea::placeholder { color: var(--muted-dim); }
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(232,176,87,0.16);
+}
+.field input[aria-invalid="true"],
+.field select[aria-invalid="true"] { border-color: var(--danger); }
+.field input:disabled { opacity: .45; cursor: not-allowed; }
+
+.field__row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.field__row input[type="number"] { flex: 0 1 140px; }
+.check { display: inline-flex; align-items: center; gap: 9px; cursor: pointer; font-size: 1rem; color: var(--muted); }
+.check input { width: 20px; height: 20px; accent-color: var(--copper); cursor: pointer; }
+
+.field__err { margin: 0; font-size: 0.95rem; color: var(--danger); }
+
+.inquiry__preview {
+  font-family: var(--f-mono) !important;
+  font-size: 1rem !important;   /* 16px: below that iOS zooms on focus */
+  color: var(--muted) !important;
+  background: rgba(0,0,0,0.5) !important;
+}
+.inquiry__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.inquiry__actions .btn { flex: 1 1 190px; text-align: center; }
+.inquiry__status { margin: 0; min-height: 1.4em; font-size: 0.98rem; color: var(--gold); }
+
+/* =========================================================================
    RESPONSIVE
    ========================================================================= */
 @media (max-width: 980px) {
@@ -686,6 +755,11 @@ img { max-width: 100%; display: block; }
 @media (max-width: 620px) {
   .pick-grid, .svc-grid, .steps, .ffff-grid, .ratings { grid-template-columns: 1fr; }
   .ffff-cta .btn { width: 100%; text-align: center; }
+  .inquiry__actions .btn { flex: 1 1 100%; }
+  /* Side by side, the mono label reserves 142px and squeezes the value into a
+     column too narrow to read. Stack them on phones instead. */
+  .spec-list li { flex-direction: column; gap: 4px; padding: 12px 0; }
+  .spec-list li b { min-width: 0; padding-top: 0; }
   .pick { padding: 26px 22px 24px; }
   .hero__facts { grid-template-columns: 1fr 1fr; gap: 14px; }
   .proof__submit { flex-direction: column; align-items: flex-start; gap: 16px; }

@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Share+Tech+Mono&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/styles.css?v=whispair-sales-5">
+  <link rel="stylesheet" href="css/styles.css?v=whispair-sales-9">
   <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 </head>
 <body>
@@ -550,16 +550,115 @@
   <div class="wrap reveal">
     <div class="section__head">
       <span class="tag" data-en="GET IN TOUCH" data-sk="OZVITE SA">OZVITE SA</span>
-      <h2 class="section__title" data-en="Request a quote" data-sk="Vyžiadať cenovú ponuku">Vyžiadať cenovú ponuku</h2>
+      <h2 class="section__title" data-en="Put together your enquiry" data-sk="Zostavte si dopyt">Zostavte si dopyt</h2>
+      <p class="lead lead--muted" style="margin-top:8px"
+         data-en="Fill in what you know. The page writes the message for you and hands it to WhatsApp or your mail app, where you send it yourself and can attach photos. Nothing is stored here and nothing leaves this page on its own."
+         data-sk="Vyplňte, čo viete. Stránka za vás napíše správu a odovzdá ju WhatsAppu alebo poštovému klientovi, kde ju odošlete sami a môžete priložiť fotky. Nič sa tu neukladá a nič odtiaľto samo neodchádza.">Vyplňte, čo viete. Stránka za vás napíše správu a odovzdá ju WhatsAppu alebo poštovému klientovi, kde ju odošlete sami a môžete priložiť fotky. Nič sa tu neukladá a nič odtiaľto samo neodchádza.</p>
     </div>
 
     <div class="contact">
+
+      <!-- ---------- the builder ---------- -->
+      <div class="panel inquiry">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+
+        <noscript>
+          <p class="inquiry__noscript"
+             data-en="This builder needs JavaScript. Without it, use the direct contacts beside it — they work on their own."
+             data-sk="Zostavovač dopytu potrebuje JavaScript. Bez neho použite priame kontakty vedľa, tie fungujú samostatne.">Zostavovač dopytu potrebuje JavaScript. Bez neho použite priame kontakty vedľa, tie fungujú samostatne.</p>
+        </noscript>
+
+        <form class="inquiry__form" id="inquiry-form" novalidate>
+
+          <div class="field">
+            <label for="inq-service" data-en="Service" data-sk="Služba">Služba</label>
+            <select id="inq-service" name="service" required aria-required="true" aria-describedby="inq-service-err">
+              <option value="" data-en="Choose a service" data-sk="Vyberte službu">Vyberte službu</option>
+              <option value="nastenna" data-en="Wall unit" data-sk="Nástenná jednotka">Nástenná jednotka</option>
+              <option value="kazetova" data-en="Cassette unit" data-sk="Kazetová jednotka">Kazetová jednotka</option>
+              <option value="udrzba" data-en="Preventive maintenance" data-sk="Preventívna údržba">Preventívna údržba</option>
+              <option value="diagnostika" data-en="Diagnostics and service" data-sk="Diagnostika a servis">Diagnostika a servis</option>
+              <option value="firmy" data-en="Business service" data-sk="Firemný servis">Firemný servis</option>
+              <option value="obhliadka" data-en="Not sure, I need advice" data-sk="Neviem, potrebujem poradiť">Neviem, potrebujem poradiť</option>
+            </select>
+            <p class="field__err" id="inq-service-err" role="alert" hidden
+               data-en="Pick a service, or the last option if you are not sure."
+               data-sk="Vyberte službu, alebo poslednú možnosť, ak neviete.">Vyberte službu, alebo poslednú možnosť, ak neviete.</p>
+          </div>
+
+          <div class="field">
+            <label for="inq-place" data-en="Town or postcode" data-sk="Obec alebo PSČ">Obec alebo PSČ</label>
+            <input type="text" id="inq-place" name="place" required aria-required="true" autocomplete="address-level2"
+                   aria-describedby="inq-place-err"
+                   data-attr-target="placeholder" data-en="e.g. Senec" data-sk="napr. Senec" placeholder="napr. Senec">
+            <p class="field__err" id="inq-place-err" role="alert" hidden
+               data-en="We need the town to confirm availability and travel."
+               data-sk="Obec potrebujeme, aby sme potvrdili dostupnosť a dopravu.">Obec potrebujeme, aby sme potvrdili dostupnosť a dopravu.</p>
+          </div>
+
+          <div class="field" id="inq-units-field">
+            <label for="inq-units" data-en="Number of units" data-sk="Počet jednotiek">Počet jednotiek</label>
+            <div class="field__row">
+              <input type="number" id="inq-units" name="units" min="1" step="1" inputmode="numeric"
+                     aria-describedby="inq-units-err" placeholder="1">
+              <label class="check" for="inq-units-unknown">
+                <input type="checkbox" id="inq-units-unknown" name="unitsUnknown">
+                <span data-en="I don’t know" data-sk="Neviem">Neviem</span>
+              </label>
+            </div>
+            <p class="field__err" id="inq-units-err" role="alert" hidden
+               data-en="Give a whole number of units, or tick “I don’t know”."
+               data-sk="Zadajte celý počet jednotiek, alebo zaškrtnite „Neviem“.">Zadajte celý počet jednotiek, alebo zaškrtnite „Neviem“.</p>
+          </div>
+
+          <div class="field">
+            <label for="inq-name" data-en="Name (optional)" data-sk="Meno (nepovinné)">Meno (nepovinné)</label>
+            <input type="text" id="inq-name" name="name" autocomplete="name">
+          </div>
+
+          <div class="field">
+            <label for="inq-problem" data-en="What is bothering you (optional)" data-sk="Čo vás trápi (nepovinné)">Čo vás trápi (nepovinné)</label>
+            <textarea id="inq-problem" name="problem" rows="3"
+                      data-attr-target="placeholder"
+                      data-en="Smell, dripping, noise, weak cooling, when it was last cleaned…"
+                      data-sk="Zápach, kvapkanie, hlučnosť, slabé chladenie, kedy sa naposledy čistila…"
+                      placeholder="Zápach, kvapkanie, hlučnosť, slabé chladenie, kedy sa naposledy čistila…"></textarea>
+          </div>
+
+          <div class="field">
+            <label for="inq-date" data-en="Preferred date (optional)" data-sk="Preferovaný termín (nepovinné)">Preferovaný termín (nepovinné)</label>
+            <input type="text" id="inq-date" name="date"
+                   data-attr-target="placeholder"
+                   data-en="e.g. next week, mornings" data-sk="napr. budúci týždeň, doobeda" placeholder="napr. budúci týždeň, doobeda">
+          </div>
+
+          <div class="field">
+            <label for="inq-preview" data-en="This is what goes out" data-sk="Takto to odíde">Takto to odíde</label>
+            <textarea id="inq-preview" class="inquiry__preview" rows="7" readonly></textarea>
+          </div>
+
+          <div class="inquiry__actions">
+            <button type="button" class="btn btn--wa" id="inq-whatsapp"
+                    data-en="Continue on WhatsApp" data-sk="Pokračovať cez WhatsApp">Pokračovať cez WhatsApp</button>
+            <button type="button" class="btn btn--primary" id="inq-email"
+                    data-en="Prepare an e-mail" data-sk="Pripraviť e-mail">Pripraviť e-mail</button>
+            <button type="button" class="btn btn--ghost" id="inq-copy"
+                    data-en="Copy the text" data-sk="Kopírovať text">Kopírovať text</button>
+            <a class="btn btn--ghost" data-contact="phone" href="tel:+421902279094"
+               data-en="Call instead" data-sk="Radšej zavolať">Radšej zavolať</a>
+          </div>
+
+          <p class="inquiry__status" id="inq-status" role="status"></p>
+        </form>
+      </div>
+
+      <!-- ---------- direct contacts, working without JavaScript ---------- -->
       <div class="panel contact__big">
         <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
-        <h3 data-en="Tell us what is hanging on your wall" data-sk="Povedzte nám, čo vám visí na stene">Povedzte nám, čo vám visí na stene</h3>
+        <h3 data-en="Or just reach us" data-sk="Alebo sa nám rovno ozvite">Alebo sa nám rovno ozvite</h3>
         <p class="lead lead--muted"
-           data-en="Type of unit, how many, the town, and what is bothering you. A photo of the open unit is worth more than three paragraphs of description."
-           data-sk="Typ jednotky, koľko ich je, obec a čo vás trápi. Fotka otvorenej jednotky má väčšiu cenu než tri odseky opisu.">Typ jednotky, koľko ich je, obec a čo vás trápi. Fotka otvorenej jednotky má väčšiu cenu než tri odseky opisu.</p>
+           data-en="A photo of the open unit is worth more than three paragraphs of description."
+           data-sk="Fotka otvorenej jednotky má väčšiu cenu než tri odseky opisu.">Fotka otvorenej jednotky má väčšiu cenu než tri odseky opisu.</p>
 
         <ul class="contact__methods">
           <li>
@@ -579,22 +678,14 @@
             <span><span data-en="By appointment" data-sk="Termíny po dohode">Termíny po dohode</span><small data-en="Appointments" data-sk="Termíny">Termíny</small></span>
           </li>
         </ul>
-      </div>
 
-      <div class="panel">
-        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
-        <div class="section__head">
-          <span class="tag" data-en="QUICK ACTION" data-sk="RÝCHLA AKCIA">RÝCHLA AKCIA</span>
-          <h2 class="section__title" style="font-size:1.4rem" data-en="Reach us now" data-sk="Priamy kontakt">Priamy kontakt</h2>
-        </div>
         <div class="contact__cta">
           <a class="btn btn--wa" data-contact="whatsapp" href="https://wa.me/421902279094" target="_blank" rel="noopener"
              data-en="Write on WhatsApp" data-sk="Napísať na WhatsApp">Napísať na WhatsApp</a>
           <a class="btn btn--primary" data-contact="phone" href="tel:+421902279094"
              data-en="Call now" data-sk="Zavolať hneď">Zavolať hneď</a>
-          <a class="btn btn--ghost" data-contact="email" href="mailto:info@filthyfilter.sk"
-             data-en="Send an e-mail" data-sk="Poslať e-mail">Poslať e-mail</a>
         </div>
+
         <p class="ffff-note"
            data-en="// You send the photos from your own app. This page stores nothing and sends nothing on its own."
            data-sk="// Fotky posielate zo svojej aplikácie. Táto stránka nič neukladá ani sama nikam neodosiela.">// Fotky posielate zo svojej aplikácie. Táto stránka nič neukladá ani sama nikam neodosiela.</p>
@@ -625,6 +716,6 @@
 
 <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 <script src="js/background.js"></script>
-<script src="js/main.js?v=whispair-sales-5"></script>
+<script src="js/main.js?v=whispair-sales-9"></script>
 </body>
 </html>

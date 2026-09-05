@@ -1,0 +1,67 @@
+##### werkwijze #####
+<section class="section" id="werkwijze">
+  <div class="wrap reveal">
+    <div class="panel">
+      <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      <div class="section__head">
+        <span class="tag" data-en="FROM ENQUIRY TO CLEAN AIR" data-sk="OD DOPYTU PO ČISTÝ VZDUCH">OD DOPYTU PO ČISTÝ VZDUCH</span>
+        <h2 class="section__title" data-en="Process" data-sk="Postup">Postup</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step__no">01</div>
+          <div class="step__icon" aria-hidden="true"><svg/></div>
+          <h4 data-en="You send the details" data-sk="Pošlete údaje">Pošlete údaje</h4>
+          <p data-en="Type of unit, how many, where, and what is bothering you. A photo helps most." data-sk="Typ jednotky, koľko ich je, kde sú a čo vás trápi. Fotka pomôže najviac.">Typ jednotky, koľko ich je, kde sú a čo vás trápi. Fotka pomôže najviac.</p>
+...
+
+##### waarom #####
+<section class="section" id="waarom">
+  <div class="wrap reveal">
+    <div class="why">
+      <div class="panel panel--glow">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <div class="section__head">
+          <span class="tag" data-en="WHAT MAKES US DIFFERENT" data-sk="ČO NÁS ODLIŠUJE">ČO NÁS ODLIŠUJE</span>
+          <h2 class="section__title" data-en="Why FilthyFilter" data-sk="Prečo FilthyFilter">Prečo FilthyFilter</h2>
+        </div>
+        <ul class="bullets">
+          <li data-en="We open the unit. Wiping a filter from the outside is dusting, not cleaning." data-sk="Jednotku otvárame. Utrieť filter zvonku je utieranie prachu, nie čistenie.">Jednotku otvárame. Utrieť filter zvonku je utieranie prachu, nie čistenie.</li>
+          <li data-en="The price is agreed before we start, based on the scope we actually confirmed." data-sk="Cenu dohodneme pred začiatkom, podľa rozsahu, ktorý sme si naozaj potvrdili.">Cenu dohodneme pred začiatkom, podľa rozsahu, ktorý sme si naozaj potvrdili.</li>
+          <li data-en="Your floor, furniture and wall are covered before anything gets wet." data-sk="Podlahu, nábytok aj stenu zakryjeme skôr, ako sa čokoľvek namočí.">Podlahu, nábytok aj stenu zakryjeme skôr, ako sa čokoľvek namočí.</li>
+          <li data-en="You get photo evidence of the state before and after, not just our word for it." data-sk="Dostanete fotodôkaz stavu pred a po, nie len naše tvrdenie.">Dostanete fotodôkaz stavu pred a po, nie len naše tvrdenie.</li>
+...
+
+##### ffff #####
+<section class="section" id="ffff">
+  <div class="wrap reveal">
+    <div class="panel">
+      <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      <div class="section__head">
+        <span class="tag" data-en="OUR OWN SCALE" data-sk="NAŠA VLASTNÁ ŠKÁLA">NAŠA VLASTNÁ ŠKÁLA</span>
+        <h2 class="section__title">FFFF Rating&trade; &middot; PPPP Rating&trade;</h2>
+        <p class="lead lead--muted" style="margin-top:6px"
+           data-en="One scale, two names, because the joke works in both languages. It is our internal visual scale of filth, with a healthy dose of exaggeration. It is not a microbiological measurement. It is how we tell you, in one number, what we found when we opened the unit."
+           data-sk="Jedna škála, dve mená, lebo vtip funguje v oboch jazykoch. Je to naša interná vizuálna škála znečistenia, s poriadnou dávkou nadsádzky. Nie je to mikrobiologické meranie. Je to spôsob, ako vám jedným číslom povieme, čo sme našli po otvorení jednotky.">Jedna škála, dve mená, lebo vtip funguje v oboch jazykoch. Je to naša interná vizuálna škála znečistenia, s poriadnou dávkou nadsádzky. Nie je to mikrobiologické meranie. Je to spôsob, ako vám jedným číslom povieme, čo sme našli po otvorení jednotky.</p>
+      </div>
+
+      <div class="ratings">
+        <div class="rating-name">
+...
+
+##### service-area #####
+<section class="section" id="service-area">
+  <div class="wrap reveal">
+    <div class="panel">
+      <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      <div class="section__head">
+        <span class="tag" data-en="SERVICE AREA" data-sk="OBLASŤ VÝJAZDU">OBLASŤ VÝJAZDU</span>
+        <h2 class="section__title" data-en="Senec and surroundings, up to approximately 100 km" data-sk="Senec a okolie do približne 100 km">Senec a okolie do približne 100 km</h2>
+      </div>
+      <p class="lead"
+         data-en="FilthyFilter by whispAir provides AC cleaning, maintenance and servicing for homes and businesses. Send your town or postcode; we confirm availability and travel costs based on the address. Travel is agreed with you — we do not pretend it is automatically free."
+         data-sk="FilthyFilter by whispAir zabezpečuje čistenie, údržbu a servis klimatizácií pre domácnosti a firmy. Pošlite obec alebo PSČ; dostupnosť a cenu dopravy potvrdíme podľa konkrétnej adresy. Dopravu dohodneme — netvárime sa, že je automaticky zadarmo.">FilthyFilter by whispAir zabezpečuje čistenie, údržbu a servis klimatizácií pre domácnosti a firmy. Pošlite obec alebo PSČ; dostupnosť a cenu dopravy potvrdíme podľa konkrétnej adresy. Dopravu dohodneme — netvárime sa, že je automaticky zadarmo.</p>
+      <a class="btn btn--primary" href="#contact" style="margin-top:20px" data-en="Ask about a visit" data-sk="Dohodnúť výjazd">Dohodnúť výjazd</a>
+    </div>
+  </div>
+...

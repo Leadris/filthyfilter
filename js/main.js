@@ -24,7 +24,8 @@
     kazetova:    { sk: "Hĺbkové čistenie kazetovej jednotky", en: "Deep clean - cassette unit" },
     udrzba:      { sk: "Preventívna údržba",                  en: "Preventive maintenance" },
     diagnostika: { sk: "Diagnostika a servis",                en: "Diagnostics and service" },
-    firmy:       { sk: "Pravidelný servis pre firmy",         en: "Recurring service for businesses" }
+    firmy:       { sk: "Pravidelný servis pre firmy",         en: "Recurring service for businesses" },
+    obhliadka:   { sk: "Neviem, potrebujem poradiť",          en: "Not sure, I need advice" }
   };
 
   var INQUIRY_TEMPLATE = {

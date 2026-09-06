@@ -22,6 +22,36 @@
     reviews: "https://www.google.com/maps/place/whispAir/@48.2049312,17.3510103,17z/data=!3m1!4b1!4m6!3m5!1s0x476c85d17c386543:0x6daa2776af7e64fc!8m2!3d48.2049312!4d17.3510103!16s%2Fg%2F11ftb828lv"
   };
 
+  // Where the enquiry goes. whispair-api stores the lead with its attribution
+  // and later reports the finished job's value back to Google Ads, which is the
+  // whole reason the form posts anywhere at all. The preview host and the local
+  // preview talk to staging, so a test enquiry never reaches the field inbox.
+  function apiBase() {
+    var host = location.hostname;
+    var staging = host === "dev.filthyfilter.sk" ||
+                  host === "127.0.0.1" ||
+                  host === "localhost";
+    return staging ? "https://api-dev.whispair.sk" : "https://api.whispair.sk";
+  }
+
+  var LEAD_PATH = "/api/v1/leads";
+
+  /* Marketing events. They are queued on dataLayer whether or not a tag is
+     installed yet, so the day one is added the events are already firing from
+     the right places. Nothing here reads or writes a cookie by itself. */
+  function track(name, params) {
+    try {
+      window.dataLayer = window.dataLayer || [];
+      var payload = { event: name };
+      for (var key in params || {}) {
+        if (Object.prototype.hasOwnProperty.call(params, key)) payload[key] = params[key];
+      }
+      window.dataLayer.push(payload);
+    } catch (e) {
+      // Measurement must never break the page it measures.
+    }
+  }
+
   // Service labels for the prefilled enquiry message. Keys match data-inquiry
   // in the HTML; the plain wa.me/mailto href stays as the no-JS fallback.
   var SERVICES = {
@@ -43,6 +73,8 @@
       units: "Počet jednotiek",
       unitsUnknown: "neviem",
       name: "Meno",
+      phone: "Telefón",
+      email: "E-mail",
       problem: "Čo ma trápi",
       date: "Preferovaný termín",
       subject: "Dopyt z filthyfilter.sk"
@@ -53,6 +85,8 @@
       units: "Number of units",
       unitsUnknown: "not sure",
       name: "Name",
+      phone: "Phone",
+      email: "E-mail",
       problem: "The problem",
       date: "Preferred date",
       subject: "Enquiry from filthyfilter.sk"
@@ -74,6 +108,8 @@
     if (data.unitsUnknown) lines.push(L.units + ": " + L.unitsUnknown);
     else if (data.units) lines.push(L.units + ": " + data.units);
     if (data.name) lines.push(L.name + ": " + data.name);
+    if (data.phone) lines.push(L.phone + ": " + data.phone);
+    if (data.email) lines.push(L.email + ": " + data.email);
     if (data.problem) lines.push(L.problem + ": " + data.problem);
     if (data.date) lines.push(L.date + ": " + data.date);
     return lines.join("\n");
@@ -125,8 +161,20 @@
       whatsapp: "https://wa.me/" + CONTACT.whatsapp
     };
     document.querySelectorAll("a[data-contact]").forEach(function (link) {
-      var href = destinations[link.getAttribute("data-contact")];
+      var kind = link.getAttribute("data-contact");
+      var href = destinations[kind];
       if (href) link.setAttribute("href", href);
+
+      // Intent, not contact. A tapped number is not a call and a tapped
+      // WhatsApp link is not a message, so these stay secondary next to
+      // lead_submitted and must never be optimised against on their own.
+      if (kind === "phone" || kind === "whatsapp") {
+        link.addEventListener("click", function () {
+          track(kind === "phone" ? "phone_click" : "whatsapp_click", {
+            placement: link.getAttribute("data-inquiry") || "generic"
+          });
+        });
+      }
     });
 
     // Reviews live on the Google profile, not on this page. Without a profile
@@ -362,10 +410,14 @@
       unitsUnknown: document.getElementById("inq-units-unknown"),
       unitsField: document.getElementById("inq-units-field"),
       name: document.getElementById("inq-name"),
+      phone: document.getElementById("inq-phone"),
+      email: document.getElementById("inq-email-addr"),
+      company: document.getElementById("inq-company"),
       problem: document.getElementById("inq-problem"),
       date: document.getElementById("inq-date"),
       preview: document.getElementById("inq-preview"),
-      status: document.getElementById("inq-status")
+      status: document.getElementById("inq-status"),
+      send: document.getElementById("inq-send")
     };
 
     function lang() {
@@ -380,6 +432,9 @@
         units: countable && !els.unitsUnknown.checked ? els.units.value.trim() : "",
         unitsUnknown: countable && els.unitsUnknown.checked,
         name: els.name.value.trim(),
+        phone: els.phone.value.trim(),
+        email: els.email.value.trim(),
+        company: els.company ? els.company.value.trim() : "",
         problem: els.problem.value.trim(),
         date: els.date.value.trim()
       };
@@ -400,7 +455,12 @@
       if (els.unitsUnknown.checked) els.units.value = "";
     }
 
-    function validate() {
+    /* Two levels on purpose. Sending to the API needs a name and a way to reply,
+       because nobody can act on an anonymous row in the inbox. WhatsApp and the
+       mail draft need neither: the visitor's own app carries their identity, and
+       demanding it twice would put friction on the channel that exists to avoid
+       friction. Passing strict=false keeps those buttons as light as before. */
+    function validate(strict) {
       var d = read();
       var ok = true;
       var first = null;
@@ -417,8 +477,36 @@
       if (badUnits) { setError("inq-units", true); ok = false; first = first || els.units; }
       else setError("inq-units", false);
 
+      if (strict) {
+        // The API rejects a submission without these, so refusing here saves
+        // the visitor a pointless round trip to find that out.
+        if (!d.name) { setError("inq-name", true); ok = false; first = first || els.name; }
+        else setError("inq-name", false);
+
+        if (!hasContact(d)) {
+          setContactError(true);
+          ok = false;
+          first = first || els.phone;
+        } else {
+          setContactError(false);
+        }
+      }
+
       if (!ok && first) first.focus();
       return ok;
+    }
+
+    function hasContact(d) {
+      return d.phone !== "" || d.email !== "";
+    }
+
+    // One message covers both fields, because either one on its own is enough.
+    // Marking them both invalid would read as two separate mistakes.
+    function setContactError(on) {
+      var err = document.getElementById("inq-contact-err");
+      if (err) err.hidden = !on;
+      els.phone.setAttribute("aria-invalid", on ? "true" : "false");
+      els.email.setAttribute("aria-invalid", on ? "true" : "false");
     }
 
     // Errors are only raised when the visitor tries to continue, but they are
@@ -429,6 +517,8 @@
       if (d.service) setError("inq-service", false);
       if (d.place) setError("inq-place", false);
       if (d.units === "" || /^[1-9][0-9]*$/.test(d.units)) setError("inq-units", false);
+      if (d.name) setError("inq-name", false);
+      if (hasContact(d)) setContactError(false);
     }
 
     function refresh() {
@@ -437,30 +527,120 @@
       els.preview.value = buildMessage(read(), lang());
     }
 
-    function say(key) {
+    function say(key, bad) {
       var msg = {
         sk: {
           wa: "Správa je pripravená vo WhatsApse. Odoslať ju musíte tam.",
           mail: "Správa je pripravená v poštovom klientovi. Odoslať ju musíte tam.",
           copied: "Text je skopírovaný. Vložte ho, kam potrebujete.",
-          manual: "Kopírovanie sa nepodarilo. Text je vyššie, označte a skopírujte ho ručne."
+          manual: "Kopírovanie sa nepodarilo. Text je vyššie, označte a skopírujte ho ručne.",
+          sending: "Odosielam dopyt…",
+          sent: "Dopyt je u nás. Ozveme sa vám na uvedený kontakt.",
+          rejected: "Dopyt sa nepodarilo odoslať, skontrolujte vyplnené údaje.",
+          failed: "Odoslanie zlyhalo. Použite tlačidlo WhatsApp alebo nám zavolajte, text je pripravený vyššie."
         },
         en: {
           wa: "The message is waiting in WhatsApp. You send it from there.",
           mail: "The message is waiting in your mail client. You send it from there.",
           copied: "The text is copied. Paste it wherever you need.",
-          manual: "Copying failed. The text is above; select and copy it by hand."
+          manual: "Copying failed. The text is above; select and copy it by hand.",
+          sending: "Sending the enquiry…",
+          sent: "We have your enquiry. We will reply to the contact you gave us.",
+          rejected: "The enquiry was not accepted; please check what you filled in.",
+          failed: "Sending failed. Use the WhatsApp button or call us; the text above is ready to go."
         }
       };
       els.status.textContent = (msg[lang()] || msg.sk)[key];
+      els.status.classList.toggle("inquiry__status--bad", !!bad);
     }
 
     form.addEventListener("input", refresh);
     form.addEventListener("change", refresh);
 
+    /* One form_start per visit, on the first real keystroke. Firing it on focus
+       would count everyone who tabbed past the form on their way to the phone
+       number, which is the opposite of what the number is for. */
+    var started = false;
+    form.addEventListener("input", function () {
+      if (started) return;
+      started = true;
+      track("form_start", { form: "inquiry" });
+    });
+
+    /* The enquiry goes to whispair-api, where it becomes a captured message in
+       the same field inbox as every other lead, with its attribution attached.
+       When the network or the API is down the visitor is not left staring at a
+       dead button: the composed text is still there and WhatsApp still works. */
+    function send() {
+      if (!validate(true)) return;
+
+      // A browser too old for fetch still deserves a working enquiry, and it
+      // already has one: the composed message and WhatsApp.
+      if (typeof window.fetch !== "function") {
+        say("failed", true);
+        return;
+      }
+
+      var d = read();
+      var text = buildMessage(d, lang());
+      var attribution = (window.ffAttribution && window.ffAttribution.get()) || {};
+
+      var payload = {
+        name: d.name,
+        phone: d.phone,
+        email: d.email,
+        address: d.place,
+        // The API stores one message body, so the composed text is what a
+        // technician reads. It already carries the service, the unit count and
+        // the preferred date in the visitor's own words.
+        message: text,
+        company: d.company // honeypot; a person leaves this empty
+      };
+
+      for (var key in attribution) {
+        if (Object.prototype.hasOwnProperty.call(attribution, key)) payload[key] = attribution[key];
+      }
+
+      els.send.disabled = true;
+      say("sending");
+
+      fetch(apiBase() + LEAD_PATH, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).then(function (res) {
+        if (res.ok) {
+          // Counted only once the API has taken the lead. A click on the button
+          // is not a lead, and reporting it as one teaches Google the wrong thing.
+          track("lead_submitted", {
+            service: d.service,
+            page: attribution.landing_token || "ff-home"
+          });
+          form.reset();
+          syncUnits();
+          els.preview.value = "";
+          say("sent");
+          return;
+        }
+        // 422 is our own validation disagreeing; anything else is a fault on
+        // our side, and the visitor should be pushed to a channel that works.
+        say(res.status === 422 ? "rejected" : "failed", true);
+      }).catch(function () {
+        say("failed", true);
+      }).then(function () {
+        els.send.disabled = false;
+      });
+    }
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      send();
+    });
+
     document.getElementById("inq-whatsapp").addEventListener("click", function () {
       if (!validate()) return;
       window.open(waLink(buildMessage(read(), lang())), "_blank", "noopener");
+      track("whatsapp_click", { placement: "inquiry" });
       say("wa");
     });
 

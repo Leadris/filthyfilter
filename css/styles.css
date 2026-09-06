@@ -821,6 +821,22 @@ summary:focus-visible,
 .inquiry__actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .inquiry__actions .btn { flex: 1 1 190px; text-align: center; }
 .inquiry__status { margin: 0; min-height: 1.4em; font-size: 0.98rem; color: var(--gold); }
+.inquiry__status--bad { color: var(--danger); }
+
+/* Spam trap. Moved out of sight rather than hidden with display:none or the
+   hidden attribute, because the bots worth catching skip fields a browser
+   would never render. Screen readers skip it via aria-hidden on the wrapper. */
+.inquiry__trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* The button is disabled only while a submission is in flight, so a double
+   tap on a slow connection cannot open two identical jobs in the inbox. */
+.inquiry__form button[disabled] { opacity: 0.55; cursor: progress; }
 
 /* =========================================================================
    RESPONSIVE

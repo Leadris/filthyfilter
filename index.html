@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="css/styles.css?v=bacteria-mark-1">
   <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 </head>
-<body>
+<body data-ff-page="ff-home">
 
 <!-- animated spore field behind everything -->
 <canvas id="spore-field" aria-hidden="true"></canvas>
@@ -642,8 +642,8 @@
       <span class="tag" data-en="GET IN TOUCH" data-sk="OZVITE SA">OZVITE SA</span>
       <h2 class="section__title" data-en="Put together your enquiry" data-sk="Zostavte si dopyt">Zostavte si dopyt</h2>
       <p class="lead lead--muted" style="margin-top:8px"
-         data-en="Fill in what you know. The page writes the message for you and hands it to WhatsApp or your mail app, where you send it yourself and can attach photos. Nothing is stored here and nothing leaves this page on its own."
-         data-sk="Vyplňte, čo viete. Stránka za vás napíše správu a odovzdá ju WhatsAppu alebo poštovému klientovi, kde ju odošlete sami a môžete priložiť fotky. Nič sa tu neukladá a nič odtiaľto samo neodchádza.">Vyplňte, čo viete. Stránka za vás napíše správu a odovzdá ju WhatsAppu alebo poštovému klientovi, kde ju odošlete sami a môžete priložiť fotky. Nič sa tu neukladá a nič odtiaľto samo neodchádza.</p>
+         data-en="Fill it in and send it; the enquiry reaches us and we get back to you. If you would rather write on WhatsApp or call, those buttons work as well, and photos of the open unit are easiest to attach there."
+         data-sk="Vyplňte a odošlite; dopyt príde k nám a my sa vám ozveme. Ak radšej píšete cez WhatsApp alebo voláte, tie tlačidlá fungujú tiež a fotku otvorenej jednotky priložíte najjednoduchšie práve tam.">Vyplňte a odošlite; dopyt príde k nám a my sa vám ozveme. Ak radšej píšete cez WhatsApp alebo voláte, tie tlačidlá fungujú tiež a fotku otvorenej jednotky priložíte najjednoduchšie práve tam.</p>
     </div>
 
     <div class="contact">
@@ -702,8 +702,36 @@
           </div>
 
           <div class="field">
-            <label for="inq-name" data-en="Name (optional)" data-sk="Meno (nepovinné)">Meno (nepovinné)</label>
-            <input type="text" id="inq-name" name="name" autocomplete="name">
+            <label for="inq-name" data-en="Name" data-sk="Meno">Meno</label>
+            <input type="text" id="inq-name" name="name" required aria-required="true" autocomplete="name"
+                   aria-describedby="inq-name-err">
+            <p class="field__err" id="inq-name-err" role="alert" hidden
+               data-en="Tell us who to address the reply to."
+               data-sk="Napíšte, komu máme odpovedať.">Napíšte, komu máme odpovedať.</p>
+          </div>
+
+          <div class="field">
+            <label for="inq-phone" data-en="Phone" data-sk="Telefón">Telefón</label>
+            <input type="tel" id="inq-phone" name="phone" autocomplete="tel"
+                   aria-describedby="inq-contact-err"
+                   data-attr-target="placeholder" data-en="e.g. 0902 279 094" data-sk="napr. 0902 279 094" placeholder="napr. 0902 279 094">
+          </div>
+
+          <div class="field">
+            <label for="inq-email-addr" data-en="E-mail" data-sk="E-mail">E-mail</label>
+            <input type="email" id="inq-email-addr" name="email" autocomplete="email"
+                   aria-describedby="inq-contact-err"
+                   data-attr-target="placeholder" data-en="e.g. jana@example.sk" data-sk="napr. jana@example.sk" placeholder="napr. jana@example.sk">
+            <p class="field__err" id="inq-contact-err" role="alert" hidden
+               data-en="Leave a phone number or an e-mail, otherwise we have no way to answer."
+               data-sk="Nechajte telefón alebo e-mail, inak vám nemáme ako odpovedať.">Nechajte telefón alebo e-mail, inak vám nemáme ako odpovedať.</p>
+          </div>
+
+          <!-- Spam trap. A person never sees this; a bot fills every field it
+               finds. The API drops the submission when it arrives filled. -->
+          <div class="inquiry__trap" aria-hidden="true">
+            <label for="inq-company">Company</label>
+            <input type="text" id="inq-company" name="company" tabindex="-1" autocomplete="off">
           </div>
 
           <div class="field">
@@ -728,9 +756,11 @@
           </div>
 
           <div class="inquiry__actions">
+            <button type="submit" class="btn btn--primary" id="inq-send"
+                    data-en="Send the enquiry" data-sk="Odoslať dopyt">Odoslať dopyt</button>
             <button type="button" class="btn btn--wa" id="inq-whatsapp"
                     data-en="Continue on WhatsApp" data-sk="Pokračovať cez WhatsApp">Pokračovať cez WhatsApp</button>
-            <button type="button" class="btn btn--primary" id="inq-email"
+            <button type="button" class="btn btn--ghost" id="inq-email"
                     data-en="Prepare an e-mail" data-sk="Pripraviť e-mail">Pripraviť e-mail</button>
             <button type="button" class="btn btn--ghost" id="inq-copy"
                     data-en="Copy the text" data-sk="Kopírovať text">Kopírovať text</button>
@@ -808,6 +838,7 @@
 </footer>
 
 <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+<script src="js/attribution.js"></script>
 <script src="js/background.js"></script>
 <script src="js/main.js?v=bacteria-mark-1"></script>
 </body>

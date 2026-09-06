@@ -447,3 +447,41 @@ zo žiadnej referencie, ale drží ich reflog. Uvoľnia sa samé, keď reflog vy
 alebo hneď po `git reflog expire --expire=now --all` a `git gc --prune=now`.
 Tie dva príkazy zablokoval bezpečnostný filter, musí ich spustiť používateľ.
 Na GitHube je už všetko preč.
+
+### Druhá sada ikon: lupa s baktériou (2026-09-06)
+
+Používateľ dodal novú sadu a označil ju za lepšiu. Motív je lupa so žiariacou
+baktériou pod sklom, čo hovorí presne to, čo robíme: pozeráme sa na to, čo je
+vnútri. Nahradila samotnú baktériu vo všetkých miestach naraz, teda v karte
+prehliadača, v hlavičke, v pätičke aj na karte „Dôkaz pred potleskom“.
+
+Balík bol pripravený lepšie než predchádzajúci. Už obsahoval nepriehľadné
+`maskable` varianty aj celý rad veľkostí faviconu. Tri veci sa aj tak museli
+upraviť:
+
+1. **`apple-touch-icon` bol priehľadný.** iOS priehľadnosť ignoruje a podloží si
+   ikonu vlastnou farbou, tak je do súboru zapečené pozadie stránky. Rovnaký
+   dôvod ako pri predchádzajúcej sade.
+2. **`maskable` kresba prečnievala bezpečnú zónu.** Spúšťač smie orezať ikonu do
+   kruhu s polomerom 40 % plátna; špička rukoväte lupy siahala do 43,4 %, takže
+   pri prísnej kruhovej maske by ju odsekol. Zmenšenie kresby na 92 % ju dostalo
+   na 39,7 %, čo je rozdiel vo veľkosti, ktorý nikto nepostrehne.
+3. **Cesty.** Balík počítal s koreňom webu a absolútnymi `/favicon/...`. Ikony
+   zostávajú naploho v koreni a odkazuje sa na ne relatívne, aby fungoval aj
+   lokálny náhľad pod `/filthyfilter/`.
+
+Ďalej:
+
+- **`favicon.ico` má 16, 32, 48 a 64 px, nie 256.** Dodaný mal šesť veľkostí
+  a 106 kB. Prehliadače si berú deklarované PNG; `.ico` slúži záložkám,
+  odkazom vo Windows a slepej požiadavke na `/favicon.ico`, kde nič nad 48 px
+  netreba. Po orezaní má 15 kB, teda o 86 % menej.
+- **Dlaždice pre Windows sa nepreberali.** `mstile-150x150.png` a
+  `browserconfig.xml` slúžia pripínaniu na úvodnú obrazovku Windows 8 a 10,
+  ktoré dnešný Edge už nepoužíva. Boli by to súbory, ktoré nikto nenačíta.
+- **Značka vo vnútri stránky sa volá `assets/brand-mark.png`.** Kresba sa
+  medzitým zmenila dvakrát a značka by nemala nútiť prepisovať šablónu zakaždým,
+  keď sa zmení znovu. Starý `mark-bacteria.png` je zmazaný.
+- **`theme_color` je opäť `#0a0706`**, nie jantárová `#f39a12` z balíka. Farbí
+  sa ňou lišta prehliadača priamo nad stránkou a jantárový pruh nad takmer
+  čiernou stránkou by pôsobil ako cudzí pás.

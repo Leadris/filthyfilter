@@ -391,3 +391,28 @@ ani 1360 px.
 
 - **Otvorené:** `trnava-dusk.png` má 1,39 MB ako PNG za päťpixelovým rozmazaním.
   Prekódovanie na JPEG by z toho spravilo približne 47 kB. Čaká na rozhodnutie.
+
+### Značka baktérie aj vo vnútri stránky (2026-09-06)
+
+Používateľ rozhodol, že baktéria nahradí starú značku `FF` v šesťuholníku aj
+v hlavičke a v pätičke. Miesta sú v skutočnosti tri, nie dve: k hlavičke
+a pätičke patrí ešte karta „Dôkaz pred potleskom“ na spise, kde tá istá značka
+zastupuje nás. Nechať tam šesťuholník by bola presne tá nejednotnosť, ktorú
+odstraňujeme, len o stránku hlbšie.
+
+- **Zdrojom nie sú súbory faviconu.** Tie nesú odsadenie, ktoré potrebuje ikona
+  spúšťača, takže v 38-pixelovom mieste v hlavičke by sa značka vykreslila
+  približne na 30 pixelov v priehľadnom ráme a pôsobila by menšie než pôvodná.
+  `assets/mark-bacteria.png` je orezaný po kresbu a má 192 px, čo pokrýva
+  najväčšie použitie (62 px na karte) v trojnásobku.
+- **Raster, nie SVG.** Kresba je tieňovaný prechod, nie ploché vektorové tvary;
+  obkreslením by sa zahodilo práve to, čo jej dáva vzhľad. Kvantovanie na 128
+  farieb tieňovanie zachová a súbor stlačí z 30 kB na 7,4 kB.
+- **Pätička dostala značku naľavo od riadku s názvom**, na 80 % krytia. Zatvára
+  stránku tým istým znakom, akým sa otvára, ale tichšie.
+- **Všetky tri obrázky majú prázdny `alt`.** Každý stojí priamo vedľa textu,
+  ktorý značku pomenúva. Popis „logo FilthyFilter“ vedľa slov „FilthyFilter by
+  whispAir“ by čítačku prinútil povedať meno dvakrát a poslucháčovi by nedal nič
+  navyše.
+- **`assets/favicon.svg` je zmazaný.** Po tejto zmene naň neodkazovalo nič.
+  Ak by sa niekedy hodil, je v histórii Gitu.

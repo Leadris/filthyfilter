@@ -56,6 +56,10 @@ that reaches staging anyway is told where the real page is.
 three changes above, then following the same upload, extract and chmod steps as
 production but against the staging root.
 
+`.htaccess` is deliberately left out of the staging package. Its only rule
+redirects the production `www` host, which never reaches this document root, so
+shipping it here would add a file that can only ever do nothing or go wrong.
+
 ### Last staging deploy
 
 - Date: 2026-09-05
@@ -131,6 +135,41 @@ deployment's `.env` lists the FilthyFilter origin. A missing origin fails
 silently in the browser as a blocked cross-origin request; the visitor sees the
 send fail and is pushed to WhatsApp, so leads are not lost, but none are stored.
 
+Both were checked on 6 September 2026 and both are now satisfied:
+
+| Environment | Route | CORS allowlist |
+| --- | --- | --- |
+| `api.whispair.sk` | `POST /api/v1/leads` answers `422` on an empty body, so it is deployed | `https://portal.whispair.sk,https://filthyfilter.sk` |
+| `api-dev.whispair.sk` | same | `*` |
+
+The production value was `https://portal.whispair.sk` alone until that date, so
+a live enquiry would have been blocked. The origin was appended in
+`/home/jg046600/_sub_whispair_sk/api/.env`; the previous file is kept beside it
+as `.env.bak-cors-20260906`. Verified afterwards that the FilthyFilter origin is
+reflected, the portal origin still is, and an unlisted origin still receives no
+`Access-Control-Allow-Origin` header at all.
+
+Note that a preflight answering `204` proves nothing about the route: the CORS
+middleware answers `OPTIONS` and exits before routing happens. Test the route
+with a real `POST` of `{}` and expect `422`, which reaches validation and writes
+nothing.
+
+## Canonical host
+
+`www.filthyfilter.sk` and `filthyfilter.sk` resolve to the same document root.
+Until 6 September 2026 both answered `200`, which gave search engines two copies
+of every page and gave the browser two separate origins, only one of which the
+API allows. `.htaccess` in the repository root now redirects `www` to the bare
+domain with a `301` that keeps the path, wrapped in `IfModule` so a server
+without `mod_rewrite` serves the site unchanged instead of answering `500`.
+
+It is deployed at `/home/jg046600/www_root_filthyfilter_sk/.htaccess` and is
+part of the release package below, so a redeploy cannot silently drop it.
+
+A caution learned while installing it: the server cannot `curl` its own public
+hostname, so a self-check from inside the SSH session returns `000` and looks
+exactly like an outage. Verify redirects from outside the server.
+
 Measurement is dormant until `TAG_ID` in `js/consent.js` is filled in. While it
 is empty the page loads no Google script, sets no cookie and shows no consent
 banner.
@@ -140,6 +179,7 @@ banner.
 This is a static site. Package only these public paths from the repository root:
 
 ```text
+.htaccess
 index.html
 robots.txt
 sitemap.xml
@@ -181,7 +221,7 @@ deployed Git commit.
 2. Create a clean local archive:
 
    ```powershell
-   tar.exe -czf "tmp\filthyfilter-release-<COMMIT>.tar.gz" index.html robots.txt sitemap.xml favicon.ico favicon-16x16.png favicon-32x32.png apple-touch-icon.png icon-192.png icon-512.png icon-192-maskable.png icon-512-maskable.png site.webmanifest assets css js hall
+   tar.exe -czf "tmp\filthyfilter-release-<COMMIT>.tar.gz" .htaccess index.html robots.txt sitemap.xml favicon.ico favicon-16x16.png favicon-32x32.png apple-touch-icon.png icon-192.png icon-512.png icon-192-maskable.png icon-512-maskable.png site.webmanifest assets css js hall
    ```
 
 3. Upload the archive to the server staging directory:

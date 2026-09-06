@@ -1,0 +1,16 @@
+# Canonical host for filthyfilter.sk
+#
+# www and the bare domain both resolve to this same document root, so without
+# this rule the site answers on two origins. That costs twice: search engines
+# see two copies of every page, and the browser treats www as a separate origin,
+# so an enquiry sent from it is blocked by the API's CORS allowlist and never
+# stored. One canonical host removes both problems at once.
+#
+# Wrapped in IfModule so a server without mod_rewrite serves the site unchanged
+# rather than answering 500. HTTP to HTTPS is already handled by the hosting.
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_HOST} ^www\.filthyfilter\.sk$ [NC]
+  RewriteRule ^(.*)$ https://filthyfilter.sk/$1 [R=301,L]
+</IfModule>

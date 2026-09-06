@@ -77,7 +77,8 @@
       email: "E-mail",
       problem: "Čo ma trápi",
       date: "Preferovaný termín",
-      subject: "Dopyt z filthyfilter.sk"
+      subject: "Dopyt z filthyfilter.sk",
+      origin: "Dopyt z filthyfilter.sk"
     },
     en: {
       intro: "Hello, I am interested in:",
@@ -89,7 +90,8 @@
       email: "E-mail",
       problem: "The problem",
       date: "Preferred date",
-      subject: "Enquiry from filthyfilter.sk"
+      subject: "Enquiry from filthyfilter.sk",
+      origin: "Enquiry from filthyfilter.sk"
     }
   };
 
@@ -102,7 +104,11 @@
   function buildMessage(data, lang) {
     var L = FIELDS[lang] || FIELDS.sk;
     var service = (SERVICES[data.service] && SERVICES[data.service][lang]) || "";
-    var lines = [];
+    // First line names the brand. The phone number and the field inbox are
+    // shared with whispAir, so without it nobody can tell a cleaning enquiry
+    // from a unit sale, on WhatsApp or in the inbox. landing_token records the
+    // same thing in the attribution row, but a technician does not read that.
+    var lines = [L.origin];
     if (service) lines.push(L.intro + " " + service + ".");
     if (data.place) lines.push(L.place + ": " + data.place);
     if (data.unitsUnknown) lines.push(L.units + ": " + L.unitsUnknown);

@@ -160,10 +160,22 @@ nadsádzkou, akú má škála na webe. Platí ďalej z `REDESIGN_PLAN.md`:
 ## 7. Etapy
 
 - **Etapa 0 — zosúladenie.** Tento dokument a úprava `CLAUDE.md`.
-- **Etapa 1 — API.** Verejná routa `POST /api/v1/leads` cez front controller, aby prešla
-  cez `Cors` middleware, znovupoužije `_lead_helpers.php` a zachová honeypot aj limit na
-  IP. `CORS_ALLOWED_ORIGINS` doplniť o obe domény FilthyFilter. `submit_lead.php` zostáva
-  nedotknutý.
+- **Etapa 1 — API. Ukázalo sa, že je hotová.** `POST /api/v1/leads` už na `main` existuje
+  ako verejná routa cez front controller, takže prechádza cez `Cors` middleware.
+  `LeadsController` a `LeadsService` znovupoužívajú `_lead_helpers.php` a zachovávajú
+  honeypot aj limit na IP; `submit_lead.php` zostal nedotknutý. Overené lokálne: preflight
+  z `https://filthyfilter.sk` vráti 204 s hlavičkami, prázdny dopyt vráti 422 s kódmi polí,
+  vyplnená pasca vráti 202 a nezapíše nič.
+
+  **Rozlíšenie značky sa vyriešilo bez zásahu do API.** Správa začína riadkom „Dopyt
+  z filthyfilter.sk“, takže technik vidí pôvod priamo v inboxe. Telefón aj inbox sú
+  spoločné s whispAir, takže ten riadok pomáha aj na WhatsApp. `landing_token` nesie to
+  isté v atribučnom riadku, ktorý ale nikto nečíta pri práci.
+
+  **Zostáva jediné a je to nasadzovacia úloha, nie kód:** overiť
+  `CORS_ALLOWED_ORIGINS` v `.env` na oboch serveroch. Lokálne je hodnota `*`, ktorá by
+  fungovala, ale podľa komentára v `src/Middleware/Cors.php` býva produkčný `.env`
+  zúžený. Chýbajúci pôvod zlyhá v prehliadači potichu.
 - **Etapa 2 — web.** Zachytenie atribúcie, súhlas a Consent Mode v2, odosielanie dopytu na
   API s viditeľným pádom späť na WhatsApp pri zlyhaní siete, štyri udalosti.
 - **Etapa 3 — landing pages.** `/cistenie-klimatizacie/` a `/servis-klimatizacie/`.

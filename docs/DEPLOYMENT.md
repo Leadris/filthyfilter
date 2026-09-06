@@ -188,18 +188,24 @@ deployed Git commit.
 
 ## Last verified deployment
 
-- Date: 2026-09-05
-- Commit: `a7d13c1`
+- Date: 2026-09-06
+- Commit: `603350b`
 - Target: `https://filthyfilter.sk/` and `https://dev.filthyfilter.sk/`
-- Change: hero repaired after the previous commit broke it, and the supplied
-  illustration installed as the homepage landmark.
-- Verification on the live site: `assets/hero-airco.jpg` returns `200` at
-  282,560 bytes on both hosts, the layer applies it at opacity .55 behind a 5px
-  blur, and the headline is back to static positioning with no filter, 245px
-  tall in an 801px hero. No horizontal scroll.
+- Change: the bacteria icon set installed at the web root, and the hero
+  landmark moved off `.wrap` onto the section so its sides stop showing.
+- Verification on the live site: all nine icon files and `site.webmanifest`
+  return `200` at their expected sizes on both hosts, and the manifest is
+  served as `application/manifest+json`. Every icon link on the page fetches
+  `200` from the page's own relative path. The hero layer's parent is `.hero`,
+  it starts at 28% and bleeds past the right edge of a 1600px viewport, the
+  mask is applied, and the headline is static with no filter. No horizontal
+  scroll. The case page's Trnava landmark now returns `200` from a path
+  relative to the document rather than to the stylesheet.
 - Rollback archive:
-  `/home/jg046600/tmp/filthyfilter-before-a7d13c1.tar.gz`
-- SSH port used: 22306.
+  `/home/jg046600/tmp/filthyfilter-before-603350b.tar.gz`
+- SSH port used: 22635. The port rotates, so each one needs its own
+  `known_hosts` entry; 22635 presented the same host key already trusted on the
+  recent deploy ports.
 
 ### Mail
 

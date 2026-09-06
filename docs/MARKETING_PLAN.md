@@ -31,6 +31,22 @@ dostať späť do Google Ads.
 - **Cena.** Na landing pages ide orientačná cena „od“ s rozsahom a poznámkou, že konečná
   závisí od stavu jednotky a prístupu. **Ruší to** rozhodnutie „ceny na dopyt, bez
   verejného cenníka“ z `REDESIGN_PLAN.md`. Cenová kalkulačka sa naďalej nestavia.
+
+  **Potvrdené ceny (6. 9. 2026), všetky s DPH:**
+
+  | Služba | Cena |
+  | --- | --- |
+  | Hĺbkové čistenie nástennej jednotky | od 79 € |
+  | Hĺbkové čistenie kazetovej jednotky | od 129 € |
+  | Preventívna údržba | od 49 € |
+  | Diagnostika a servis | 49 €, pri objednaní opravy sa odpočíta |
+  | Pravidelný servis pre firmy | ponuka na mieru, bez verejného čísla |
+
+  Toto je jediný zdroj pravdy pre ceny. Pri zmene ich uprav tu aj na homepage a na oboch
+  landing pages naraz, inak si budú odporovať. **Stále nepotvrdené a preto nikde
+  netvrdené:** zľava na druhú a ďalšiu jednotku, cena vonkajšej jednotky a doprava.
+  Pre posledné dve platí ďalej znenie z `REDESIGN_PLAN.md`, teda podľa prístupu
+  a potvrdenej ponuky, respektíve doprava dohodou.
 - **Štruktúra.** Pribudnú `/cistenie-klimatizacie/` a `/servis-klimatizacie/`. Geografické
   stránky až podľa dát o tom, odkiaľ reálne chodia zákazky, nie dopredu.
 - **Polia dopytu.** Meno a aspoň jeden kontakt sú povinné, lebo lead ide na server a bez

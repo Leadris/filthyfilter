@@ -2,6 +2,13 @@
 
 Schválené používateľom 5. 9. 2026. Tento súbor je zdrojom pravdy pre Codex, Claude aj ďalšieho vývojára. Pri pokračovaní si prečítaj aj `CLAUDE.md`, skontroluj Git a aktualizuj checklist a odovzdanie nižšie. Nezačínaj už dokončenú etapu odznova.
 
+> **Časti tohto plánu boli 6. 9. 2026 nahradené.** Pre akvizíciu, meranie a ceny platí
+> `docs/MARKETING_PLAN.md`. Konkrétne sú zrušené tri rozhodnutia nižšie: „ceny na dopyt bez
+> verejného cenníka“ (na landing pages ide orientačná cena „od“), nepovinné meno v dopyte
+> (meno a jeden kontakt sú povinné) a to, že dopyt sa neodosiela na server (odosiela sa do
+> `whispair-api`). Všetko ostatné v tomto dokumente platí ďalej, vrátane vizuálu, humoru,
+> pravidla rámovania sekcií a zákazu nepodložených tvrdení.
+
 ## Cieľ a rozhodnutia
 
 Zachovať dnešný humor a vizuál FilthyFilter, výrazne zlepšiť predstavenie služieb, dôkazy práce a objednávku. Inšpirácia predajnou štruktúrou: https://vycistimklimu.sk/, https://vycistimklimu.sk/pre-firmy a https://vycistimklimu.sk/realizacie (audit 5. 9. 2026). Vlastné texty a grafické spracovanie; konkurenčné tvrdenia nie sú dôkazom našich schopností.

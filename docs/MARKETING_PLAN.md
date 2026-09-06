@@ -1,0 +1,212 @@
+# FilthyFilter — marketingový a merací plán
+
+Zapísané 6. 9. 2026. Tento súbor je zdrojom pravdy pre akvizíciu, meranie a Google Ads.
+Pre vizuál, texty a správanie webu ďalej platí `docs/REDESIGN_PLAN.md`; kde sa rozchádzajú,
+platí tento súbor a nižšie je vymenované, čo presne ruší.
+
+Vznikol zosúladením marketingového briefu od Codexu
+(`filthyfilter_claude_marketing_brief.md`, mimo repozitára) so skutočným stavom kódu.
+Brief videl len repozitár FilthyFilter, takže navrhoval postaviť veci, ktoré už bežia
+v `whispair-api`. Brief je odteraz historický podklad, nie zadanie.
+
+## 1. Cieľ
+
+Dostať človeka z Google cez čo najkratšiu cestu k realizovanej a zaplatenej zákazke,
+a výsledok tej zákazky vrátiť späť do reklamy, aby sa ďalšie euro minulo lepšie.
+
+Merať treba celý reťazec, nie jeho prvý článok:
+
+```text
+klik → lead → kvalifikovaný lead → termín → hotová zákazka → zaplatená tržba
+```
+
+Ak meriame len počet leadov, kľúčové slovo s desiatimi lacnými dopytmi vyzerá lepšie než
+slovo so šiestimi drahšími, ktoré sa menia na zákazky. Preto sa hodnota zákazky musí
+dostať späť do Google Ads.
+
+## 2. Rozhodnutia používateľa zo 6. 9. 2026
+
+- **Architektúra.** FilthyFilter zostáva statický web bez buildu a frameworku a napojí sa
+  na existujúce `whispair-api`. Nestavia sa Next.js ani druhé CRM.
+- **Cena.** Na landing pages ide orientačná cena „od“ s rozsahom a poznámkou, že konečná
+  závisí od stavu jednotky a prístupu. **Ruší to** rozhodnutie „ceny na dopyt, bez
+  verejného cenníka“ z `REDESIGN_PLAN.md`. Cenová kalkulačka sa naďalej nestavia.
+- **Štruktúra.** Pribudnú `/cistenie-klimatizacie/` a `/servis-klimatizacie/`. Geografické
+  stránky až podľa dát o tom, odkiaľ reálne chodia zákazky, nie dopredu.
+- **Polia dopytu.** Meno a aspoň jeden kontakt sú povinné, lebo lead ide na server a bez
+  kontaktu je nespracovateľný. **Ruší to** časť rozhodnutia z `REDESIGN_PLAN.md`, kde bolo
+  meno nepovinné a formulár sa neodosielal. WhatsApp a telefón zostávajú vedľa ako cesta
+  bez vypĺňania.
+- **Zásahy do `whispair-api`** sú povolené, na samostatnej vetve toho repozitára.
+
+Čo sa **nemení**: tmavý medený vizuál a humor, značka FilthyFilter by whispAir, iba SK a EN,
+žiadne vymyslené recenzie, štatistiky, certifikácie ani zdravotné tvrdenia, a pravidlo
+rámovania sekcií.
+
+## 3. Čo už existuje a nesmie sa stavať druhýkrát
+
+Platforma `whispair-api` (PHP 8.2 + PostgreSQL, `api.whispair.sk`, staging
+`api-dev.whispair.sk`) pokrýva väčšinu meracích kapitol briefu. Nad ňou bežia portál
+v prehliadači a terénna aplikácia.
+
+| Čo | Kde | Zodpovedá kapitole briefu |
+| --- | --- | --- |
+| Verejný príjem leadu s honeypotom a limitom na IP | `endpoints/submit_lead.php` | 31, TASK 5 |
+| Validácia a whitelist atribučných polí | `endpoints/_lead_helpers.php` | 31, TASK 5 |
+| `lead_attribution`: gclid, gbraid, wbraid, päť utm, landing_token, landing_url, referrer, ip_hash | migrácia `20260619100500` | 14 |
+| `conversion_events`: typ, hodnota, mena, hashovaný e-mail a telefón, stav nahratia | migrácia `20260619101500` | 13 |
+| Nahrávanie offline konverzií do Google Ads | `cron/google_ads_conversion_worker.php` | 15 |
+| CSV export konverzií ako ručná záloha | `endpoints/export_conversions.php` | 15 |
+| Emisia udalostí pri vzniku a dokončení zákazky | `_conversion_helpers.php`, volané z `convert_captured_message_to_job.php` a `update_job.php` | 7, 9 |
+| Pipeline od zachytenej správy po hotovú zákazku | `captured_messages` → `jobs` | 9 |
+| WhatsApp Business, príjem aj odosielanie | `whatsapp_webhook.php`, `whatsapp_outbound_worker.php` | 10 |
+| Cenové pravidlá a servisná oblasť podľa PSČ | `_pricing_helpers.php`, migrácia `20260818150000` | 8 |
+| AI koncepty marketingového obsahu k zákazke | `marketing_drafts`, `marketing_ai_config` | 10, 21 |
+
+**Jediná chýbajúca časť je odosielateľ.** `submit_lead.php` zatiaľ nemá žiadneho
+konzumenta. FilthyFilter bude prvý.
+
+Typy konverzných udalostí, ktoré schéma dnes pozná: `lead_qualified`, `job_created`,
+`job_completed`, `package_sold`. Nové typy vyžadujú migráciu, lebo stĺpec má obmedzenie
+`CHECK`.
+
+## 4. Meranie na strane webu
+
+### Atribučné polia
+
+Zachytávajú sa pri príchode z URL a držia sa v `sessionStorage` do odoslania dopytu.
+Prvý dotyk v rámci relácie sa neprepisuje neskorším.
+
+```text
+gclid, gbraid, wbraid
+utm_source, utm_medium, utm_campaign, utm_term, utm_content
+landing_url, referrer, landing_token
+```
+
+`landing_token` nesie identifikátor stránky, teda `ff-cistenie`, `ff-servis` alebo
+`ff-home`. Slúži na rozlíšenie značky a stránky bez zásahu do zoznamu povolených hodnôt
+v stĺpci `source`, ktorý zostáva `WebLead`.
+
+### Udalosti
+
+```text
+form_start          prvý zmysluplný vstup do formulára
+lead_submitted      až po potvrdení z API, nie po kliku na tlačidlo
+phone_click         klik na telefónny odkaz
+whatsapp_click      klik na odkaz do WhatsAppu
+```
+
+`lead_submitted` je hlavná konverzná akcia pri spustení. `phone_click` a `whatsapp_click`
+sú pomocné; nie sú to hovory ani správy, len úmysel, a tak sa s nimi musí zaobchádzať.
+
+### Súhlas so sledovaním
+
+Web dnes netrackuje nič a nemá banner. Prvý Google tag ho robí povinným. Preto ešte pred
+načítaním tagu:
+
+- Consent Mode v2 s predvoleným zamietnutým stavom pre `ad_storage`, `analytics_storage`,
+  `ad_user_data` a `ad_personalization`.
+- Banner s rovnocennou možnosťou odmietnuť.
+- Voľba jazyka a zvuku v `localStorage` je funkčná preferencia používateľa a súhlas
+  nepotrebuje. Nemieša sa s marketingovým úložiskom.
+
+## 5. Čo brief vynechal a čo s tým
+
+1. **Súhlas a Consent Mode v2.** V briefe nie je ani raz, pritom patrí do prvej meracej
+   etapy. Riešené vyššie.
+2. **Telefón ako kanál.** Pri domácom servise je hovor hlavný zdroj zákaziek. `phone_click`
+   nie je hovor. Kým nemáme meranie hovorov, telefonický lead sa do systému zapisuje ručne
+   ako zachytená správa, inak z merania vypadne.
+3. **Čas reakcie na lead.** Nikde nie je určené, kto odpovedá a do koľkých minút. Rýchlosť
+   odpovede zvýši podiel uzavretých zákaziek viac než ktorýkoľvek test landing page
+   z fázy 5 briefu. Treba stanoviť záväzok a merať ho.
+4. **Google Business Profile a mapový výsledok.** Na dopyt „čistenie klimatizácie Senec“
+   býva mapa lacnejší zdroj leadov než reklama a je zadarmo. Podľa `REDESIGN_PLAN.md` je
+   rozhodnutý jeden profil, whispAir, a doplnenie služby čistenia doň stále čaká.
+5. **Prechod na whispAir.sk.** Fúnel zámerne prechádza na druhú doménu pri potrebe novej
+   jednotky, ale nie je vyriešené meranie naprieč doménami ani to, ako sa predaj
+   klimatizácie priradí ku kliku na FilthyFilter. Zatiaľ platí, že odkaz na whispAir nesie
+   vlastné UTM, aby sa prechod dal aspoň spočítať.
+6. **B2B oslovovanie je právna expozícia, nie len neskoršia fáza.** Zber kontaktov
+   a studený e-mail v EÚ spadá pod GDPR a ePrivacy. Pred akýmkoľvek oslovovaním treba
+   právne posúdenie, nie len odklad na fázu 7.
+7. **Rozpočet verzus územie.** Dvestopäťdesiat až tristo eur mesačne na celý stokilometrový
+   okruh je proti konkurentovi usadenému v Bratislave a Trnave príliš tenké na to, aby sa
+   z toho dalo učiť. Začať úzko okolo Senca a rozširovať podľa toho, odkiaľ chodia zákazky.
+8. **Dátum prechodu na Data Manager API.** Brief ho uvádza ako overený. Pred implementáciou
+   overiť priamo v dokumentácii Google, nie prevziať z druhej ruky.
+
+## 6. FFFF a PPPP zostávajú vtip, nie meranie
+
+Brief chce pre FFFF definované pravidlá, servisné protokoly a automatické reporty.
+Pravidlá sa definovať dajú, ale výhradne ako **viditeľné vizuálne kritériá** a s tou istou
+nadsádzkou, akú má škála na webe. Platí ďalej z `REDESIGN_PLAN.md`:
+
+- nie je to mikrobiologické meranie a nesmie tak znieť,
+- nepomenúvať každé znečistenie ako pleseň bez merania,
+- žiadne zdravotné tvrdenia ani percentá účinnosti,
+- výstup je **terénny report s FFFF skóre**, nie certifikát,
+- stupeň 5 znamená, že rozsah sa potvrdí na mieste, nie diagnózu na diaľku.
+
+## 7. Etapy
+
+- **Etapa 0 — zosúladenie.** Tento dokument a úprava `CLAUDE.md`.
+- **Etapa 1 — API.** Verejná routa `POST /api/v1/leads` cez front controller, aby prešla
+  cez `Cors` middleware, znovupoužije `_lead_helpers.php` a zachová honeypot aj limit na
+  IP. `CORS_ALLOWED_ORIGINS` doplniť o obe domény FilthyFilter. `submit_lead.php` zostáva
+  nedotknutý.
+- **Etapa 2 — web.** Zachytenie atribúcie, súhlas a Consent Mode v2, odosielanie dopytu na
+  API s viditeľným pádom späť na WhatsApp pri zlyhaní siete, štyri udalosti.
+- **Etapa 3 — landing pages.** `/cistenie-klimatizacie/` a `/servis-klimatizacie/`.
+- **Etapa 4 — Google Ads.** Dve kampane oddelene, úzke geo, negatívne slová, kontrola
+  vyhľadávacích dopytov. Bez Performance Max.
+- **Etapa 5 — uzavretie okruhu.** Konfigurácia workera a overenie, že hodnota dokončenej
+  zákazky dorazí do Google Ads.
+
+**Načasovanie.** GCLID má konverzné okno približne deväťdesiat dní. Ak sa zachytáva od
+prvého dňa reklamy, etapa 5 môže prísť neskôr bez straty dát. Reklama teda nemusí čakať na
+celý okruh, ale nesmie začať skôr, než web ukladá lead aj GCLID.
+
+## 8. Google Ads v1
+
+Dve kampane, aby sa nemiešali dva rôzne zámery s rôznou naliehavosťou a cenou.
+
+**Čistenie:** čistenie klimatizácie, hĺbkové čistenie, dezinfekcia, smrdí klimatizácia,
+pleseň v klimatizácii, čistenie klimatizácie cena, plus lokalitné varianty.
+
+**Servis a opravy:** servis klimatizácie, oprava klimatizácie, klimatizácia nechladí,
+klimatizácia tečie alebo kvapká, klíma hučí, chybový kód.
+
+**Negatívne slová ako východisko:** auto, autoklimatizácia, návod, ako vyčistiť,
+svojpomocne, DIY, sprej, pena, čistič kúpiť, prípravok, filter kúpiť, práca, zamestnanie,
+kurz, školenie, certifikát, pdf, manuál, bazár. Nepridávať ďalšie naslepo, riadiť sa
+skutočnými vyhľadávacími dopytmi.
+
+Prvých štrnásť dní sa nesleduje cena za konverziu, ale či sedí zhoda medzi dopytom
+a stránkou a či prichádzajú leady z územia, kam naozaj jazdíme.
+
+## 9. KPI
+
+Merať v tomto poradí dôležitosti, nie naopak:
+
+```text
+tržba na lead a na kampaň
+podiel lead → zákazka a lead → zaplatené
+cena za kvalifikovaný lead a za termín
+priemerná hodnota zákazky
+CPL, CPC, CTR
+```
+
+Kvalita: rozdelenie dôvodov straty, podiel spamu, podiel dopytov mimo územia, podiel
+opakovaných zákazníkov, podiel prechodov na whispAir.
+
+Čísla z case study konkurencie sa **nepoužívajú ako cieľ**. Nie sú nezávisle overené
+a slúžia nanajvýš ako hrubá orientácia.
+
+## 10. Čo čaká na používateľa
+
+1. **Ceny „od“** pre nástennú a kazetovú jednotku a pre diagnostiku.
+2. **Úzke geo pre prvú kampaň**, teda ktoré obce a v akom okruhu.
+3. **Kto dvíha telefón a do koľkých minút** odpovedá na lead.
+4. **Doplniť čistenie klimatizácií do profilu whispAir** na Google, ak sa tak ešte nestalo.
+5. **Skúšobný e-mail na `info@filthyfilter.sk`**, doručenie stále nikto nepotvrdil.

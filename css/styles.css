@@ -185,32 +185,46 @@ img { max-width: 100%; display: block; }
 }
 /* Local landmark behind the hero, the same treatment as the case page.
 
-   The image is set inline on the element, not through a custom property. A
-   relative url() inside a custom property is resolved against the stylesheet
-   that uses it, so "assets/x.jpg" became "css/assets/x.jpg" and 404'd. Inline
-   on the element it resolves against the document, which is correct whether
-   the site sits at a domain root or under a subpath.
+   It hangs off .hero, not off .wrap. Inside the wrap it was capped at --maxw
+   and centred, so on a wide screen the blurred rectangle ended mid-page and
+   its sides read as seams. Anchored to the section it is clipped by the
+   section's own overflow instead, which leaves no edge to see.
 
-   With no inline background-image the layer paints nothing and costs no
-   request, so it stays dormant until an image is given. */
+   It is a right-hand panel rather than a backdrop: the subject sits right of
+   the image's centre, so anchoring right lands it in the open part of the hero
+   rather than under the dark side of the overlay where the headline sits. */
 .hero__place {
-  position: absolute; inset: -24px;
-  background-position: center;
+  position: absolute;
+  top: -30px; right: -30px; bottom: -30px;
+  left: 28%;
+  /* Not 'right': the panel is far taller than the image, so cover crops a lot
+     of width. 82% is where the unit clears the fade on the left and still sits
+     inside the frame on the widest screens. */
+  background-position: 82% center;
   background-size: cover;
   background-repeat: no-repeat;
   filter: blur(5px) saturate(.86);
-  transform: scale(1.04);
-  opacity: .55;
+  opacity: .6;
   pointer-events: none;
   z-index: 0;
+  /* The only way to end a blurred element without a seam: fade the pixels
+     themselves, not a colour painted over them. */
+  -webkit-mask-image: linear-gradient(95deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.5) 11%, #000 26%);
+          mask-image: linear-gradient(95deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.5) 11%, #000 26%);
 }
-/* Keeps the headline legible over it: dark on the left where the text sits,
-   clearing toward the right, and fading into the page at the bottom. */
+/* Top and bottom are cut by the section's overflow, so both are faded into the
+   page. The horizontal pass keeps the headline side calm without flattening
+   the picture on the right. */
 .hero__place::after {
   content: ""; position: absolute; inset: 0;
   background:
-    linear-gradient(90deg, rgba(10,7,6,.94) 0%, rgba(10,7,6,.72) 46%, rgba(10,7,6,.28) 100%),
-    linear-gradient(0deg, var(--bg) 0%, transparent 55%);
+    linear-gradient(180deg, var(--bg) 0%, rgba(10,7,6,0) 24%),
+    linear-gradient(0deg, var(--bg) 0%, rgba(10,7,6,0) 46%),
+    linear-gradient(90deg, rgba(10,7,6,.82) 0%, rgba(10,7,6,.34) 44%, rgba(10,7,6,.06) 100%);
+}
+/* No mask support: a plain full-bleed cover. Less composed, never broken. */
+@supports not ((-webkit-mask-image: linear-gradient(#000, #000)) or (mask-image: linear-gradient(#000, #000))) {
+  .hero__place { left: -30px; background-position: 68% center; opacity: .5; }
 }
 
 .hero__coords {
@@ -465,7 +479,10 @@ img { max-width: 100%; display: block; }
 .case-hero { position: relative; min-height: 650px; display: grid; align-items: end; overflow: hidden; padding: 90px 0 54px; }
 /* The landmark reads as a place rather than a texture: less blur, more of
    its own colour. The gradient over it still carries the text contrast. */
-.case-hero__city { position: absolute; inset: -24px; background: var(--case-bg) center/cover no-repeat; filter: blur(5px) saturate(.86); transform: scale(1.04); opacity: .62; }
+/* The image is set on the element, not through a custom property: a relative
+   url() inside a custom property resolves against this stylesheet rather than
+   the page, which put it two directories too high. */
+.case-hero__city { position: absolute; inset: -24px; background-position: center; background-size: cover; background-repeat: no-repeat; filter: blur(5px) saturate(.86); transform: scale(1.04); opacity: .62; }
 .case-hero::after { content:""; position:absolute; inset:0; background: linear-gradient(90deg, rgba(10,7,6,.96) 0%, rgba(10,7,6,.76) 48%, rgba(10,7,6,.3) 100%), linear-gradient(0deg, var(--bg) 0%, transparent 52%); }
 .case-hero__grid { position:relative; z-index:2; display:grid; grid-template-columns:minmax(0,1.45fr) minmax(250px,.55fr); gap:42px; align-items:end; }
 .case-kicker { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:14px; }
@@ -842,6 +859,13 @@ summary:focus-visible,
   .reviews .btn { width: 100%; text-align: center; }
   .profile { grid-template-columns: repeat(2, 1fr); }
   .hero__coords { display: none; }
+  .hero__place {
+    left: -30px;
+    background-position: 66% center;
+    opacity: .34;
+    -webkit-mask-image: none;
+            mask-image: none;
+  }
   .section { padding: 60px 0; }
   .panel { padding: 26px 22px; }
   .contact__big { padding: 28px 24px; }

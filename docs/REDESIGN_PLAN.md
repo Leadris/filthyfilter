@@ -334,3 +334,60 @@ ani 1360 px.
   hlavná kategória zostáva predajňa, lebo whispAir je primárne predaj a e-shop.
   Telefón 0902 279 094 je spoločný pre obe značky, čo je ďalší dôvod nezakladať
   FilthyFilter samostatne.
+
+## Ikony a oprava vrstvy s obrázkom (2026-09-06)
+
+- **Nová sada ikon je nasadená.** Baktéria v medenej farbe nahradila v karte
+  prehliadača starú značku `FF`. Súbory sú v koreni repozitára, lebo prehliadače
+  a roboty si `/favicon.ico` a `/site.webmanifest` stále pýtajú pod týmto menom,
+  keď ich nikto nenasmeruje inam. V stránkach sú odkazované relatívne, aby to
+  fungovalo aj v lokálnom náhľade pod `/filthyfilter/`. Dodaný `head-snippet.html`
+  používal absolútne cesty od koreňa, tie by v náhľade vracali 404.
+
+  **Starý `assets/favicon.svg` zostal**, ale už nie je ikonou karty. Prehliadač,
+  ktorý rozumie `image/svg+xml`, ho uprednostní pred každým PNG, takže by sa
+  nová ikona nikdy nezobrazila. Vo vnútri stránky slúži ďalej ako značka v
+  hlavičke a na kartách recenzií. Zjednotenie tejto značky s baktériou je
+  samostatné rozhodnutie o vizuálnej identite, nie súčasť tejto úlohy.
+
+- **Dve ikony sa neprebrali tak, ako prišli.** Celá sada má priehľadné pozadie,
+  čo je pre kartu prehliadača správne, ale na dvoch miestach nie:
+
+  1. `apple-touch-icon` — iOS priehľadnosť ignoruje a podloží ikonu vlastnou
+     farbou, ktorá bola v rôznych verziách biela aj čierna. Tenký medený obrys
+     na bielej takmer zmizne. Podklad `--bg` je preto zapečený do súboru.
+  2. Adaptívne ikony Androidu — spúšťač oreže ikonu do tvaru zariadenia a
+     ponechá stredných 80 %. Ramená baktérie siahajú po okraj plátna, takže by
+     sa odsekli. Pribudli `icon-192-maskable.png` a `icon-512-maskable.png` s
+     obrysom v bezpečnej zóne; pôvodné priehľadné súbory zostávajú v manifeste
+     ako `purpose: any`.
+
+  `theme_color` je `#0a0706`, teda pozadie stránky, nie medená `#9A4315`.
+  Farbí sa ňou lišta prehliadača nad stránkou; medený pruh nad takmer čiernou
+  stránkou by pôsobil ako cudzí pás.
+
+- **Vrstva s obrázkom v úvode bola vnorená do `.wrap`.** Ten je obmedzený na
+  `--maxw` a vycentrovaný, takže na širšej obrazovke rozmazaný obdĺžnik jednoducho
+  skončil uprostred stránky a jeho boky boli vidieť ako zvislé švy. Na spise ten
+  problém nikdy nebol, lebo tam vrstva visí priamo na sekcii. Teraz je to tak aj
+  na úvodnej stránke a orezáva ju `overflow` sekcie, takže nie je čo vidieť.
+
+  Zároveň to už nie je pozadie na celú šírku, ale panel pri pravom okraji.
+  Jednotka je na obrázku napravo od jeho stredu, takže ukotvenie vpravo ju
+  dostane do svetlejšej časti úvodu namiesto pod najtmavšiu časť prekryvu, kde
+  sedí nadpis. Ľavý okraj panela nemizne farbou natretou navrch, ale maskou:
+  rozmazaný prvok sa inak ako vyblednutím vlastných pixelov ukončiť bez švu
+  nedá. Kde maska nie je podporovaná, vráti sa pôvodné pozadie na celú šírku.
+
+  `background-position` je `82 %`, nie `right`. Panel je oveľa vyšší než pomer
+  strán obrázka, takže `cover` oreže značnú časť šírky; pri `right` by ľavá
+  polovica jednotky spadla do vyblednutia.
+
+- **Rovnaká pasca bola stále aktívna na spise.** `--case-bg` s relatívnou cestou
+  sa vyhodnocuje voči štýlopisu, ktorý ju používa, nie voči stránke. Cesta
+  smerovala o dva priečinky vyššie; v koreni domény sa to o koreň zaseklo a
+  náhodou fungovalo, v lokálnom náhľade vracala 404. Obrázok je teraz nastavený
+  priamo na prvku, rovnako ako v úvode.
+
+- **Otvorené:** `trnava-dusk.png` má 1,39 MB ako PNG za päťpixelovým rozmazaním.
+  Prekódovanie na JPEG by z toho spravilo približne 47 kB. Čaká na rozhodnutie.

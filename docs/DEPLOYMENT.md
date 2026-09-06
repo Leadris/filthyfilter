@@ -51,7 +51,8 @@ The canonical links keep pointing at `https://filthyfilter.sk/`, so a crawler
 that reaches staging anyway is told where the real page is.
 
 `scripts` for this are not committed; the staging package is built by copying
-`index.html`, `robots.txt`, `assets/`, `css/`, `js/` and `hall/`, applying the
+`index.html`, `robots.txt`, the root icon files, `site.webmanifest`, `assets/`,
+`css/`, `js/` and `hall/`, applying the
 three changes above, then following the same upload, extract and chmod steps as
 production but against the staging root.
 
@@ -116,11 +117,25 @@ This is a static site. Package only these public paths from the repository root:
 index.html
 robots.txt
 sitemap.xml
+favicon.ico
+favicon-16x16.png
+favicon-32x32.png
+apple-touch-icon.png
+icon-192.png
+icon-512.png
+icon-192-maskable.png
+icon-512-maskable.png
+site.webmanifest
 assets/
 css/
 js/
 hall/
 ```
+
+The icon files and `site.webmanifest` sit at the repository root on purpose.
+Browsers and crawlers still ask for `/favicon.ico` and `/site.webmanifest` by
+their conventional names when nothing points them elsewhere, and the pages
+reference them relatively so the same files work under the local preview path.
 
 Do not publish `.git`, `docs`, `tmp`, `README.md`, `CONTEXT.md`, `CLAUDE.md`, or local tooling.
 
@@ -133,7 +148,7 @@ deployed Git commit.
 2. Create a clean local archive:
 
    ```powershell
-   tar.exe -czf "tmp\filthyfilter-release-<COMMIT>.tar.gz" index.html robots.txt sitemap.xml assets css js hall
+   tar.exe -czf "tmp\filthyfilter-release-<COMMIT>.tar.gz" index.html robots.txt sitemap.xml favicon.ico favicon-16x16.png favicon-32x32.png apple-touch-icon.png icon-192.png icon-512.png icon-192-maskable.png icon-512-maskable.png site.webmanifest assets css js hall
    ```
 
 3. Upload the archive to the server staging directory:

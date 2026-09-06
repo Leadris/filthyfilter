@@ -189,23 +189,21 @@ deployed Git commit.
 ## Last verified deployment
 
 - Date: 2026-09-06
-- Commit: `603350b`
+- Commit: `74f9eda`
 - Target: `https://filthyfilter.sk/` and `https://dev.filthyfilter.sk/`
-- Change: the bacteria icon set installed at the web root, and the hero
-  landmark moved off `.wrap` onto the section so its sides stop showing.
-- Verification on the live site: all nine icon files and `site.webmanifest`
-  return `200` at their expected sizes on both hosts, and the manifest is
-  served as `application/manifest+json`. Every icon link on the page fetches
-  `200` from the page's own relative path. The hero layer's parent is `.hero`,
-  it starts at 28% and bleeds past the right edge of a 1600px viewport, the
-  mask is applied, and the headline is static with no filter. No horizontal
-  scroll. The case page's Trnava landmark now returns `200` from a path
-  relative to the document rather than to the stylesheet.
+- Change: the bacteria replaces the old `FF` mark inside the pages as well, in
+  the header, the footer and the review card on the case page.
+- Verification on the live site: `assets/mark-bacteria.png` returns `200` at
+  7,444 bytes as `image/png` on both hosts. The homepage references it twice
+  and the case page three times, all loaded, all with an empty `alt`. The
+  footer keeps its three items on one row. `assets/favicon.svg` returns `404`
+  and no page still asks for it. No horizontal scroll, no console errors.
 - Rollback archive:
-  `/home/jg046600/tmp/filthyfilter-before-603350b.tar.gz`
-- SSH port used: 22635. The port rotates, so each one needs its own
-  `known_hosts` entry; 22635 presented the same host key already trusted on the
-  recent deploy ports.
+  `/home/jg046600/tmp/filthyfilter-before-74f9eda.tar.gz`
+- SSH port used: 22635.
+- Note: `tar -x` only adds and overwrites, so a file deleted in the repository
+  survives on the server. `assets/favicon.svg` had to be removed by hand on
+  both roots. Any future deletion needs the same step.
 
 ### Mail
 

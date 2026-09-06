@@ -110,6 +110,15 @@ načítaním tagu:
 - Voľba jazyka a zvuku v `localStorage` je funkčná preferencia používateľa a súhlas
   nepotrebuje. Nemieša sa s marketingovým úložiskom.
 
+**Stav v kóde:** `js/consent.js` je hotový a nasadený, ale zámerne spí. Kým je `TAG_ID`
+prázdny, nevykreslí banner, nenačíta žiadny skript a nenastaví nič. Banner na stránke,
+ktorá nikoho nesleduje, je len otravný a pýtať si súhlas, ktorý nevyužijeme, je vlastný
+druh nečestnosti. Vyplnením identifikátora tagu sa meranie zapne aj s bannerom naraz.
+
+**Otvorené:** web nemá stránku o spracovaní údajov. `PRIVACY_URL` v tom istom súbore je
+preto prázdny a odkaz sa v banneri nezobrazuje. Pred zapnutím tagu treba takú stránku
+vytvoriť; banner, ktorý nemá kam odkázať, je pri kontrole slabé miesto.
+
 ## 5. Čo brief vynechal a čo s tým
 
 1. **Súhlas a Consent Mode v2.** V briefe nie je ani raz, pritom patrí do prvej meracej
@@ -210,3 +219,6 @@ a slúžia nanajvýš ako hrubá orientácia.
 3. **Kto dvíha telefón a do koľkých minút** odpovedá na lead.
 4. **Doplniť čistenie klimatizácií do profilu whispAir** na Google, ak sa tak ešte nestalo.
 5. **Skúšobný e-mail na `info@filthyfilter.sk`**, doručenie stále nikto nepotvrdil.
+6. **Identifikátor Google tagu** do `TAG_ID` v `js/consent.js`. Kým tam nie je, meranie
+   aj banner spia.
+7. **Stránka o spracovaní údajov** a jej adresa do `PRIVACY_URL` v tom istom súbore.

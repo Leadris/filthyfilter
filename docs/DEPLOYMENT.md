@@ -109,6 +109,32 @@ subdomain roots, but do not have access to `www_root_whispair_sk`. Production
 FilthyFilter deployment therefore uses the dedicated SSH key above. Do not copy
 credentials or private keys into this repository.
 
+## API dependency (from 6 September 2026)
+
+The site is still static, but the enquiry form no longer ends in the visitor's
+own WhatsApp. It posts to `whispair-api`, which stores the lead together with
+its Google Ads attribution:
+
+| Host | API it talks to |
+| --- | --- |
+| `filthyfilter.sk` | `https://api.whispair.sk/api/v1/leads` |
+| `dev.filthyfilter.sk` | `https://api-dev.whispair.sk/api/v1/leads` |
+| local preview (`127.0.0.1`, `localhost`) | `https://api-dev.whispair.sk/api/v1/leads` |
+
+Staging and the local preview deliberately talk to the staging API, so a test
+enquiry never reaches the real field inbox. The mapping lives in `apiBase()` in
+`js/main.js`.
+
+Two things must be true on the API side before a deployment can take leads:
+the route `POST /api/v1/leads` exists, and `CORS_ALLOWED_ORIGINS` in that
+deployment's `.env` lists the FilthyFilter origin. A missing origin fails
+silently in the browser as a blocked cross-origin request; the visitor sees the
+send fail and is pushed to WhatsApp, so leads are not lost, but none are stored.
+
+Measurement is dormant until `TAG_ID` in `js/consent.js` is filled in. While it
+is empty the page loads no Google script, sets no cookie and shows no consent
+banner.
+
 ## Release contents
 
 This is a static site. Package only these public paths from the repository root:

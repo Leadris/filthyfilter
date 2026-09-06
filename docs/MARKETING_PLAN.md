@@ -188,6 +188,39 @@ nadsádzkou, akú má škála na webe. Platí ďalej z `REDESIGN_PLAN.md`:
 prvého dňa reklamy, etapa 5 môže prísť neskôr bez straty dát. Reklama teda nemusí čakať na
 celý okruh, ale nesmie začať skôr, než web ukladá lead aj GCLID.
 
+## 7b. Delenie práce s Codexom (6. 9. 2026)
+
+Codex rieši Google Ads a tagy, Claude web a meranie na ňom. Hranica je jedna a je
+dôležitá: **kód webu má jedného vlastníka.** Druhý tag vložený mimo `js/consent.js` by
+obišiel súhlas a zdvojil konverzie.
+
+| Vlastník | Čo |
+| --- | --- |
+| Codex | Účet Google Ads, konverzné akcie, štruktúra kampaní, kľúčové slová, negatíva, geo, rozpočet, vytvorenie Google tagu |
+| Claude | Web, landing pages, zachytávanie atribúcie, súhlas, cesta dopytu do `whispair-api` |
+| Spoločné | Názvy udalostí, mapovanie konverzných akcií, konfigurácia workera v `whispair-api` |
+
+**Čo Codex nemá stavať, lebo to už existuje:** formulár na leady, ukladanie GCLID a UTM,
+pipeline leadu na zákazku, nahrávanie offline konverzií. Všetko je v `whispair-api`,
+podrobne v kapitole 3 tohto dokumentu.
+
+**Čo od Codexu potrebujeme ako vstup:**
+
+1. **Identifikátor Google tagu** do `TAG_ID` v `js/consent.js`. Tag vkladá web, nie Codex.
+2. **Identifikátory konverzných akcií** pre štyri typy, ktoré `conversion_events` pozná:
+   `lead_qualified`, `job_created`, `job_completed`, `package_sold`. Idú do `.env`
+   API, odkiaľ ich číta `cron/google_ads_conversion_worker.php`.
+3. **Vývojársky token Google Ads**, kým nie je, worker ticho nič nerobí.
+
+**Pravidlá merania, ktoré musia platiť na oboch stranách:**
+
+- `lead_submitted` je hlavná konverzia a spúšťa sa až po prijatí leadu serverom.
+  Konverzná akcia na klik tlačidla by merala úmysel a učila Google nesprávnu vec.
+- `phone_click` a `whatsapp_click` nie sú hovor ani správa. Nikdy na ne neoptimalizovať
+  samostatne.
+- Hodnota zákazky nechodí z webu. Chodí z API po dokončení zákazky, cez GCLID.
+- Reklama sa nesmie spustiť skôr, než je web s zachytávaním atribúcie nasadený.
+
 ## 8. Google Ads v1
 
 Dve kampane, aby sa nemiešali dva rôzne zámery s rôznou naliehavosťou a cenou.

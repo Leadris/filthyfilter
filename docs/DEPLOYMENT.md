@@ -63,7 +63,7 @@ shipping it here would add a file that can only ever do nothing or go wrong.
 ### Last staging deploy
 
 - Date: 2026-09-06
-- Commit: `12f9d36`
+- Commit: `12f9d36`, patched to `c2528d0` the same day
 - Change: the first release that measures anything. The enquiry posts to
   `api-dev.whispair.sk`, attribution is captured, the consent layer carries the
   `GTM-57M8XLQJ` container, prices are on the service cards and the magnifier
@@ -80,6 +80,12 @@ shipping it here would add a file that can only ever do nothing or go wrong.
   file dropped from the repository has to be removed on the server each time.
 - Rollback archive:
   `/home/jg046600/tmp/filthyfilter-dev-before-12f9d36.tar.gz`
+- First real lead through the whole chain arrived and appeared in the portal
+  inbox, ready to become a job. It also exposed a defect fixed in `c2528d0`:
+  the contact printed twice, once from our composed message and once from the
+  columns the API appends itself. `index.html` and `js/main.js` were redeployed
+  and a second lead confirmed the message is clean and that `gclid`, `utm_source`
+  and the campaign are stored.
 - SSH port used: 22373.
 
 ### Previous staging deploy

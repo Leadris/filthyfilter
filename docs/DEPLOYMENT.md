@@ -62,6 +62,28 @@ shipping it here would add a file that can only ever do nothing or go wrong.
 
 ### Last staging deploy
 
+- Date: 2026-09-06
+- Commit: `12f9d36`
+- Change: the first release that measures anything. The enquiry posts to
+  `api-dev.whispair.sk`, attribution is captured, the consent layer carries the
+  `GTM-57M8XLQJ` container, prices are on the service cards and the magnifier
+  icons are in.
+- Verification over HTTPS: both pages answer `200` and carry
+  `noindex, nofollow`; `robots.txt` disallows everything; `sitemap.xml` answers
+  `404`. `js/consent.js` and `js/attribution.js` are served, the container id in
+  the deployed file is `GTM-57M8XLQJ` and the API target is `api-dev`. In the
+  browser the container loads, the consent banner appears, and a `gclid` plus the
+  UTM set on the landing URL survive into the enquiry payload.
+- Two stale files were deleted by hand: `sitemap.xml`, which does not belong on
+  staging at all, and `assets/mark-bacteria.png`, replaced by `brand-mark.png` in
+  `18ba44c`. Nothing referenced either. `tar -x` only adds and overwrites, so a
+  file dropped from the repository has to be removed on the server each time.
+- Rollback archive:
+  `/home/jg046600/tmp/filthyfilter-dev-before-12f9d36.tar.gz`
+- SSH port used: 22373.
+
+### Previous staging deploy
+
 - Date: 2026-09-05
 - Commit: `e174b09`
 - Change: the PPPP Rating, the Slovak reading of FFFF, and the fix for the

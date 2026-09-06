@@ -106,24 +106,30 @@
   // Services that make sense to count. Diagnostics and "not sure" do not.
   var COUNTABLE = { nastenna: 1, kazetova: 1, udrzba: 1, firmy: 1 };
 
-  // Build the message from whatever the visitor actually filled in. Empty
-  // fields are left out rather than sent as blank lines, so a two-line enquiry
-  // stays a two-line enquiry.
-  function buildMessage(data, lang) {
+  /* Build the message from whatever the visitor actually filled in. Empty fields
+     are left out rather than sent as blank lines, so a two-line enquiry stays a
+     two-line enquiry.
+
+     omitContact drops the name, the contact details and the town. The API stores
+     those as their own columns and appends them to the message body itself, so
+     leaving them in would print every enquiry's contact twice in the field inbox.
+     WhatsApp and the mail draft have no such columns, so there they stay. */
+  function buildMessage(data, lang, opts) {
     var L = FIELDS[lang] || FIELDS.sk;
     var service = (SERVICES[data.service] && SERVICES[data.service][lang]) || "";
+    var withContact = !(opts && opts.omitContact);
     // First line names the brand. The phone number and the field inbox are
     // shared with whispAir, so without it nobody can tell a cleaning enquiry
     // from a unit sale, on WhatsApp or in the inbox. landing_token records the
     // same thing in the attribution row, but a technician does not read that.
     var lines = [L.origin];
     if (service) lines.push(L.intro + " " + service + ".");
-    if (data.place) lines.push(L.place + ": " + data.place);
+    if (withContact && data.place) lines.push(L.place + ": " + data.place);
     if (data.unitsUnknown) lines.push(L.units + ": " + L.unitsUnknown);
     else if (data.units) lines.push(L.units + ": " + data.units);
-    if (data.name) lines.push(L.name + ": " + data.name);
-    if (data.phone) lines.push(L.phone + ": " + data.phone);
-    if (data.email) lines.push(L.email + ": " + data.email);
+    if (withContact && data.name) lines.push(L.name + ": " + data.name);
+    if (withContact && data.phone) lines.push(L.phone + ": " + data.phone);
+    if (withContact && data.email) lines.push(L.email + ": " + data.email);
     if (data.problem) lines.push(L.problem + ": " + data.problem);
     if (data.date) lines.push(L.date + ": " + data.date);
     return lines.join("\n");
@@ -596,7 +602,7 @@
       }
 
       var d = read();
-      var text = buildMessage(d, lang());
+      var text = buildMessage(d, lang(), { omitContact: true });
       var attribution = (window.ffAttribution && window.ffAttribution.get()) || {};
 
       var payload = {

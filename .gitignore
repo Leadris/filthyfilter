@@ -8,3 +8,7 @@ desktop.ini
 node_modules/
 dist/
 .cache/
+
+# Local scratch and release packaging. Deploy archives are build output, not
+# source: they are rebuilt from any commit and each one weighs about 22 MB.
+tmp/

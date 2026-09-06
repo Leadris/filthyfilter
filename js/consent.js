@@ -18,8 +18,24 @@
 (function () {
   "use strict";
 
-  // Fill in to switch measurement on, e.g. "AW-123456789" or "GT-XXXXXXX".
+  /* Fill in to switch measurement on. The prefix decides how events are sent:
+       "GTM-…"  a Tag Manager container. Events go on the dataLayer and the
+                container decides what becomes a conversion.
+       "AW-…"   a Google Ads tag, or "G-…" a GA4 tag. Events go through gtag,
+                and an Ads conversion additionally needs its label below.
+     A dataLayer push is not an event to a plain gtag tag, which is the trap
+     this indirection exists to avoid: the page looks instrumented, the network
+     tab shows the tag loading, and no conversion ever arrives. */
   var TAG_ID = "";
+
+  /* gtag mode only. One entry per event that Google Ads counts as a conversion,
+     value copied verbatim from the conversion action's own snippet, including
+     the label after the slash: "AW-1234567890/AbC-D_efGhIjKlM". An event with no
+     entry here is still sent, it just is not counted as a conversion.
+     In GTM mode leave this empty; the container maps the events instead. */
+  var CONVERSION_LABELS = {
+    lead_submitted: ""
+  };
 
   // Link shown next to the choice. Empty until the site has a privacy notice;
   // the link stays out rather than pointing at a page that does not exist.
@@ -52,15 +68,69 @@
     };
   }
 
+  /** "gtm", "gtag" or "off" — derived from the id so nothing has to be set twice. */
+  function tagMode() {
+    if (!TAG_ID) return "off";
+    return TAG_ID.slice(0, 4) === "GTM-" ? "gtm" : "gtag";
+  }
+
   function loadTag() {
     var script = document.createElement("script");
     script.async = true;
+
+    if (tagMode() === "gtm") {
+      script.src = "https://www.googletagmanager.com/gtm.js?id=" + encodeURIComponent(TAG_ID);
+      document.head.appendChild(script);
+      // The container reads this to know when it started, exactly as the official
+      // snippet does; the rest of that snippet is the script tag above.
+      window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
+      return;
+    }
+
     script.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(TAG_ID);
     document.head.appendChild(script);
 
     gtag("js", new Date());
     gtag("config", TAG_ID);
   }
+
+  /* The one way the rest of the site reports an event.
+     GTM wants a dataLayer push and gtag wants a gtag call, and sending the wrong
+     one loses the event silently. Keeping that choice here means js/main.js never
+     has to know which tag is installed, and swapping between them later is a
+     one-line change to TAG_ID. */
+  window.ffMeasure = {
+    mode: tagMode(),
+
+    event: function (name, params) {
+      params = params || {};
+
+      // Always on the dataLayer: it is what GTM consumes, and with no tag at all
+      // it still makes the event visible while debugging.
+      try {
+        var push = { event: name };
+        for (var key in params) {
+          if (Object.prototype.hasOwnProperty.call(params, key)) push[key] = params[key];
+        }
+        window.dataLayer.push(push);
+      } catch (e) {
+        // Measurement must never break the page it measures.
+      }
+
+      if (tagMode() !== "gtag") return;
+
+      gtag("event", name, params);
+
+      // Google Ads counts a conversion by its label, not by our event name.
+      var label = CONVERSION_LABELS[name];
+      if (!label) return;
+
+      var conversion = { send_to: label };
+      if (params.value !== undefined) conversion.value = params.value;
+      if (params.currency !== undefined) conversion.currency = params.currency;
+      gtag("event", "conversion", conversion);
+    }
+  };
 
   function banner(onChoice) {
     var box = document.createElement("div");

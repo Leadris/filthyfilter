@@ -41,6 +41,14 @@
      the right places. Nothing here reads or writes a cookie by itself. */
   function track(name, params) {
     try {
+      // js/consent.js owns the send, because how an event reaches Google depends
+      // on which kind of tag is installed and sending the wrong shape loses it
+      // without an error. The dataLayer fallback keeps events visible if that
+      // file is ever absent.
+      if (window.ffMeasure && typeof window.ffMeasure.event === "function") {
+        window.ffMeasure.event(name, params || {});
+        return;
+      }
       window.dataLayer = window.dataLayer || [];
       var payload = { event: name };
       for (var key in params || {}) {

@@ -139,6 +139,13 @@ reference them relatively so the same files work under the local preview path.
 
 Do not publish `.git`, `docs`, `tmp`, `README.md`, `CONTEXT.md`, `CLAUDE.md`, or local tooling.
 
+`tmp/` is in `.gitignore` as of 6 September 2026. Two release archives had been
+committed by an unqualified `git add -A` during packaging, about 21 MB each.
+They were stripped from history with `git filter-branch --index-filter` and both
+branches were force-pushed; a fresh bare clone is 22 MB. Build the archive
+inside `tmp/`, never elsewhere, and stage explicit paths rather than `-A` when
+an archive may be sitting in the tree.
+
 ## Deployment procedure
 
 Replace `<PORT>` with the active WebHouse SSH port and `<COMMIT>` with the

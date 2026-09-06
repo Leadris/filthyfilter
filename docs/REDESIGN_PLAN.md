@@ -416,3 +416,27 @@ odstraňujeme, len o stránku hlbšie.
   navyše.
 - **`assets/favicon.svg` je zmazaný.** Po tejto zmene naň neodkazovalo nič.
   Ak by sa niekedy hodil, je v histórii Gitu.
+
+### Repozitár prečistený od zabalených balíkov (2026-09-06)
+
+Pri dvoch nasadeniach sa do repozitára dostali zabalené archívy na nahratie,
+každý približne 21 MB. Boli to zbytočnosti, ktoré sa dajú kedykoľvek vyrobiť
+znovu z ktoréhokoľvek commitu.
+
+- `tmp/` je odteraz v `.gitignore`.
+- História oboch vetiev bola prepísaná cez `git filter-branch --index-filter`
+  a pretlačená s `--force-with-lease`. Strom `HEAD` má rovnaký hash ako pred
+  prepisom, takže obsah je bit po bite ten istý; zmizli iba cesty pod `tmp/`.
+- Značka `baseline-v1` zostala nedotknutá. Ukazuje na commit, ktorý je starší
+  než prvý súbor v `tmp/`, takže prepis jeho hash nezmenil a značka ďalej sedí
+  v histórii `main`.
+- Overené čerstvým holým klonom z GitHubu: 22 MB, 53 commitov, žiadne `tmp/`,
+  najväčšie súbory sú legitímne `backgroundMusic.mp3` a video dôkazu.
+- Záloha pred prepisom je `filthyfilter-backup-before-rewrite.bundle` v
+  dočasnom priečinku relácie. Obsahuje všetky pôvodné referencie.
+
+**Otvorené:** lokálny `.git` má stále 177 MB. Mŕtve objekty už nie sú dosiahnuteľné
+zo žiadnej referencie, ale drží ich reflog. Uvoľnia sa samé, keď reflog vyprší,
+alebo hneď po `git reflog expire --expire=now --all` a `git gc --prune=now`.
+Tie dva príkazy zablokoval bezpečnostný filter, musí ich spustiť používateľ.
+Na GitHube je už všetko preč.

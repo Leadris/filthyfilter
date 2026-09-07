@@ -67,6 +67,27 @@ shipping it here would add a file that can only ever do nothing or go wrong.
 
 ### Last staging deploy
 
+- Date: 2026-09-07, placeholder catalog images, the attribution fix on the privacy
+  notice and the five published service packages behind the price feed.
+- SSH port: 22597. **The host ed25519 key changed.** The pinned
+  `known_hosts_whispair` still carried
+  `SHA256:GyPVnlNfjn4iBEzYWl4IENKZ5FHdUhtxP5rbnerBHXo`, seen on eleven earlier
+  ports, while 22597 presents `SHA256:rcRNahF2vL6Xtrn6QGzmuKanYspAeg8cQXQKFHdYf80`,
+  already recorded in the ordinary `known_hosts` for ports 22480, 22854, 22211 and
+  22892. The user was shown both fingerprints and instructed the new one to be
+  accepted; the pin was rebound and `webhouse-ssh-status.json` updated. The claim in
+  `whispair-api/README.md` that the host key never changes is therefore stale.
+- All five public pages answer 200 with noindex/nofollow, robots disallows
+  everything and sitemap.xml answers 404. Five catalog images answer 200.
+- Deployed bytes match the repository for the three JS files, both CSS files and a
+  sample image (SHA-256).
+- Backup: `/home/jg046600/tmp/ff-dev-before-packages-20260907.tar.gz`.
+- Uploaded package: `/home/jg046600/tmp/ff-dev-20260907-packages.tar.gz`.
+- Production untouched. Its homepage SHA-256 before this work:
+  `7709c29105cd2e40481a240462ec4627dc658113914fea5cade1a1e7f8f5c979`.
+
+### Previous staging deploy
+
 - Date: 2026-09-07, privacy notice, consent/attribution, portal prices and responsive poster.
 - SSH port: 22597. Host ed25519 key matches previously trusted ports of this host,
   including 22690; pinned locally for this deployment.

@@ -39,7 +39,7 @@ piatich noindex stránok. Produkčný index má nezmenený SHA-256. Detaily: `DE
 stránkach zaškrtávacie pole „Prednostný termín do 24 hodín (+49 € s DPH)“. Sľub
 je vyčistenie do 24 hodín od objednávky, príplatok sa pripočíta k cene služby.
 Suma je v tabuľke `PRICES` v `js/main.js` pod značkou `{{p-expres}}`, kód balíka
-`FF-EXPRES-24H`; kým taký balík v portáli nie je, drží sa záložná suma z kódu.
+`FF-EXPRES-24H`; balík na dev vznikol 7. 9. večer, dovtedy držala sumu záloha z kódu.
 Keď je pole zaškrtnuté, pribudne riadok v texte dopytu, teda aj v tele správy,
 ktoré ide do API. Vzor je `vycistimklimu.sk`, ale ich pruh nad kartami ani ich
 príplatok 60 € sme nepreberali; používateľ zvolil umiestnenie vo formulári.
@@ -48,8 +48,8 @@ rozhodnutie v `REDESIGN_PLAN.md`.
 
 **Otvorené k tomu:** sľub do 24 hodín je prevádzkový záväzok, nie text. Musí byť
 jasné, kto ho vie dodržať a v ktoré dni; inak je to najdrahšie možné sklamanie.
-V portáli tiež zatiaľ nie je balík `FF-EXPRES-24H`, takže príplatok sa do zákazky
-nedostane sám.
+Balík `FF-EXPRES-24H` už na dev existuje a je zverejnený (7. 9. večer), takže
+príplatok má svoj kód. Na produkcii nie je.
 
 **Pravidlá realizácií (7. 9.).** `HALL_OF_FILTH_CASE_GUIDE.md` doplnený podľa
 Donuterie: rozloženie, poradie obsahu, obálka s 50 % priehľadnosťou bez zoomu,
@@ -73,6 +73,18 @@ sa bajtovo zhodujú s návrhom, robots.txt zakazuje indexovanie. Produkcia nezme
 Poster má responzívne WebP exporty 370/740/1110 px (28 114 / 104 964 / 212 176 B).
 HTML používa srcset, pôvodné PNG 2 552 512 B zostáva zdrojom. Opacity .5 sa nemení.
 Zdroj a zadanie: `docs/POSTER_PILOT.md`.
+
+**Prehliadačové testy sa dajú spustiť (7. 9. večer).** Súbor
+`tests/browser.test.cjs` vyžadoval Playwright, ale nič tú závislosť nedeklarovalo,
+takže tých sedem testov nevedel spustiť nikto. Pribudol súkromný `package.json`
+len s vývojovou závislosťou a výnimka je zapísaná v `CLAUDE.md`: do webrootu
+nejde ani `package.json`, ani `node_modules`. Spustenie:
+`FF_BROWSER_EXECUTABLE="C:\Program Files\Google\Chrome\Application\chrome.exe" npm test`.
+Všetkých sedem prešlo; testy odchytávajú volania na Google, takže sa nič reálne neodoslalo.
+
+**Atribúcia na stránke o údajoch (7. 9. večer).** Stránka `/ochrana-osobnych-udajov/`
+bola jediná verejná stránka bez `js/attribution.js`, takže návšteva z reklamy by na nej
+stratila identifikátor kliku ešte pred formulárom. Doplnené; zber zostáva podmienený súhlasom.
 
 **Posuvník (7. 9.).** Na dev je bočný posuvník zladený s medeným vizuálom:
 tmavá dráha, medený úchyt a zlaté zvýraznenie. Spoločné CSS používajú všetky
@@ -214,17 +226,31 @@ prepis.
 
 **Zostáva:**
 
-1. **Balíky nie sú zverejnené.** Zverejnenie vyžaduje obrázok ku každému balíku
-   a zároveň zaraďuje balík do fronty na synchronizáciu s externým katalógom, čo je
-   samostatné rozhodnutie, nezávislé od kŕmenia webu cenami.
+1. **Päť balíkov je na dev zverejnených (7. 9. večer).** `FF-CIST-NASTENNA`,
+   `FF-CIST-KAZETOVA`, `FF-UDRZBA`, `FF-DIAGNOSTIKA` a nový `FF-EXPRES-24H`.
+   Zápis šiel cez `ServicePackagesService`, teda cez tú istú vrstvu ako portál,
+   nie surovým SQL. Verejný feed na dev vracia päť položiek.
+   **Obrázky sú placeholdery** z `assets/packages/` a treba ich nahradiť fotografiami;
+   bez obrázka API zverejnenie odmieta, takže práve toto držalo feed prázdny.
+   Zverejnenie zaradilo balíky do fronty na synchronizáciu s katalógom Meta
+   (`catalog_sync_status = Pending`). Worker `meta_catalog_sync_worker` na dev nikdy
+   nebežal, takže do Meta zatiaľ nič neodišlo.
 2. **Na produkcii nič z toho nie je.** Balíky, stĺpec aj routa sú zatiaľ len na dev,
-   na vetve `feature/service-package-vat` v `whispair-api`.
+   na vetve `feature/service-package-vat` v `whispair-api`. Adresy obrázkov v dev
+   databáze ukazujú na `dev.filthyfilter.sk`; produkčný záznam bude potrebovať
+   produkčné adresy.
 3. **Frontend je napojený.** `js/main.js` načíta verejný feed po okamžitom zobrazení
    záložných cien. Preberie len jednoznačný známy kód, konečnú číselnú sumu v EUR
    a `vat_included`. Chyba, prázdny zoznam, nejasná DPH alebo 4 s timeout ponechajú
    zálohu. Mení SK/EN texty, metadata aj rozpísané zhrnutie bez straty polí.
-   Overené HTTP: dev 200 s prázdnym `servicePackages`, produkcia 405.
-   Balíky sa touto úpravou nezverejnili a API vetvy sa nezlučovali.
+   Overené HTTP: dev 200 s piatimi balíkmi a `Cache-Control` na 1800/3600 s,
+   CORS pustí `dev.filthyfilter.sk`. Spracovanie feedu držia prehliadačové testy.
+4. **Vytvorenie balíka bolo rozbité a je opravené.** `ServicePackagesRepository::insert()`
+   mal `price_vat_mode` v zozname hodnôt, ale nie v zozname stĺpcov, takže každé
+   vytvorenie balíka cez API padlo na „INSERT has more expressions than target
+   columns“. Úprava existujúceho balíka fungovala, preto to nikto nevidel. Opravené
+   v `whispair-api` commitom `a1cbb1e` na vetve `feature/service-package-vat`, so
+   samostatným testom, ktorý oba zoznamy porovnáva. Na dev nasadené po súboroch.
 
 **Verejná routa je hotová:** `GET /api/v1/service-packages/published`, bez prihlásenia,
 vracia len zverejnené a zároveň aktívne balíky a z nich len kód, verejný názov a popis,

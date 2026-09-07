@@ -121,11 +121,17 @@ prepis.
 1. **Balíky nie sú zverejnené.** Zverejnenie vyžaduje obrázok ku každému balíku
    a zároveň zaraďuje balík do fronty na synchronizáciu s externým katalógom, čo je
    samostatné rozhodnutie, nezávislé od kŕmenia webu cenami.
-2. **Verejná routa neexistuje.** Všetky routy na balíky vyžadujú prihlásenie. Web by
-   potreboval čítanie, ktoré vracia len zverejnené balíky a z nich len verejné meno, kód,
-   sumu, menu a daňový režim. Žiadne náklady ani marže.
-3. **Na produkcii nič z toho nie je.** Balíky aj stĺpec sú zatiaľ len na dev, na vetve
-   `feature/service-package-vat` v `whispair-api`.
+2. **Na produkcii nič z toho nie je.** Balíky, stĺpec aj routa sú zatiaľ len na dev,
+   na vetve `feature/service-package-vat` v `whispair-api`.
+3. **Web feed ešte nečíta.** Tabuľka `PRICES` v `js/main.js` má pri každej sume kód
+   balíka, ale ešte z routy nič nesťahuje. Až sa to dorobí, ceny sa majú naďalej
+   vykresľovať okamžite z vlastnej tabuľky a feed slúžiť ako doplnenie, nie podmienka.
+
+**Verejná routa je hotová:** `GET /api/v1/service-packages/published`, bez prihlásenia,
+vracia len zverejnené a zároveň aktívne balíky a z nich len kód, verejný názov a popis,
+obrázok, sumu, menu a daňový režim. Tvar je písaný samostatne, nie odfiltrovaním polí
+z portálovej odpovede, aby sa do nej pri budúcom rozšírení nedostala marža alebo náklad;
+držia to dva testy. Odpoveď je cachovaná na pol hodiny v prehliadači a hodinu na okraji.
 
 Až to bude, web má ceny naďalej vykresliť okamžite z vlastnej tabuľky a údaj z API použiť
 ako doplnenie, nie ako podmienku. Inak by výpadok API znamenal stránku bez cien.

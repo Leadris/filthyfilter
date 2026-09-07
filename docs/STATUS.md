@@ -23,6 +23,10 @@ nebol úplný.
 
 ## Čo je hotové
 
+**Posuvník (7. 9.).** Na dev je bočný posuvník zladený s medeným vizuálom:
+tmavá dráha, medený úchyt a zlaté zvýraznenie. Spoločné CSS používajú všetky
+štyri verejné stránky; overené zobrazenie v prehliadači. Produkcia bez zmeny.
+
 **Web.** Úvodná stránka, `/cistenie-klimatizacie/`, `/servis-klimatizacie/` a spis
 La Donuteria. Ceny sú zverejnené (79 / 129 / 49 s DPH, diagnostika 49 s odpočtom pri
 oprave). Pôsobnosť je Bratislava, Trnava, Nitra a okolie do 20 km, s bežiacim pruhom

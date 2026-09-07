@@ -41,6 +41,40 @@
 
 html { scroll-behavior: smooth; }
 
+/* Native scrollbars follow the copper HUD palette. Firefox uses the standard
+   colours; WebKit/Blink also get the narrow, subtly squared panel treatment. */
+html {
+  scrollbar-color: var(--copper) var(--bg-2);
+}
+
+@supports selector(::-webkit-scrollbar) {
+  /* Standard colours otherwise override the custom thumb in modern Blink. */
+  html { scrollbar-color: auto; }
+
+  html::-webkit-scrollbar { width: 12px; height: 12px; }
+  html::-webkit-scrollbar-track {
+    background: var(--bg-2);
+    box-shadow: inset 1px 0 var(--bronze-dim);
+  }
+  html::-webkit-scrollbar-thumb {
+    min-height: 44px;
+    background: var(--copper);
+    background-clip: padding-box;
+    border: 3px solid var(--bg-2);
+    border-radius: var(--radius);
+  }
+  html::-webkit-scrollbar-thumb:hover { background-color: var(--gold); }
+  html::-webkit-scrollbar-thumb:active { background-color: var(--gold-hi); }
+  html::-webkit-scrollbar-corner { background: var(--bg-2); }
+}
+
+@media (forced-colors: active) {
+  html { scrollbar-color: auto; }
+  html::-webkit-scrollbar-track,
+  html::-webkit-scrollbar-thumb,
+  html::-webkit-scrollbar-corner { all: revert; }
+}
+
 body {
   margin: 0;
   font-family: var(--f-body);

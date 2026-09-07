@@ -7,8 +7,9 @@
 - SSH user: `jg046600`
 - Remote document root: `/home/jg046600/www_root_filthyfilter_sk`
 - SSH identity: `%USERPROFILE%\.ssh\id_ed25519_whispair`
-- SSH port: obtain the currently active port from WebHouse before deployment.
-  The port is temporary; do not assume that the last used value is still valid.
+- SSH port: `22690`, confirmed by the user on 2026-09-07.
+  The port is temporary; reconfirm if it stops working.
+- Deploy changes to dev first; production is a separate release.
 
 `filthyfilter.sk` was registered on 5 September 2026 and is parked on the same
 WebHouse account as the whispAir projects. Its own document root
@@ -64,6 +65,18 @@ redirects the production `www` host, which never reaches this document root, so
 shipping it here would add a file that can only ever do nothing or go wrong.
 
 ### Last staging deploy
+
+- Date: 2026-09-07 (scrollbar cosmetic update).
+- Changed only `css/styles.css` and its cache version in the four existing
+  public HTML pages (`?v=scrollbar-1`). Existing staging metadata is preserved.
+- Native page scrollbar: dark track, copper thumb, gold hover and light-gold
+  active state; standard Firefox colours and forced-colours fallback.
+- Browser verification: visible copper scrollbar, computed width `12px`,
+  thumb `rgb(200, 132, 47)`, track `rgb(15, 11, 8)`.
+- Rollback: `/home/jg046600/tmp/ff-dev-before-scrollbar-20260907.tar.gz`.
+- Production unchanged.
+
+### Previous staging deploy
 
 - Date: 2026-09-07
 - Commit: `778c535`

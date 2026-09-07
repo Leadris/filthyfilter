@@ -485,3 +485,8 @@ upraviť:
 - **`theme_color` je opäť `#0a0706`**, nie jantárová `#f39a12` z balíka. Farbí
   sa ňou lišta prehliadača priamo nad stránkou a jantárový pruh nad takmer
   čiernou stránkou by pôsobil ako cudzí pás.
+
+### 7. 9. 2026 — bočný posuvník
+
+- [x] Natívny posuvník zladený s paletou: tmavá dráha, medený úchyt, zlatý hover.
+- [x] Nasadené na dev cez port 22690; vizuálne overené v prehliadači. Produkcia bez zmeny.

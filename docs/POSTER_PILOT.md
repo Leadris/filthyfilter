@@ -3,7 +3,7 @@
 7. 9. 2026. Používateľ poveril prípravou prvého návrhu a zdôraznil minimum duplicity.
 
 - Jediný plný poster je v úvode príslušného spisu; na La Donuterii nahrádza pečať.
-- Následná úprava 7. 9.: 25 % priehľadnosť (CSS opacity .75), bez zväčšovania
+- Následná úprava 7. 9.: 70 % priehľadnosť (CSS opacity .3), bez zväčšovania
   a bez odkazu na obrázok. Popis zostáva nepriehľadný. Overené cez HTTPS na stagingu.
 - Homepage je krátka upútavka so skutočnými fotografiami. Landing page čistenia
   naďalej používa skutočný výsledok pred/po. Poster sa na tieto miesta nekopíruje.

@@ -126,14 +126,13 @@ načítaním tagu:
 - Voľba jazyka a zvuku v `localStorage` je funkčná preferencia používateľa a súhlas
   nepotrebuje. Nemieša sa s marketingovým úložiskom.
 
-**Stav v kóde:** `js/consent.js` je hotový a nasadený, ale zámerne spí. Kým je `TAG_ID`
-prázdny, nevykreslí banner, nenačíta žiadny skript a nenastaví nič. Banner na stránke,
-ktorá nikoho nesleduje, je len otravný a pýtať si súhlas, ktorý nevyužijeme, je vlastný
-druh nečestnosti. Vyplnením identifikátora tagu sa meranie zapne aj s bannerom naraz.
-
-**Otvorené:** web nemá stránku o spracovaní údajov. `PRIVACY_URL` v tom istom súbore je
-preto prázdny a odkaz sa v banneri nezobrazuje. Pred zapnutím tagu treba takú stránku
-vytvoriť; banner, ktorý nemá kam odkázať, je pri kontrole slabé miesto.
+**Stav 7. 9. 2026:** `js/consent.js` používa GTM-57M8XLQJ v basic Consent Mode.
+Google skript sa načíta až po povolení merania; odmietnutie nezablokuje dopyt.
+Voľba je verzovaná, platí 180 dní a dá sa zmeniť v pätičke. Atribúcia sa ukladá
+iba po súhlase, personalizácia reklám zostáva denied. Stránka
+`ochrana-osobnych-udajov/` má overeného prevádzkovateľa ADAMSON s. r. o.
+Pred offline exportom treba dokončiť evidenciu a odvolávanie súhlasov v CRM;
+presný stav a zdroje: `PRIVACY_IMPLEMENTATION.md`. Google Ads dokončí používateľ neskôr.
 
 ## 5. Čo brief vynechal a čo s tým
 
@@ -284,7 +283,7 @@ a slúžia nanajvýš ako hrubá orientácia.
 5. **Skúšobný e-mail na `info@filthyfilter.sk`**, doručenie stále nikto nepotvrdil.
 6. **Identifikátor Google tagu** do `TAG_ID` v `js/consent.js`. Kým tam nie je, meranie
    aj banner spia.
-7. **Stránka o spracovaní údajov** a jej adresa do `PRIVACY_URL` v tom istom súbore.
+7. **Stránka o spracovaní údajov — hotová 7. 9. 2026**, odkazy v banneri, formulároch a pätičkách.
 
 ## 11. Meta (Facebook a Instagram) → WhatsApp
 

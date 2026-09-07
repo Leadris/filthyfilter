@@ -1,191 +1,158 @@
-/* =========================================================================
-   FilthyFilter by whispAir — tracking consent and Google Consent Mode v2.
-
-   The page measures nothing until a Google tag id is filled in below, so while
-   TAG_ID is empty this file draws no banner, sets no cookie and loads nothing.
-   That is deliberate: a consent banner on a page that tracks nobody is noise,
-   and asking for permission we do not use would be its own kind of dishonest.
-
-   Once a tag id is set, consent defaults go out denied before the tag loads,
-   which is what Consent Mode v2 expects. The tag then runs cookieless until
-   the visitor accepts. If your legal advice is stricter and wants no Google
-   script at all before a yes, move loadTag() inside the accept branch; the
-   rest of this file does not care.
-
-   Loads before main.js. The banner is built with data-sk / data-en so the
-   existing language switch translates it like any other node.
-   ========================================================================= */
+/* Consent Mode v2, basic mode: no Google measurement script before agreement.
+   One optional purpose: measuring advertising effectiveness, without personalised
+   ads. The enquiry works independently. Consent is versioned and expires. */
 (function () {
   "use strict";
-
-  /* Fill in to switch measurement on. The prefix decides how events are sent:
-       "GTM-…"  a Tag Manager container. Events go on the dataLayer and the
-                container decides what becomes a conversion.
-       "AW-…"   a Google Ads tag, or "G-…" a GA4 tag. Events go through gtag,
-                and an Ads conversion additionally needs its label below.
-     A dataLayer push is not an event to a plain gtag tag, which is the trap
-     this indirection exists to avoid: the page looks instrumented, the network
-     tab shows the tag loading, and no conversion ever arrives. */
   var TAG_ID = "GTM-57M8XLQJ";
-
-  /* gtag mode only. One entry per event that Google Ads counts as a conversion,
-     value copied verbatim from the conversion action's own snippet, including
-     the label after the slash: "AW-1234567890/AbC-D_efGhIjKlM". An event with no
-     entry here is still sent, it just is not counted as a conversion.
-     In GTM mode leave this empty; the container maps the events instead. */
-  var CONVERSION_LABELS = {
-    lead_submitted: ""
-  };
-
-  // Link shown next to the choice. Empty until the site has a privacy notice;
-  // the link stays out rather than pointing at a page that does not exist.
-  var PRIVACY_URL = "";
-
-  var STORE_KEY = "ff_consent_v1";
-  var GRANTED = "granted";
-  var DENIED = "denied";
+  var CONVERSION_LABELS = { lead_submitted: "" }; // GTM owns the existing mapping.
+  var STORE_KEY = "ff_consent_v2";
+  var VERSION = "2026-09-07";
+  var MAX_AGE = 180 * 24 * 60 * 60 * 1000;
+  var loaded = false;
+  var activeBox = null;
+  var returnFocus = null;
+  var choice = readChoice();
+  var ownScript = document.currentScript;
+  var PRIVACY_URL = ownScript ? new URL("../ochrana-osobnych-udajov/", ownScript.src).href : "/ochrana-osobnych-udajov/";
 
   window.dataLayer = window.dataLayer || [];
   function gtag() { window.dataLayer.push(arguments); }
-
-  function stored() {
-    try { return localStorage.getItem(STORE_KEY); } catch (e) { return null; }
+  function readChoice() {
+    try {
+      var saved = JSON.parse(localStorage.getItem(STORE_KEY));
+      if (saved && saved.version === VERSION && typeof saved.accepted === "boolean" &&
+          typeof saved.at === "number" && saved.at <= Date.now() && Date.now() - saved.at < MAX_AGE) return saved;
+      localStorage.removeItem(STORE_KEY);
+    } catch (e) {}
+    return null;
   }
-
-  function remember(value) {
-    try { localStorage.setItem(STORE_KEY, value); } catch (e) {}
+  function allowed() {
+    return !!(TAG_ID && choice && choice.accepted && Date.now() - choice.at < MAX_AGE);
   }
-
-  /* The four signals Consent Mode v2 asks for. ad_user_data and
-     ad_personalization are the two added in v2; without them Google Ads treats
-     the whole consent signal as missing. */
-  function consentState(granted) {
-    return {
-      ad_storage: granted ? GRANTED : DENIED,
-      ad_user_data: granted ? GRANTED : DENIED,
-      ad_personalization: granted ? GRANTED : DENIED,
-      analytics_storage: granted ? GRANTED : DENIED
-    };
+  function signals(accepted) {
+    return { ad_storage: accepted ? "granted" : "denied",
+      analytics_storage: accepted ? "granted" : "denied",
+      ad_user_data: accepted ? "granted" : "denied",
+      ad_personalization: "denied" };
   }
-
-  /** "gtm", "gtag" or "off" — derived from the id so nothing has to be set twice. */
-  function tagMode() {
-    if (!TAG_ID) return "off";
-    return TAG_ID.slice(0, 4) === "GTM-" ? "gtm" : "gtag";
+  function clearMeasurement() {
+    try { sessionStorage.removeItem("ff_attr_v1"); sessionStorage.removeItem("ff_attr_v2"); } catch (e) {}
+    // Delete accessible Google measurement cookies for this site and parent domain.
+    var domains = ["", location.hostname];
+    var parts = location.hostname.split(".");
+    while (parts.length > 2) { parts.shift(); domains.push(parts.join(".")); }
+    var paths = ["/"];
+    var segments = location.pathname.split("/").filter(Boolean);
+    while (segments.length) { paths.push("/" + segments.join("/"), "/" + segments.join("/") + "/"); segments.pop(); }
+    document.cookie.split(";").forEach(function (entry) {
+      var name = entry.split("=")[0].trim();
+      if (!/^(_ga($|_)|_gid$|_gat($|_)|_gcl_|_gac_)/.test(name)) return;
+      domains.forEach(function (domain) {
+        paths.forEach(function (path) {
+          document.cookie = name + "=; Max-Age=0; path=" + path + (domain ? "; domain=" + domain : "") + "; SameSite=Lax";
+        });
+      });
+    });
   }
-
   function loadTag() {
+    if (loaded || !allowed()) return;
+    loaded = true;
     var script = document.createElement("script");
     script.async = true;
-
-    if (tagMode() === "gtm") {
-      script.src = "https://www.googletagmanager.com/gtm.js?id=" + encodeURIComponent(TAG_ID);
-      document.head.appendChild(script);
-      // The container reads this to know when it started, exactly as the official
-      // snippet does; the rest of that snippet is the script tag above.
+    if (TAG_ID.indexOf("GTM-") === 0) {
       window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
-      return;
+      script.src = "https://www.googletagmanager.com/gtm.js?id=" + encodeURIComponent(TAG_ID);
+    } else {
+      script.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(TAG_ID);
+      gtag("js", new Date());
+      gtag("config", TAG_ID);
     }
-
-    script.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(TAG_ID);
     document.head.appendChild(script);
-
-    gtag("js", new Date());
-    gtag("config", TAG_ID);
   }
-
-  /* The one way the rest of the site reports an event.
-     GTM wants a dataLayer push and gtag wants a gtag call, and sending the wrong
-     one loses the event silently. Keeping that choice here means js/main.js never
-     has to know which tag is installed, and swapping between them later is a
-     one-line change to TAG_ID. */
-  window.ffMeasure = {
-    mode: tagMode(),
-
-    event: function (name, params) {
-      params = params || {};
-
-      // Always on the dataLayer: it is what GTM consumes, and with no tag at all
-      // it still makes the event visible while debugging.
-      try {
-        var push = { event: name };
-        for (var key in params) {
-          if (Object.prototype.hasOwnProperty.call(params, key)) push[key] = params[key];
-        }
-        window.dataLayer.push(push);
-      } catch (e) {
-        // Measurement must never break the page it measures.
-      }
-
-      if (tagMode() !== "gtag") return;
-
-      gtag("event", name, params);
-
-      // Google Ads counts a conversion by its label, not by our event name.
-      var label = CONVERSION_LABELS[name];
-      if (!label) return;
-
-      var conversion = { send_to: label };
-      if (params.value !== undefined) conversion.value = params.value;
-      if (params.currency !== undefined) conversion.currency = params.currency;
-      gtag("event", "conversion", conversion);
-    }
-  };
-
-  function banner(onChoice) {
+  function choose(accepted) {
+    choice = { version: VERSION, accepted: accepted, at: Date.now() };
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(choice)); } catch (e) {}
+    gtag("consent", "update", signals(accepted));
+    if (!accepted) clearMeasurement();
+    document.dispatchEvent(new CustomEvent("ff:consentchange"));
+    if (accepted) loadTag();
+    // Already-loaded third-party listeners cannot be reliably unloaded in place.
+    else if (loaded) window.location.reload();
+  }
+  function translate(box) {
+    var lang = document.documentElement.lang === "en" ? "en" : "sk";
+    box.querySelectorAll("[data-sk][data-en]").forEach(function (el) { el.textContent = el.getAttribute("data-" + lang); });
+  }
+  function close() {
+    if (!activeBox) return;
+    activeBox.remove();
+    activeBox = null;
+    if (returnFocus && document.contains(returnFocus)) returnFocus.focus();
+  }
+  function banner(focus) {
+    if (activeBox || !TAG_ID) return;
+    returnFocus = focus ? document.activeElement : null;
     var box = document.createElement("div");
+    activeBox = box;
     box.className = "consent";
     box.setAttribute("role", "dialog");
     box.setAttribute("aria-labelledby", "consent-title");
-
-    var privacy = PRIVACY_URL
-      ? '<a class="consent__link" href="' + PRIVACY_URL + '"' +
-        ' data-en="How we handle data" data-sk="Ako narábame s údajmi">Ako narábame s údajmi</a>'
-      : "";
-
-    box.innerHTML =
-      '<div class="consent__inner">' +
-        '<p class="consent__title" id="consent-title"' +
-        ' data-en="Measuring where enquiries come from"' +
-        ' data-sk="Meranie toho, odkiaľ chodia dopyty">Meranie toho, odkiaľ chodia dopyty</p>' +
-        '<p class="consent__text"' +
-        ' data-en="With your agreement we measure which advertisement brought you here, so we do not pay for ads that help nobody. Say no and the site works exactly the same."' +
-        ' data-sk="S vaším súhlasom meriame, ktorá reklama vás sem priviedla, aby sme neplatili za reklamy, ktoré nikomu nepomáhajú. Ak odmietnete, stránka funguje presne rovnako.">S vaším súhlasom meriame, ktorá reklama vás sem priviedla, aby sme neplatili za reklamy, ktoré nikomu nepomáhajú. Ak odmietnete, stránka funguje presne rovnako.</p>' +
-        '<div class="consent__actions">' +
-          '<button type="button" class="btn btn--ghost" data-consent="reject"' +
-          ' data-en="Decline" data-sk="Odmietnuť">Odmietnuť</button>' +
-          '<button type="button" class="btn btn--primary" data-consent="accept"' +
-          ' data-en="Agree" data-sk="Súhlasím">Súhlasím</button>' +
-        '</div>' +
-        privacy +
-      '</div>';
-
+    box.setAttribute("aria-describedby", "consent-description");
+    box.innerHTML = '<div class="consent__inner">' +
+      '<p class="consent__title" id="consent-title" data-sk="Klímu čistíme. Reklamu meriame len s vaším súhlasom." data-en="We clean ACs. We measure ads only with your agreement."></p>' +
+      '<p class="consent__text" id="consent-description" data-sk="Povolíte cookies Google a meranie návštevy, kliknutí a odoslania dopytu? Zdroj reklamy spojíme s dopytom. Pri meraní výslednej zákazky môže Google dostať aj jej hodnotu a zakódovaný e-mail či telefón. Personalizované reklamy nepovoľujeme. Odmietnutie neovplyvní objednávku; voľbu zmeníte v pätičke." data-en="Allow Google cookies and measurement of visits, clicks and enquiries? We link the ad source to the enquiry. To measure the resulting job, Google may receive its value and a hashed e-mail or phone number. We do not enable personalised ads. Declining does not affect your booking; change your choice in the footer."></p>' +
+      (loaded ? '<p class="consent__text" data-sk="Odvolanie súhlasu obnoví túto stránku. Rozpísaný dopyt si predtým skopírujte." data-en="Withdrawing consent reloads this page. Copy any unfinished enquiry first."></p>' : '') +
+      '<div class="consent__actions">' +
+      '<button type="button" class="btn btn--ghost" data-consent="reject" data-sk="Odmietnuť meranie" data-en="Decline measurement"></button>' +
+      '<button type="button" class="btn btn--ghost" data-consent="accept" data-sk="Povoliť meranie" data-en="Allow measurement"></button>' +
+      (choice ? '<button type="button" class="btn btn--ghost" data-consent="close" data-sk="Zavrieť bez zmeny" data-en="Close without changes"></button>' : '') + '</div>' +
+      '<a class="consent__link" href="' + PRIVACY_URL + '" data-sk="Osobné údaje a cookies" data-en="Personal data and cookies"></a></div>';
     box.addEventListener("click", function (event) {
-      var choice = event.target.getAttribute("data-consent");
-      if (!choice) return;
-      box.parentNode.removeChild(box);
-      onChoice(choice === "accept");
+      var action = event.target.getAttribute("data-consent");
+      if (!action) return;
+      close();
+      if (action !== "close") choose(action === "accept");
     });
-
+    box.addEventListener("keydown", function (event) { if (event.key === "Escape" && choice) close(); });
+    translate(box);
     document.body.appendChild(box);
+    if (focus) box.querySelector("button").focus();
   }
-
-  if (!TAG_ID) return;
-
-  // Denied first, always, and before the tag exists. A default that arrives
-  // after the tag has already reported is not a default.
-  gtag("consent", "default", consentState(false));
-
-  var choice = stored();
-
-  if (choice === "yes" || choice === "no") {
-    if (choice === "yes") gtag("consent", "update", consentState(true));
-    loadTag();
-  } else {
-    loadTag();
-    banner(function (accepted) {
-      remember(accepted ? "yes" : "no");
-      if (accepted) gtag("consent", "update", consentState(true));
-    });
-  }
+  window.ffConsent = { allowed: allowed, timestamp: function () { return choice ? choice.at : null; }, open: function () { banner(true); } };
+  window.ffMeasure = {
+    mode: !TAG_ID ? "off" : TAG_ID.indexOf("GTM-") === 0 ? "gtm" : "gtag",
+    event: function (name, params) {
+      if (!allowed()) return;
+      params = params || {};
+      if (TAG_ID.indexOf("GTM-") === 0) window.dataLayer.push(Object.assign({}, params, { event: name }));
+      else {
+        gtag("event", name, params);
+        if (CONVERSION_LABELS[name]) gtag("event", "conversion", { send_to: CONVERSION_LABELS[name] });
+      }
+    }
+  };
+  try { localStorage.removeItem("ff_consent_v1"); } catch (e) {}
+  gtag("consent", "default", signals(false));
+  gtag("set", "ads_data_redaction", true);
+  gtag("set", "url_passthrough", false);
+  if (allowed()) { gtag("consent", "update", signals(true)); loadTag(); }
+  else clearMeasurement();
+  if (!choice && TAG_ID) banner(false);
+  document.querySelectorAll("[data-consent-settings]").forEach(function (button) {
+    button.hidden = !TAG_ID;
+    button.addEventListener("click", function () { banner(true); });
+  });
+  document.addEventListener("ff:langchange", function () { if (activeBox) translate(activeBox); });
+  window.addEventListener("storage", function (event) {
+    if (event.key !== STORE_KEY && event.key !== null) return;
+    choice = readChoice();
+    if (!allowed()) {
+      gtag("consent", "update", signals(false));
+      clearMeasurement();
+      document.dispatchEvent(new CustomEvent("ff:consentchange"));
+      if (loaded) window.location.reload();
+      else if (!choice) banner(false);
+    }
+    // Accepting in another tab takes effect here on the next navigation.
+  });
 })();

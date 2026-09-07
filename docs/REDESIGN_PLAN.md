@@ -99,7 +99,13 @@ na WhatsApp vedľa hlavného.
 
 - **Kalkulačku a orientačnú cenu.** Verejné ceny sú v tomto pláne vylúčené a
   nemáme ich čím podložiť.
-- **Expresný termín do 24 h.** Urgentný termín negarantujeme.
+- ~~**Expresný termín do 24 h.** Urgentný termín negarantujeme.~~ **Zmenené
+  7. 9. 2026 na pokyn používateľa:** prednostný termín do 24 hodín od objednávky
+  ponúkame za príplatok 49 € s DPH. Nie je to samostatná sekcia ani karta služby,
+  ale zaškrtávacie pole v dopytovom formulári na všetkých troch stránkach
+  s formulárom; suma má značku `{{p-expres}}` v tabuľke cien v `js/main.js`.
+  Poznámka pre firmy na úvodnej stránke bola prepísaná, lebo predtým tvrdila
+  opak.
 - **Povinné meno, telefón a e-mail.** Ich formulár ich potrebuje, lebo inak by
   im prišla anonymná správa na server. My server nemáme. Zákazník dokončuje
   odoslanie vo vlastnom WhatsApse alebo e-maile, takže kontakt dostaneme aj tak

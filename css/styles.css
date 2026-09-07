@@ -699,8 +699,9 @@ img { max-width: 100%; display: block; }
 .pick:hover::after,
 .pick:focus-within::after { opacity: 1; }
 
-/* content sits above the wash */
-.pick > *:not(.pick__wash) { position: relative; z-index: 1; }
+/* content sits above the wash; the corner brackets keep their own absolute frame */
+.pick > *:not(.pick__wash):not(.brackets) { position: relative; z-index: 1; }
+.pick > .brackets { z-index: 1; }
 
 .pick .card__icon { color: var(--acc); transition: color .3s ease; }
 .pick h3 {
@@ -860,6 +861,19 @@ summary:focus-visible,
 .check input { width: 20px; height: 20px; accent-color: var(--copper); cursor: pointer; }
 
 .field__err { margin: 0; font-size: 0.95rem; color: var(--danger); }
+.field__hint { margin: 0; font-size: 0.95rem; color: var(--muted); }
+
+/* The priority slot is the one paid extra on top of the service, so it is the
+   only field that carries a price. The copper edge marks it as an offer rather
+   than another detail to fill in. */
+.field--express {
+  border: 1px solid var(--bronze-dim);
+  border-left: 3px solid var(--copper);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  background: rgba(0,0,0,0.22);
+}
+.field--express .check { color: var(--cream); font-weight: 600; }
 
 .inquiry__preview {
   font-family: var(--f-mono) !important;
@@ -976,6 +990,22 @@ summary:focus-visible,
 .consent__actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .consent__actions .btn { flex: 0 1 200px; text-align: center; }
 .consent__link { font-size: .9rem; color: var(--muted); }
+.consent { max-height: 85vh; overflow-y: auto; }
+.privacy-links { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 22px; }
+.privacy-links a, .privacy-links button { color: var(--muted); font: .85rem var(--f-body); text-decoration: underline; text-underline-offset: 3px; }
+.privacy-links button { background: none; border: 0; padding: 0; cursor: pointer; }
+.inquiry__privacy { color: var(--muted); font-size: .9rem; line-height: 1.6; }
+.inquiry__privacy a { text-decoration: underline; text-underline-offset: 3px; }
+.privacy-page { max-width: 940px; padding-top: 70px; padding-bottom: 40px; }
+.privacy-page h1 { font: 700 clamp(2.2rem, 6vw, 3.8rem)/1.1 var(--f-display); color: var(--gold); margin: 22px 0; }
+.privacy-page h2 { font: 600 1.6rem/1.3 var(--f-display); color: var(--gold); }
+.privacy-page section { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--bronze-dim); scroll-margin-top: 100px; }
+.privacy-page p { color: var(--muted); line-height: 1.75; }
+.privacy-page a { text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.privacy-table { overflow-x: auto; }
+.privacy-table table { width: 100%; border-collapse: collapse; color: var(--muted); font-size: .92rem; line-height: 1.6; }
+.privacy-table th, .privacy-table td { padding: 14px 12px; border-bottom: 1px solid var(--bronze-dim); text-align: left; vertical-align: top; }
+.privacy-table th { color: var(--cream); }
 
 @media (max-width: 720px) {
   .consent { bottom: 68px; }

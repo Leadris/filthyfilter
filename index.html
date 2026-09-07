@@ -2,6 +2,7 @@
 <html lang="sk">
 <head>
   <meta charset="UTF-8">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FilthyFilter by whispAir — čistenie a servis klimatizácií so záznamom</title>
   <meta name="description" content="Divízia dekontaminácie klímy. Fotografie pred zásahom a po ňom, škála FFFF a cena dohodnutá vopred. Bratislava, Trnava, Nitra a okolie do 20 km.">
@@ -20,11 +21,11 @@
   <meta name="theme-color" content="#0a0706">
 
   <!-- fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Share+Tech+Mono&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/styles.css?v=case-poster-1">
+
+  <link rel="stylesheet" href="css/fonts.css">
+
+  <link rel="stylesheet" href="css/styles.css?v=privacy-prices-1">
   <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 </head>
 <body data-ff-page="ff-home">
@@ -558,8 +559,8 @@
           <li><b data-en="Address" data-sk="Adresa">Adresa</b><span data-en="Town or postcode, for travel" data-sk="Obec alebo PSČ, kvôli doprave">Obec alebo PSČ, kvôli doprave</span></li>
         </ul>
         <p class="ffff-note" style="margin-top:18px"
-           data-en="// We do not promise a guaranteed 24-hour callout or fixed invoice terms. What we agree on, we write down."
-           data-sk="// Nesľubujeme garantovaný výjazd do 24 hodín ani pevnú splatnosť faktúr. Čo si dohodneme, to napíšeme.">// Nesľubujeme garantovaný výjazd do 24 hodín ani pevnú splatnosť faktúr. Čo si dohodneme, to napíšeme.</p>
+           data-en="// An ordinary date is agreed by arrangement; a slot within 24 hours is the paid priority option in the enquiry form. Fixed invoice terms we do not promise. What we agree on, we write down."
+           data-sk="// Bežný termín je dohodou; termín do 24 hodín je príplatková prednostná služba v dopytovom formulári. Pevnú splatnosť faktúr nesľubujeme. Čo si dohodneme, to napíšeme.">// Bežný termín je dohodou; termín do 24 hodín je príplatková prednostná služba v dopytovom formulári. Pevnú splatnosť faktúr nesľubujeme. Čo si dohodneme, to napíšeme.</p>
       </div>
     </div>
   </div>
@@ -576,8 +577,7 @@
     <div class="faq">
       <details class="panel faq__item" name="faq">
         <summary data-en="How much does it cost?" data-sk="Koľko to stojí?">Koľko to stojí?</summary>
-        <p data-en="The price follows the scope: the type of unit, how many there are, what condition they are in and how well we can reach them. We do not publish a price list, because a cassette unit in a suspended ceiling and a wall unit in a bedroom are not the same job. Send us the details and you get a specific price before we come."
-           data-sk="Cena vychádza z rozsahu: typ jednotky, koľko ich je, aký je stav a ako sa k nim dostaneme. Cenník nezverejňujeme, lebo kazetová jednotka v podhľade a nástenka v spálni nie sú tá istá práca. Pošlite nám údaje a dostanete konkrétnu cenu ešte pred príchodom.">Cena vychádza z rozsahu: typ jednotky, koľko ich je, aký je stav a ako sa k nim dostaneme. Cenník nezverejňujeme, lebo kazetová jednotka v podhľade a nástenka v spálni nie sú tá istá práca. Pošlite nám údaje a dostanete konkrétnu cenu ešte pred príchodom.</p>
+        <p  data-sk="Hĺbkové čistenie nástennej jednotky od {{p-nastenna}}, kazetovej od {{p-kazetova}}, preventívna údržba od {{p-udrzba}} a diagnostika {{p-diagnostika}}. Ceny sú s DPH. Konečnú sumu podľa počtu, stavu a prístupu k jednotkám potvrdíme vopred; firmy naceníme individuálne." data-en="Wall-unit deep cleaning from {{p-nastenna}}, cassette cleaning from {{p-kazetova}}, preventive maintenance from {{p-udrzba}} and diagnostics {{p-diagnostika}}. VAT included. We confirm the final price based on quantity, condition and access in advance; business contracts are quoted individually.">Hĺbkové čistenie nástennej jednotky od 79 €, kazetovej od 129 €, preventívna údržba od 49 € a diagnostika 49 €. Ceny sú s DPH. Konečnú sumu podľa počtu, stavu a prístupu k jednotkám potvrdíme vopred; firmy naceníme individuálne.</p>
       </details>
 
       <details class="panel faq__item" name="faq">
@@ -761,13 +761,24 @@
                    data-en="e.g. next week, mornings" data-sk="napr. budúci týždeň, doobeda" placeholder="napr. budúci týždeň, doobeda">
           </div>
 
+          <div class="field field--express">
+            <label class="check" for="inq-express">
+              <input type="checkbox" id="inq-express" name="express">
+              <span data-en="Priority appointment within 24 hours (+{{p-expres}} incl. VAT)" data-sk="Prednostný termín do 24 hodín (+{{p-expres}} s DPH)">Prednostný termín do 24 hodín (+49 &euro; s DPH)</span>
+            </label>
+            <p class="field__hint"
+               data-en="We put you at the front of the queue and clean within 24 hours of the order. The surcharge is added to the price of the service and we confirm the exact time when we take the order."
+               data-sk="Zaradíme vás pred poradie a vyčistíme do 24 hodín od objednávky. Príplatok sa pripočíta k cene služby a presný čas potvrdíme pri prijatí objednávky.">Zaradíme vás pred poradie a vyčistíme do 24 hodín od objednávky. Príplatok sa pripočíta k cene služby a presný čas potvrdíme pri prijatí objednávky.</p>
+          </div>
+
           <div class="field">
             <label for="inq-preview" data-en="Your enquiry at a glance" data-sk="Zhrnutie dopytu">Zhrnutie dopytu</label>
             <textarea id="inq-preview" class="inquiry__preview" rows="7" readonly></textarea>
           </div>
 
+          <p class="inquiry__privacy" id="inq-privacy"><span  data-sk="Údaje dostane ADAMSON s. r. o. na vybavenie dopytu a dohodnutie služby. Reklamné meranie je dobrovoľné a nastavuje sa osobitne." data-en="ADAMSON s. r. o. uses your details to respond and arrange the service. Advertising measurement is optional and controlled separately.">Údaje dostane ADAMSON s. r. o. na vybavenie dopytu a dohodnutie služby. Reklamné meranie je dobrovoľné a nastavuje sa osobitne.</span> <a href="ochrana-osobnych-udajov/" data-sk="Ako spracúvame údaje" data-en="How we process data">Ako spracúvame údaje</a>.</p>
           <div class="inquiry__actions">
-            <button type="submit" class="btn btn--primary" id="inq-send"
+            <button type="submit" class="btn btn--primary" id="inq-send" aria-describedby="inq-privacy"
                     data-en="Send the enquiry" data-sk="Odoslať dopyt">Odoslať dopyt</button>
             <button type="button" class="btn btn--wa" id="inq-whatsapp"
                     data-en="Continue on WhatsApp" data-sk="Pokračovať cez WhatsApp">Pokračovať cez WhatsApp</button>
@@ -818,8 +829,8 @@
         </div>
 
         <p class="ffff-note"
-           data-en="// You send the photos from your own app. This page stores nothing and sends nothing on its own."
-           data-sk="// Fotky posielate zo svojej aplikácie. Táto stránka nič neukladá ani sama nikam neodosiela.">// Fotky posielate zo svojej aplikácie. Táto stránka nič neukladá ani sama nikam neodosiela.</p>
+           data-en="// Send photos through WhatsApp or e-mail. The enquiry form sends your details to our service team."
+           data-sk="// Fotky pošlite cez WhatsApp alebo e-mail. Formulár odošle údaje o dopyte nášmu servisnému tímu.">// Fotky pošlite cez WhatsApp alebo e-mail. Formulár odošle údaje o dopyte nášmu servisnému tímu.</p>
       </div>
     </div>
   </div>
@@ -848,12 +859,13 @@
       <p><a href="https://whispair.sk/" target="_blank" rel="noopener">whispAir</a></p>
     </div>
   </div>
+<div class="privacy-links wrap"><a href="ochrana-osobnych-udajov/" data-sk="Osobné údaje a cookies" data-en="Personal data and cookies">Osobné údaje a cookies</a><button type="button" data-consent-settings hidden data-sk="Nastavenia súkromia" data-en="Privacy settings">Nastavenia súkromia</button></div>
 </footer>
 
 <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
-<script src="js/consent.js"></script>
-<script src="js/attribution.js"></script>
+<script src="js/consent.js?v=privacy-prices-1"></script>
+<script src="js/attribution.js?v=privacy-prices-1"></script>
 <script src="js/background.js"></script>
-<script src="js/main.js?v=magnifier-1"></script>
+<script src="js/main.js?v=privacy-prices-1"></script>
 </body>
 </html>

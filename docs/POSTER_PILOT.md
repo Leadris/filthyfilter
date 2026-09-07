@@ -22,3 +22,12 @@ PNG má 2,55 MB; pre finálne nasadenie treba úspornejší webový export.
 ## Presný prompt
 
 Create one portrait 4:5 illustrated campaign poster for FilthyFilter by whispAir, an AC cleaning business. Website asset for the existing Donut Defence Protocol case in Trnava dated 28.08.2026. Strong black, aged copper and small acid yellow hazard stripe palette, cinematic detective case-file graphic, distressed condensed typography. A stylized visibly illustrated air conditioner above a small donut on a cafe counter, dramatic inspection light, graphic dust motes, no photorealistic evidence or before/after comparisons. Refined restrained composition: very legible typography with generous negative space, not busy. Exact text only: top small 'FILTHYFILTER' and 'by whispAir'; main large 'DONUT DEFENCE'; under title 'PROTOCOL'; bottom 'TRNAVA / 28.08.2026' and 'FFFF 4'. No other text. No health claims, no bacteria labels, no laboratory claims, no logos of the customer. Make the art feel like an illustrated movie poster for the site's real field report. Save the final image locally and return its path for integration into the website.
+
+## Web export — 7. 9. 2026
+
+Pôvodná ilustrácia sa nemenila. Deterministický resize a WebP (quality 82) zo
+zdrojového PNG: 370 × 462 px / 28 114 B, 740 × 925 px / 104 964 B,
+1110 × 1387 px / 212 176 B. `srcset` vyberá podľa veľkosti displeja a jeho hustoty.
+CSS maximum zostáva 370 px (340 px na mobile), opacity .5. Bežný export je oproti
+2 552 512 B PNG menší o 98,9 %, verzia pre 2× displej o 95,9 %.
+Zdrojové PNG sa uchováva na ďalšie exporty, stránka ho už nenačítava.

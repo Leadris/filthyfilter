@@ -36,10 +36,9 @@
 
   var LEAD_PATH = "/api/v1/leads";
 
-  /* Marketing events. They are queued on dataLayer whether or not a tag is
-     installed yet, so the day one is added the events are already firing from
-     the right places. Nothing here reads or writes a cookie by itself. */
+  /* Measurement is optional. No event is queued without current consent. */
   function track(name, params) {
+    if (!window.ffConsent || !window.ffConsent.allowed()) return;
     try {
       // js/consent.js owns the send, because how an event reaches Google depends
       // on which kind of tag is installed and sending the wrong shape loses it
@@ -85,6 +84,7 @@
       email: "E-mail",
       problem: "Čo ma trápi",
       date: "Preferovaný termín",
+      express: "Prednostný termín do 24 hodín: áno, s príplatkom {{p-expres}} s DPH",
       subject: "Dopyt z filthyfilter.sk",
       origin: "Dopyt z filthyfilter.sk"
     },
@@ -98,6 +98,7 @@
       email: "E-mail",
       problem: "The problem",
       date: "Preferred date",
+      express: "Priority appointment within 24 hours: yes, surcharge {{p-expres}} incl. VAT",
       subject: "Enquiry from filthyfilter.sk",
       origin: "Enquiry from filthyfilter.sk"
     }
@@ -123,27 +124,82 @@
      The currency sits on the side the language puts it: 79 € and €79.
 
      `code` points at the service package in the portal that owns this figure.
-     That table (service_packages) already carries price_amount, currency,
-     public_name, package_code and an is_published flag, and whispAir's
-     installation items use it under the WA- prefix. The intention is that the
-     portal becomes the source and this table is fed from it; keeping the code
-     here means that day is a lookup rather than a rewrite.
-
-     Two things have to be settled first, and neither is code:
-       - none of the FF- packages exist yet, and the WA- ones carry no price,
-       - price_amount says nothing about VAT. The site prints these figures as
-         including it. Publishing a net amount as gross would understate every
-         price by the VAT rate, so the meaning of that column has to be pinned
-         down before anything reads it.
+     The public feed enhances these fallbacks after the initial render. Only
+     known FF packages in EUR including VAT can replace them. Publishing is a
+     separate portal action; an empty feed is a valid response.
      ======================================================================= */
   var PRICES = {
     "p-nastenna":    { code: "FF-CIST-NASTENNA", sk: "79 €",  en: "€79" },
     "p-kazetova":    { code: "FF-CIST-KAZETOVA", sk: "129 €", en: "€129" },
     "p-udrzba":      { code: "FF-UDRZBA",        sk: "49 €",  en: "€49" },
-    "p-diagnostika": { code: "FF-DIAGNOSTIKA",   sk: "49 €",  en: "€49" }
+    "p-diagnostika": { code: "FF-DIAGNOSTIKA",   sk: "49 €",  en: "€49" },
+    // A surcharge, not a service on its own: it is added to whichever cleaning
+    // or service package the visitor picked above.
+    "p-expres":      { code: "FF-EXPRES-24H",    sk: "49 €",  en: "€49" }
   };
 
   var PRICE_TOKEN = /\{\{(p-[a-z]+)\}\}/g;
+
+  function refreshPriceText() {
+    var lang = document.documentElement.getAttribute("lang") || DEFAULT_LANG;
+    document.querySelectorAll("[data-sk][data-en]").forEach(function (el) {
+      var raw = el.getAttribute("data-" + lang);
+      if (raw.indexOf("{{p-") === -1) return;
+      var target = el.getAttribute("data-attr-target");
+      if (target) el.setAttribute(target, withPrices(raw, lang));
+      else el.textContent = withPrices(raw, lang);
+    });
+    var meta = (window.FF_META && window.FF_META[lang]) || META[lang];
+    if (meta) {
+      document.title = withPrices(meta.title, lang);
+      var description = document.querySelector('meta[name="description"]');
+      if (description) description.setAttribute("content", withPrices(meta.desc, lang));
+    }
+  }
+
+  function initPrices() {
+    if (!window.fetch || !document.querySelector('[data-sk*="{{p-"]')) return;
+    var controller = window.AbortController ? new AbortController() : null;
+    var expired = false;
+    var timeout = setTimeout(function () {
+      expired = true;
+      if (controller) controller.abort();
+    }, 4000);
+    var options = { credentials: "omit", referrerPolicy: "no-referrer" };
+    if (controller) options.signal = controller.signal;
+    fetch(apiBase() + "/api/v1/service-packages/published", options)
+      .then(function (response) {
+        if (!response.ok) throw new Error("Price feed unavailable");
+        return response.json();
+      })
+      .then(function (body) {
+        if (expired || !body || body.success !== true || !Array.isArray(body.servicePackages)) return;
+        var changed = false;
+        Object.keys(PRICES).forEach(function (key) {
+          var matches = body.servicePackages.filter(function (pkg) {
+            return pkg && pkg.packageCode === PRICES[key].code;
+          });
+          // Duplicate codes, null, strings, non-EUR or ambiguous VAT: keep fallback.
+          if (matches.length !== 1) return;
+          var pkg = matches[0];
+          if (pkg.currency !== "EUR" || pkg.priceVatMode !== "vat_included" ||
+              typeof pkg.priceAmount !== "number" || !isFinite(pkg.priceAmount) ||
+              pkg.priceAmount <= 0 || pkg.priceAmount > 1000000) return;
+          var cents = Math.round(pkg.priceAmount * 100);
+          if (Math.abs(pkg.priceAmount * 100 - cents) > 0.000001) return;
+          var amount = (cents / 100).toFixed(cents % 100 ? 2 : 0);
+          PRICES[key].sk = amount.replace(".", ",") + " €";
+          PRICES[key].en = "€" + amount;
+          changed = true;
+        });
+        if (changed) {
+          refreshPriceText();
+          document.dispatchEvent(new CustomEvent("ff:priceschange"));
+        }
+      })
+      .catch(function () { /* Static prices keep working when the API does not. */ })
+      .then(function () { clearTimeout(timeout); });
+  }
 
   function withPrices(text, lang) {
     if (text.indexOf("{{") === -1) return text;
@@ -213,6 +269,9 @@
     if (withContact && data.email) lines.push(L.email + ": " + data.email);
     if (data.problem) lines.push(L.problem + ": " + data.problem);
     if (data.date) lines.push(L.date + ": " + data.date);
+    // Only written when it is ticked. A line saying "no" would make every
+    // ordinary enquiry read like a refused upsell.
+    if (data.express) lines.push(withPrices(L.express, lang));
     return lines.join("\n");
   }
 
@@ -327,9 +386,9 @@
     // meta + title — a page may override via window.FF_META (per-city pages)
     var meta = (window.FF_META && window.FF_META[lang]) || META[lang];
     if (meta) {
-      document.title = meta.title;
+      document.title = withPrices(meta.title, lang);
       var md = document.querySelector('meta[name="description"]');
-      if (md) md.setAttribute("content", meta.desc);
+      if (md) md.setAttribute("content", withPrices(meta.desc, lang));
     }
 
     // active button state
@@ -432,6 +491,7 @@
   }
 
   function initMusic() {
+    if (document.body.getAttribute("data-ff-page") === "ff-privacy") return;
     var audio = new Audio(MUSIC_URL);
     var fadeFrame = 0;
     var targetVolume = 0.28;
@@ -518,6 +578,7 @@
       company: document.getElementById("inq-company"),
       problem: document.getElementById("inq-problem"),
       date: document.getElementById("inq-date"),
+      express: document.getElementById("inq-express"),
       preview: document.getElementById("inq-preview"),
       status: document.getElementById("inq-status"),
       send: document.getElementById("inq-send")
@@ -539,7 +600,8 @@
         email: els.email.value.trim(),
         company: els.company ? els.company.value.trim() : "",
         problem: els.problem.value.trim(),
-        date: els.date.value.trim()
+        date: els.date.value.trim(),
+        express: !!(els.express && els.express.checked)
       };
     }
 
@@ -778,6 +840,7 @@
     // Language changes have to redraw the preview, since the message is
     // composed in whichever language the visitor is reading.
     document.addEventListener("ff:langchange", refresh);
+    document.addEventListener("ff:priceschange", refresh);
     refresh();
   }
 
@@ -785,6 +848,7 @@
     initContact();
     initMusic();
     initLang();
+    initPrices();
     initInquiry();
     initFaq();
     initFlipTiles();

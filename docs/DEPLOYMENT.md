@@ -7,7 +7,7 @@
 - SSH user: `jg046600`
 - Remote document root: `/home/jg046600/www_root_filthyfilter_sk`
 - SSH identity: `%USERPROFILE%\.ssh\id_ed25519_whispair`
-- SSH port: `22418`, confirmed by the user on 2026-09-07 (119-minute active window).
+- SSH port: `22597`, supplied by the user on 2026-09-07 and used for the privacy/price-feed release.
   The port is temporary; reconfirm if it stops working.
 - Deploy changes to dev first; production is a separate release.
 
@@ -45,8 +45,8 @@ have to be reapplied on every staging deploy:
 
 1. `robots.txt` is replaced with a blanket `Disallow: /`.
 2. Every HTML document gets `<meta name="robots" content="noindex, nofollow">`
-   after the viewport meta. There are four of them as of 7 September 2026:
-   the homepage, both landing pages and the case file. Apply it by globbing the
+   after the viewport meta. There are five of them as of 7 September 2026:
+   the homepage, both landing pages, the case file and the privacy notice. Apply it by globbing the
    package for `*.html` rather than by listing paths, or the next page added will
    quietly go out indexable.
 3. `sitemap.xml` is left out of the package.
@@ -56,7 +56,8 @@ that reaches staging anyway is told where the real page is.
 
 `scripts` for this are not committed; the staging package is built by copying
 `index.html`, `robots.txt`, the root icon files, `site.webmanifest`, `assets/`,
-`css/`, `js/`, `hall/`, `cistenie-klimatizacie/` and `servis-klimatizacie/`,
+`css/`, `js/`, `hall/`, `cistenie-klimatizacie/`, `servis-klimatizacie/`
+and `ochrana-osobnych-udajov/`,
 applying the three changes above, then following the same upload, extract and
 chmod steps as production but against the staging root.
 
@@ -65,6 +66,25 @@ redirects the production `www` host, which never reaches this document root, so
 shipping it here would add a file that can only ever do nothing or go wrong.
 
 ### Last staging deploy
+
+- Date: 2026-09-07, privacy notice, consent/attribution, portal prices and responsive poster.
+- SSH port: 22597. Host ed25519 key matches previously trusted ports of this host,
+  including 22690; pinned locally for this deployment.
+- All five public pages include noindex/nofollow, robots disallows all and sitemap
+  remains absent. New privacy directory, local WOFF2 fonts and licences included.
+- Deployed shared in-progress express enquiry option from the working tree alongside
+  this work; verified the preview updates with the feed without clearing form input.
+- Seven browser tests passed; after the final privacy layout adjustment, the two
+  affected price/visual tests passed again. No real lead or tracking event was sent.
+- HTTPS 200 + exact local SHA-256 verified for 19 files: five pages, three JS, two CSS,
+  three WebP posters, five fonts and robots. Public dev price feed: 200, empty list,
+  CORS `*`. Production price route: 405; no API release or package publication here.
+- Backup: `/home/jg046600/tmp/ff-dev-before-privacy-20260907-22597.tar.gz`.
+- Uploaded package: `/home/jg046600/tmp/ff-dev-privacy-20260907.tar.gz`.
+- Production homepage SHA-256 unchanged before/after deployment. Production release
+  remains separate. Offline consent audit/export tasks: `PRIVACY_IMPLEMENTATION.md`.
+
+### Previous staging deploy
 
 - Date: 2026-09-07, poster adjusted to 50% transparency (opacity .5).
 - Case HTML cache version case-poster-5 and CSS only; zoom remains removed.

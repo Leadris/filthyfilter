@@ -17,12 +17,39 @@ nebol úplný.
 | Cesta leadu do systému | hotová a overená end-to-end |
 | Okruh tržieb späť do Google Ads | kód hotový, na dev nasadený, **nie na produkcii** |
 | Reklamné stránky | dve, na stagingu |
-| Google Ads | **nezaložený**, odložený; prvý kanál je Meta |
+| Google Ads | používateľ dokončí nastavenie neskôr; kampaň teraz nespúšťame. Plán prvého kanála Meta zostáva samostatne. |
 | Meta (Facebook a Instagram) | **nezačaté**, zadanie zapísané v `MARKETING_PLAN.md` kap. 11 |
-| Produkčný web | **stará verzia**, bez formulára aj bez merania |
+| Produkčný web | **stará verzia**, formulár pripravuje správu, neposiela lead do API; bez merania |
 | Ikony | hotové na stagingu; produkcia má ešte starú baktériu |
 
 ## Čo je hotové
+
+**Súkromie, ceny a optimalizácia (7. 9., nasadené na dev).**
+SK/EN informácie podľa čl. 13 GDPR s ADAMSON s. r. o.; odkazy pri všetkých troch
+formulároch a v piatich pätičkách. Basic Consent Mode blokuje Google pred súhlasom,
+atribúcia sa ukladá len so súhlasom, voľba má verziu/čas a platnosť 180 dní, súhlas
+sa dá odvolať. Google Fonts sú nahradené lokálnymi WOFF2. Nepravdivé tvrdenie, že
+stránka nič neukladá/neodosiela, je opravené. Pravidlá a otvorené povinnosti CRM
+pred offline exportom sú v `PRIVACY_IMPLEMENTATION.md`. Sedem prehliadačových testov
+prešlo; reálne dopyty sa pri nich neposielali. Cenový feed aj WebP poster sú hotové.
+Nasadené na dev cez port 22597: HTTPS 200 a zhodné SHA-256 pre 19 súborov vrátane
+piatich noindex stránok. Produkčný index má nezmenený SHA-256. Detaily: `DEPLOYMENT.md`.
+
+**Prednostný termín (7. 9., na dev).** Dopytový formulár má na všetkých troch
+stránkach zaškrtávacie pole „Prednostný termín do 24 hodín (+49 € s DPH)“. Sľub
+je vyčistenie do 24 hodín od objednávky, príplatok sa pripočíta k cene služby.
+Suma je v tabuľke `PRICES` v `js/main.js` pod značkou `{{p-expres}}`, kód balíka
+`FF-EXPRES-24H`; kým taký balík v portáli nie je, drží sa záložná suma z kódu.
+Keď je pole zaškrtnuté, pribudne riadok v texte dopytu, teda aj v tele správy,
+ktoré ide do API. Vzor je `vycistimklimu.sk`, ale ich pruh nad kartami ani ich
+príplatok 60 € sme nepreberali; používateľ zvolil umiestnenie vo formulári.
+Poznámka pre firmy na úvodnej stránke tvrdila opak a bola prepísaná, rovnako
+rozhodnutie v `REDESIGN_PLAN.md`.
+
+**Otvorené k tomu:** sľub do 24 hodín je prevádzkový záväzok, nie text. Musí byť
+jasné, kto ho vie dodržať a v ktoré dni; inak je to najdrahšie možné sklamanie.
+V portáli tiež zatiaľ nie je balík `FF-EXPRES-24H`, takže príplatok sa do zákazky
+nedostane sám.
 
 **Pravidlá realizácií (7. 9.).** `HALL_OF_FILTH_CASE_GUIDE.md` doplnený podľa
 Donuterie: rozloženie, poradie obsahu, obálka s 50 % priehľadnosťou bez zoomu,
@@ -43,7 +70,8 @@ Vizuálne zobrazenie v prehliadači zatiaľ nebolo overené. Po dodaní nového 
 22418 bol návrh ee3433d nasadený na staging a otvorený v aplikácii na posúdenie.
 HTTPS kontrola: štyri stránky odpovedajú 200 a majú noindex, nofollow; CSS a poster
 sa bajtovo zhodujú s návrhom, robots.txt zakazuje indexovanie. Produkcia nezmenená.
-Poster PNG má 2,55 MB; pred finálnym vydaním pripraviť úspornú webovú verziu.
+Poster má responzívne WebP exporty 370/740/1110 px (28 114 / 104 964 / 212 176 B).
+HTML používa srcset, pôvodné PNG 2 552 512 B zostáva zdrojom. Opacity .5 sa nemení.
 Zdroj a zadanie: `docs/POSTER_PILOT.md`.
 
 **Posuvník (7. 9.).** Na dev je bočný posuvník zladený s medeným vizuálom:
@@ -109,16 +137,13 @@ ADAMSON s. r. o., Topoľčianska 19, 851 05 Bratislava, IČO 45378843,
 IČ DPH SK2022960159. `PRIVACY_URL` v `js/consent.js` na ňu už ukazuje. Tým padá
 bod 1 zo zoznamu nižšie aj bod 7 z kapitoly 10 v `MARKETING_PLAN.md`.
 
-**Otázka, ktorá z toho vzišla:** zoznam nižšie viaže založenie účtu Google Ads na
-to, „až keď vznikne s.r.o.“. ADAMSON s. r. o. je zapísaná a je platiteľom DPH.
-Ak je to tá istá firma, ktorá bude reklamu platiť, tá podmienka už neplatí a treba
-ju z tohto dokumentu vyhodiť. Ak sa čaká na inú, novú spoločnosť, treba to sem
-dopísať, lebo takto to čitateľa pomýli.
+Používateľ odložil dokončenie Google Ads; nejde o chýbajúce identifikačné údaje
+prevádzkovateľa webu. Podrobnosti implementácie a úlohy pred offline exportom
+sú v `PRIVACY_IMPLEMENTATION.md`.
 
 ## Čo čaká na používateľa
 
-1. **Údaje o prevádzkovateľovi** pre stránku o spracovaní údajov: obchodné meno, IČO,
-   sídlo a kontakt na uplatnenie práv. Bez nej banner o súhlase nemá kam odkázať.
+1. **Prevádzkovateľ vyriešený:** ADAMSON s. r. o.; údaje overené cez FinStat a ORSR.
 2. **Ktorým mestom začať s reklamou.** Bratislava, Trnava alebo Nitra. Rozhoduje to,
    kam sa vám najlepšie jazdí a kde už máte zákazníkov.
 3. **Kto dvíha telefón a do koľkých minút** odpovedá na dopyt.
@@ -126,7 +151,7 @@ dopísať, lebo takto to čitateľa pomýli.
 5. **Skúšobný e-mail na `info@filthyfilter.sk`.** Schránka existuje, doručenie nikto
    nepotvrdil.
 6. **Doplniť čistenie klimatizácií do profilu whispAir** na Google.
-7. **Google Ads účet** s firemným platobným profilom, až keď vznikne s.r.o. Krajina,
+7. **Dokončenie Google Ads** používateľom neskôr. Krajina,
    mena a časové pásmo sú pri zakladaní natrvalo; nastaviť podľa firmy. Hneď na prvej
    obrazovke prepnúť do režimu odborníka, inak účet skončí v režime Smart, kde nie sú
    konverzné akcie ani kľúčové slová.
@@ -194,9 +219,12 @@ prepis.
    samostatné rozhodnutie, nezávislé od kŕmenia webu cenami.
 2. **Na produkcii nič z toho nie je.** Balíky, stĺpec aj routa sú zatiaľ len na dev,
    na vetve `feature/service-package-vat` v `whispair-api`.
-3. **Web feed ešte nečíta.** Tabuľka `PRICES` v `js/main.js` má pri každej sume kód
-   balíka, ale ešte z routy nič nesťahuje. Až sa to dorobí, ceny sa majú naďalej
-   vykresľovať okamžite z vlastnej tabuľky a feed slúžiť ako doplnenie, nie podmienka.
+3. **Frontend je napojený.** `js/main.js` načíta verejný feed po okamžitom zobrazení
+   záložných cien. Preberie len jednoznačný známy kód, konečnú číselnú sumu v EUR
+   a `vat_included`. Chyba, prázdny zoznam, nejasná DPH alebo 4 s timeout ponechajú
+   zálohu. Mení SK/EN texty, metadata aj rozpísané zhrnutie bez straty polí.
+   Overené HTTP: dev 200 s prázdnym `servicePackages`, produkcia 405.
+   Balíky sa touto úpravou nezverejnili a API vetvy sa nezlučovali.
 
 **Verejná routa je hotová:** `GET /api/v1/service-packages/published`, bez prihlásenia,
 vracia len zverejnené a zároveň aktívne balíky a z nich len kód, verejný názov a popis,
@@ -204,8 +232,7 @@ obrázok, sumu, menu a daňový režim. Tvar je písaný samostatne, nie odfiltr
 z portálovej odpovede, aby sa do nej pri budúcom rozšírení nedostala marža alebo náklad;
 držia to dva testy. Odpoveď je cachovaná na pol hodiny v prehliadači a hodinu na okraji.
 
-Až to bude, web má ceny naďalej vykresliť okamžite z vlastnej tabuľky a údaj z API použiť
-ako doplnenie, nie ako podmienku. Inak by výpadok API znamenal stránku bez cien.
+Web už ceny vykresľuje okamžite z vlastnej tabuľky a API používa ako doplnenie.
 
 **Dopytový formulár je stále na troch miestach.** Rovnaká značka je v úvodnej stránke
 a v oboch reklamných. Zmena poľa znamená tri úpravy a nič na nesúlad neupozorní. Ceny

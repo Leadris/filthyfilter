@@ -285,3 +285,55 @@ a slúžia nanajvýš ako hrubá orientácia.
 6. **Identifikátor Google tagu** do `TAG_ID` v `js/consent.js`. Kým tam nie je, meranie
    aj banner spia.
 7. **Stránka o spracovaní údajov** a jej adresa do `PRIVACY_URL` v tom istom súbore.
+
+## 11. Meta (Facebook a Instagram) → WhatsApp
+
+Zadanie používateľa zo 7. 9. 2026. **Google Ads sa zatiaľ nespúšťa**, Meta a Google
+Business Profile áno. Kapitoly 8 a 9 tým nestrácajú platnosť, len sa odkladajú;
+nič z nich sa nemaže.
+
+Cieľ nie je návštevnosť, lajky ani sledovatelia, ale **relevantná konverzácia na
+WhatsApp, ktorá skončí objednaným termínom**. Reklama má teda viesť do WhatsAppu,
+nie na stránku, a stránka slúži ako dôveryhodný podklad pre toho, kto si pred
+napísaním chce overiť, s kým má do činenia.
+
+Ideálny zákazník: domácnosť alebo menšia prevádzka s nástennou jednotkou, ktorá
+nebola dlhšie profesionálne čistená, v obsluhovanom území, ochotná poslať cez
+WhatsApp lokalitu, počet jednotiek a fotografiu.
+
+### 11.1 Čo web na túto kampaň nemá (zistené 7. 9. 2026)
+
+Štyri veci, overené v kóde, nie odhadom:
+
+1. **WhatsApp nie je v plávajúcej lište na mobile.** Na úvodnej stránke aj na oboch
+   reklamných obsahuje `.mobile-cta` iba „Zavolať“ a „Nacenenie“. Odkazy do
+   WhatsAppu v tele stránok existujú a sú merané, ale trvalá lišta, ktorú vidí
+   návštevník po celý čas, hlavný kanál kampane neponúka. Pri stratégii, kde je
+   WhatsApp primárny, je to najlacnejšia úprava s najväčším dopadom.
+2. **Meta Pixel neexistuje.** `js/consent.js` pozná výhradne Google, čo bolo dovtedy
+   správne. Pixel musí ísť **doňho**, nie vedľa neho, inak obíde súhlas a bude to
+   presne tá chyba, pred ktorou varuje kapitola 7b: web má jedného vlastníka tagov.
+3. **Žiadna stránka nemá `LocalBusiness` v JSON-LD.** Overené na všetkých piatich.
+   Chýba to najmä pre prepojenie s profilom na Google, teda pre kapitolu o mapách.
+4. **Materiál na reklamu je z jedinej zákazky.** V `assets/hall/trnava-la-donuteria/`
+   je jedna dvojica pred/po, jedno video a jedna fotografia tímu. Na tri koncepty,
+   ktoré má kampaň testovať, to nestačí a **nedá sa to vyrobiť kódom**.
+
+### 11.2 Čo platí ďalej a kampaň to nesmie porušiť
+
+- Žiadne zdravotné tvrdenia. Nečistá klimatizácia nie je diagnóza a čistenie nie je
+  liečba. Platí kapitola 6 aj pre reklamné texty, nielen pre web.
+- Ceny majú jediný zdroj pravdy, tabuľku `PRICES` v `js/main.js`. Suma v reklame,
+  ktorá nesedí s webom, je horšia než žiadna suma.
+- Pôsobnosť je Bratislava, Trnava, Nitra a okolie do 20 km. Geografické zacielenie
+  sa z toho nesmie vymknúť, inak platíme za dopyty, kam nejazdíme.
+- `whatsapp_click` je úmysel, nie správa. Neoptimalizovať naň ako na konverziu.
+
+### 11.3 Otvorené, na rozhodnutie používateľa
+
+1. Ktorým mestom začať. Rozpočet na tri mestá naraz je tenký (kapitola 5, bod 7).
+2. Kto odpovedá na WhatsApp a do koľkých minút. Pri kampani mierenej do konverzácie
+   je čas odpovede priamo konverzný faktor, nie prevádzková drobnosť.
+3. Aký materiál vieme nafotiť a nakrútiť na najbližších zákazkách.
+4. Či WhatsApp beží ako Business účet a na akom čísle. Dnešné `+421 902 279 094` je
+   spoločné s whispAir.

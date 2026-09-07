@@ -17,7 +17,8 @@ nebol úplný.
 | Cesta leadu do systému | hotová a overená end-to-end |
 | Okruh tržieb späť do Google Ads | kód hotový, na dev nasadený, **nie na produkcii** |
 | Reklamné stránky | dve, na stagingu |
-| Google Ads | **nezaložený**, čaká na s.r.o. |
+| Google Ads | **nezaložený**, odložený; prvý kanál je Meta |
+| Meta (Facebook a Instagram) | **nezačaté**, zadanie zapísané v `MARKETING_PLAN.md` kap. 11 |
 | Produkčný web | **stará verzia**, bez formulára aj bez merania |
 | Ikony | hotové na stagingu; produkcia má ešte starú baktériu |
 
@@ -86,6 +87,33 @@ súboru. Používateľ 7. 9. rozhodol, že ostrá doména ide neskôr.
 Nepokryté zostáva `interne/`. Beží ako samostatný koreň na `interne.filthyfilter.sk`,
 takže by potreboval vlastné kópie súborov. Je to neindexovaná interná príručka,
 zatiaľ bez ikon zámerne.
+
+## Meta kampaň: čo chýba (7. 9. 2026)
+
+Používateľ zadal ako prvý platený kanál Meta s prechodom do WhatsAppu, nie Google Ads.
+Podrobne v `MARKETING_PLAN.md` kapitola 11. Blokujúce je toto:
+
+1. **WhatsApp chýba v plávajúcej lište na mobile.** Všetky tri stránky majú
+   „Zavolať“ a „Nacenenie“. Hlavný kanál kampane teda nemá trvalé tlačidlo.
+2. **Meta Pixel neexistuje.** Musí ísť do `js/consent.js`, aby prešiel súhlasom,
+   nie vedľa neho.
+3. **Reklamný materiál je z jednej zákazky.** Kód to nevyrobí.
+
+Nebráni spusteniu, ale chýba: **žiadna stránka nemá `LocalBusiness` v JSON-LD**,
+čo je strata najmä pre mapový výsledok a prepojenie s profilom na Google.
+
+## Vyriešené 7. 9. 2026 večer
+
+**Prevádzkovateľ je známy a stránka o spracovaní údajov existuje.** Je ním
+ADAMSON s. r. o., Topoľčianska 19, 851 05 Bratislava, IČO 45378843,
+IČ DPH SK2022960159. `PRIVACY_URL` v `js/consent.js` na ňu už ukazuje. Tým padá
+bod 1 zo zoznamu nižšie aj bod 7 z kapitoly 10 v `MARKETING_PLAN.md`.
+
+**Otázka, ktorá z toho vzišla:** zoznam nižšie viaže založenie účtu Google Ads na
+to, „až keď vznikne s.r.o.“. ADAMSON s. r. o. je zapísaná a je platiteľom DPH.
+Ak je to tá istá firma, ktorá bude reklamu platiť, tá podmienka už neplatí a treba
+ju z tohto dokumentu vyhodiť. Ak sa čaká na inú, novú spoločnosť, treba to sem
+dopísať, lebo takto to čitateľa pomýli.
 
 ## Čo čaká na používateľa
 

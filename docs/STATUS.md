@@ -104,18 +104,28 @@ prefixom `WA-`. Tabuľka `PRICES` v `js/main.js` preto pri každej sume nesie aj
 teda kód balíka, ktorý tú sumu vlastní, aby neskoršie napojenie bolo vyhľadanie a nie
 prepis.
 
-Chýbajú tri veci a dve z nich nie sú kód:
+**Hotové 7. 9. 2026:**
 
-1. **Balíky `FF-` neexistujú.** Treba ich v portáli založiť s kódmi
-   `FF-CIST-NASTENNA`, `FF-CIST-KAZETOVA`, `FF-UDRZBA`, `FF-DIAGNOSTIKA`, vyplniť cenu
-   a zaškrtnúť zverejnenie. Desať existujúcich `WA-` balíkov má cenu prázdnu a zverejnenie
-   vypnuté.
-2. **`price_amount` nehovorí nič o DPH.** Web tie sumy uvádza ako sumy s DPH. Ak by sa
-   ťahala suma bez DPH a zobrazila ako s DPH, každá cena na webe by bola o sadzbu DPH
-   nižšia, než je pravda. Význam toho stĺpca treba ustáliť skôr, než z neho čokoľvek číta.
-3. **Verejná routa neexistuje.** Všetky routy na balíky vyžadujú prihlásenie. Web by
+- **Štyri balíky `FF-` sú na dev založené** s kódmi `FF-CIST-NASTENNA`,
+  `FF-CIST-KAZETOVA`, `FF-UDRZBA`, `FF-DIAGNOSTIKA`, s cenami 79, 129, 49 a 49 EUR
+  a s verejnými názvami aj popismi. Zapísané cez tú istú vrstvu, akú používa portál,
+  nie surovým SQL.
+- **DPH už nie je nejasná.** Pribudol stĺpec `price_vat_mode` so slovníkom cenového
+  enginu (`vat_included`, `vat_excluded`, `reverse_charge`, `vat_exempt`), nullovateľný
+  a bez predvolenej hodnoty: `null` znamená, že to nikto nepovedal, čo je pravdivý stav
+  desiatich `WA-` balíkov. Štyri `FF-` balíky majú `vat_included`. Zverejniť ocenený
+  balík, ktorého daňový význam nikto neurčil, už systém odmietne.
+
+**Zostáva:**
+
+1. **Balíky nie sú zverejnené.** Zverejnenie vyžaduje obrázok ku každému balíku
+   a zároveň zaraďuje balík do fronty na synchronizáciu s externým katalógom, čo je
+   samostatné rozhodnutie, nezávislé od kŕmenia webu cenami.
+2. **Verejná routa neexistuje.** Všetky routy na balíky vyžadujú prihlásenie. Web by
    potreboval čítanie, ktoré vracia len zverejnené balíky a z nich len verejné meno, kód,
-   sumu a menu. Žiadne náklady ani marže.
+   sumu, menu a daňový režim. Žiadne náklady ani marže.
+3. **Na produkcii nič z toho nie je.** Balíky aj stĺpec sú zatiaľ len na dev, na vetve
+   `feature/service-package-vat` v `whispair-api`.
 
 Až to bude, web má ceny naďalej vykresliť okamžite z vlastnej tabuľky a údaj z API použiť
 ako doplnenie, nie ako podmienku. Inak by výpadok API znamenal stránku bez cien.

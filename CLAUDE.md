@@ -1,8 +1,8 @@
 # FilthyFilter — pokyny na pokračovanie
 
-Najprv prečítaj `docs/REDESIGN_PLAN.md`. Obsahuje schválené rozhodnutia používateľa, technické správanie, checklist a aktuálne odovzdanie. Je nadradený historickým poznámkam v README/CONTEXT; nové pokyny používateľa majú prednosť.
+**Najprv prečítaj `docs/STATUS.md`.** Je to jediné miesto so stavom projektu a otvorenými vecami. Rozhodnutia a ich dôvody sú v `docs/REDESIGN_PLAN.md` (vizuál, texty, obsah) a `docs/MARKETING_PLAN.md` (akvizícia, meranie, ceny, Google Ads); postup nasadenia v `docs/DEPLOYMENT.md`.
 
-Pre akvizíciu, meranie, ceny na landing pages a Google Ads platí `docs/MARKETING_PLAN.md` (6. 9. 2026). Kde sa rozchádza s `REDESIGN_PLAN.md`, platí marketingový plán a sám uvádza, ktoré staršie rozhodnutia ruší.
+Poradie prednosti pri rozpore: nové pokyny používateľa, potom `STATUS.md`, potom `MARKETING_PLAN.md`, potom `REDESIGN_PLAN.md`. Keď na rozpor narazíš, oprav ho v tom slabšom dokumente, nenechávaj ho tam ležať.
 
 - Začni `git status`, `git log -5 --oneline` a aktuálnym odovzdaním. Pracovná vetva: `codex/filthyfilter-redesign`; nemiešaj súbežné zmeny iného agenta.
 - Baseline `baseline-v1` je nemenný pôvodný stav. Netreba ho vytvárať znovu ani prepisovať.

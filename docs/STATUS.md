@@ -23,6 +23,21 @@ nebol úplný.
 
 ## Čo je hotové
 
+**Pilot posteru (7. 9., zatiaľ lokálne).** Na pokyn používateľa pripravená prvá
+verzia s minimom duplicity: jedna ilustračná obálka v úvode spisu La Donuteria
+nahrádza veľkú pečať FFFF. Klik otvorí celý obrázok, popis ju označuje ako ilustráciu.
+Úvod má odkazy na autentické pred/po a na formulár čistenia. Homepage ponecháva
+skutočné pred/po a kratšiu upútavku; landing pages poster neopakujú.
+Nové mestské stránky ani archívna stránka nevznikli.
+
+Overené: lokálny detail odpovedá HTTP 200, všetky lokálne odkazy a kotvy na štyroch
+verejných stránkach, jedinečnosť ID, páry SK/EN a `git diff --check`.
+Vizuálne zobrazenie v prehliadači zatiaľ nebolo overené; lokálny náhľad bol otvorený
+v aplikácii na posúdenie. Staging sa nepodarilo aktualizovať: SSH po povolenom
+pokuse odmietol spojenie. Produkcia aj staging teda zostávajú nezmenené.
+Poster PNG má 2,55 MB; pred finálnym vydaním pripraviť úspornú webovú verziu.
+Zdroj a zadanie: `docs/POSTER_PILOT.md`.
+
 **Posuvník (7. 9.).** Na dev je bočný posuvník zladený s medeným vizuálom:
 tmavá dráha, medený úchyt a zlaté zvýraznenie. Spoločné CSS používajú všetky
 štyri verejné stránky; overené zobrazenie v prehliadači. Produkcia bez zmeny.

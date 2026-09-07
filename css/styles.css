@@ -524,6 +524,23 @@ img { max-width: 100%; display: block; }
 .case-hero::after { content:""; position:absolute; inset:0; background: linear-gradient(90deg, rgba(10,7,6,.96) 0%, rgba(10,7,6,.76) 48%, rgba(10,7,6,.3) 100%), linear-gradient(0deg, var(--bg) 0%, transparent 52%); }
 .case-hero__grid { position:relative; z-index:2; display:grid; grid-template-columns:minmax(0,1.45fr) minmax(250px,.55fr); gap:42px; align-items:end; }
 .case-kicker { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:14px; }
+/* One illustrated cover per case. Documentary before/after photos stay separate. */
+.case-hero--poster { padding-top: 120px; }
+.case-hero--poster .case-hero__grid { grid-template-columns: minmax(0, 1.25fr) minmax(260px, .75fr); align-items: center; }
+.case-hero--poster .case-title { font-size: clamp(3rem, 6.5vw, 6rem); overflow-wrap: anywhere; }
+.case-hero__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.case-poster { width: 100%; max-width: 370px; margin: 0 0 0 auto; }
+.case-poster__link { position: relative; display: block; border: 1px solid var(--bronze); box-shadow: 0 18px 48px rgba(0,0,0,.45); }
+.case-poster__link img { display: block; width: 100%; height: auto; }
+.case-poster__link:focus-visible { outline: 3px solid var(--gold); outline-offset: 5px; }
+.case-poster__zoom { position: absolute; right: 10px; top: 10px; background: var(--bg); color: var(--gold); border: 1px solid var(--bronze); padding: 4px 10px; font-size: 1.2rem; }
+.case-poster figcaption { color: var(--muted); font-size: .875rem; line-height: 1.5; margin-top: 10px; }
+#before-after { scroll-margin-top: 100px; }
+@media (max-width: 800px) {
+  .case-hero--poster { padding-top: 100px; }
+  .case-hero--poster .case-hero__grid { grid-template-columns: minmax(0, 1fr); gap: 30px; }
+  .case-poster { margin: 0 auto; max-width: 340px; }
+}
 .case-id { font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; color:var(--muted); border:1px solid var(--bronze); padding:5px 8px; }
 .case-title { font-family:var(--f-display); font-size:clamp(3rem,8vw,6.8rem); line-height:.91; letter-spacing:.015em; text-transform:uppercase; margin:0 0 18px; max-width:830px; }
 .case-title em { display:block; color:var(--gold); font-style:normal; }

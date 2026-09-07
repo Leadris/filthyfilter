@@ -8,7 +8,7 @@
 - Pri ďalšej publikovanej realizácii sa aktualizuje upútavka na homepage, starý
   spis aj jeho poster zostávajú na vlastnej URL. Výber je zatiaľ ručný.
 - Ilustrácia nepredstavuje dôkaz nálezu. Fotografie a video zostávajú oddelené.
-- Zatiaľ lokálny návrh na posúdenie, bez nasadenia a bez nových mestských stránok.
+- Návrh na posúdenie nasadený 7. 9. na staging; bez nových mestských stránok.
 
 ## Asset
 

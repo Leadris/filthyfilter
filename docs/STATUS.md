@@ -23,7 +23,7 @@ nebol úplný.
 
 ## Čo je hotové
 
-**Pilot posteru (7. 9., zatiaľ lokálne).** Na pokyn používateľa pripravená prvá
+**Pilot posteru (7. 9., na stagingu).** Na pokyn používateľa pripravená prvá
 verzia s minimom duplicity: jedna ilustračná obálka v úvode spisu La Donuteria
 nahrádza veľkú pečať FFFF. Klik otvorí celý obrázok, popis ju označuje ako ilustráciu.
 Úvod má odkazy na autentické pred/po a na formulár čistenia. Homepage ponecháva
@@ -32,9 +32,10 @@ Nové mestské stránky ani archívna stránka nevznikli.
 
 Overené: lokálny detail odpovedá HTTP 200, všetky lokálne odkazy a kotvy na štyroch
 verejných stránkach, jedinečnosť ID, páry SK/EN a `git diff --check`.
-Vizuálne zobrazenie v prehliadači zatiaľ nebolo overené; lokálny náhľad bol otvorený
-v aplikácii na posúdenie. Staging sa nepodarilo aktualizovať: SSH po povolenom
-pokuse odmietol spojenie. Produkcia aj staging teda zostávajú nezmenené.
+Vizuálne zobrazenie v prehliadači zatiaľ nebolo overené. Po dodaní nového SSH portu
+22418 bol návrh ee3433d nasadený na staging a otvorený v aplikácii na posúdenie.
+HTTPS kontrola: štyri stránky odpovedajú 200 a majú noindex, nofollow; CSS a poster
+sa bajtovo zhodujú s návrhom, robots.txt zakazuje indexovanie. Produkcia nezmenená.
 Poster PNG má 2,55 MB; pred finálnym vydaním pripraviť úspornú webovú verziu.
 Zdroj a zadanie: `docs/POSTER_PILOT.md`.
 

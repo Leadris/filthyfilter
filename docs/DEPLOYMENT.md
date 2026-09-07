@@ -7,7 +7,7 @@
 - SSH user: `jg046600`
 - Remote document root: `/home/jg046600/www_root_filthyfilter_sk`
 - SSH identity: `%USERPROFILE%\.ssh\id_ed25519_whispair`
-- SSH port: `22690`, confirmed by the user on 2026-09-07.
+- SSH port: `22418`, confirmed by the user on 2026-09-07 (119-minute active window).
   The port is temporary; reconfirm if it stops working.
 - Deploy changes to dev first; production is a separate release.
 
@@ -65,6 +65,18 @@ redirects the production `www` host, which never reaches this document root, so
 shipping it here would add a file that can only ever do nothing or go wrong.
 
 ### Last staging deploy
+
+- Date: 2026-09-07, poster pilot, commit `ee3433d`, SSH port 22418.
+- Updated homepage, case HTML, shared CSS and new case-poster.png only.
+- Staging noindex metadata applied to both uploaded HTML files.
+- Verified HTTPS 200 on all four pages, CSS, image and robots.txt; all four pages
+  retain noindex, nofollow; CSS and image match local bytes.
+- Rollback: `/home/jg046600/tmp/ff-dev-before-poster-ee3433d.tar.gz` contains
+  the previous three text files. The newly added image is unused after rollback.
+- Production untouched; production homepage SHA-256 identical before and after.
+- Browser visual QA remains open; staging preview opened for user review.
+
+### Previous staging deploy
 
 - Date: 2026-09-07 (scrollbar cosmetic update).
 - Changed only `css/styles.css` and its cache version in the four existing

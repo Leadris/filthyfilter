@@ -212,12 +212,12 @@
 
   var META = {
     en: {
-      title: "AC cleaning and service — Senec and surroundings | FilthyFilter by whispAir",
-      desc: "AC cleaning, maintenance and servicing for homes and businesses. Senec and surroundings, up to approximately 100 km. Price based on the scope of work."
+      title: "AC cleaning and service — Bratislava, Trnava, Nitra | FilthyFilter by whispAir",
+      desc: "AC cleaning, maintenance and servicing for homes and businesses. Bratislava, Trnava, Nitra and 20 km around them. Price based on the scope of work."
     },
     sk: {
-      title: "Čistenie a servis klimatizácií — Senec a okolie | FilthyFilter by whispAir",
-      desc: "Čistenie, údržba a servis klimatizácií pre domácnosti a firmy. Senec a okolie do približne 100 km. FilthyFilter by whispAir — cena podľa rozsahu."
+      title: "Čistenie a servis klimatizácií — Bratislava, Trnava, Nitra | FilthyFilter by whispAir",
+      desc: "Čistenie, údržba a servis klimatizácií pre domácnosti a firmy. Bratislava, Trnava, Nitra a okolie do 20 km. FilthyFilter by whispAir — cena podľa rozsahu."
     }
   };
 

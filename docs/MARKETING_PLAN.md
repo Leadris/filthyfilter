@@ -155,9 +155,11 @@ vytvoriť; banner, ktorý nemá kam odkázať, je pri kontrole slabé miesto.
 6. **B2B oslovovanie je právna expozícia, nie len neskoršia fáza.** Zber kontaktov
    a studený e-mail v EÚ spadá pod GDPR a ePrivacy. Pred akýmkoľvek oslovovaním treba
    právne posúdenie, nie len odklad na fázu 7.
-7. **Rozpočet verzus územie.** Dvestopäťdesiat až tristo eur mesačne na celý stokilometrový
-   okruh je proti konkurentovi usadenému v Bratislave a Trnave príliš tenké na to, aby sa
-   z toho dalo učiť. Začať úzko okolo Senca a rozširovať podľa toho, odkiaľ chodia zákazky.
+7. **Rozpočet verzus územie.** Pôsobnosť je Bratislava, Trnava, Nitra a okolie do 20 km
+   (potvrdené používateľom 7. 9. 2026; skoršie „Senec a okolie do 100 km“ bolo nepresné).
+   Dvestopäťdesiat až tristo eur mesačne na všetky tri mestá naraz je proti konkurentovi
+   usadenému v Bratislave a Trnave tenké. Začať jedným mestom a rozširovať podľa toho,
+   odkiaľ chodia zákazky. Ktorým mestom začať, je otvorené.
 8. **Dátum prechodu na Data Manager API.** Brief ho uvádza ako overený. Pred implementáciou
    overiť priamo v dokumentácii Google, nie prevziať z druhej ruky.
 

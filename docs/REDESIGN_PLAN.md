@@ -14,7 +14,7 @@ Schválené používateľom 5. 9. 2026. Tento súbor je zdrojom pravdy pre Codex
 Zachovať dnešný humor a vizuál FilthyFilter, výrazne zlepšiť predstavenie služieb, dôkazy práce a objednávku. Inšpirácia predajnou štruktúrou: https://vycistimklimu.sk/, https://vycistimklimu.sk/pre-firmy a https://vycistimklimu.sk/realizacie (audit 5. 9. 2026). Vlastné texty a grafické spracovanie; konkurenčné tvrdenia nie sú dôkazom našich schopností.
 
 - Značka: **FilthyFilter by whispAir**. Klimuj.sk nepoužívať. Samostatné spolupráce prídu neskôr.
-- Hlavný trh: Slovensko. Pôsobnosť: **Senec a okolie do približne 100 km**; dostupnosť a dopravu potvrdiť podľa konkrétnej adresy. Nejde o automatický výpočet dojazdu ani bezplatnú dopravu.
+- Hlavný trh: Slovensko. Pôsobnosť: **Bratislava, Trnava, Nitra a okolie do 20 km od týchto miest** (opravené 7. 9. 2026 používateľom; predtým tu stálo „Senec a okolie do približne 100 km“, čo bolo nepresné). Sídlo je v Senci. Dostupnosť a dopravu potvrdiť podľa konkrétnej adresy. Nejde o automatický výpočet dojazdu ani bezplatnú dopravu.
 - Telefón a WhatsApp: **+421 902 279 094**; `tel:+421902279094`, `https://wa.me/421902279094`.
 - Email: **info@filthyfilter.sk** (používateľ potvrdil presný názov). Existencia a doručovanie schránky ešte nie sú overené.
 - Ceny na dopyt, bez verejného číselného cenníka a cenovej kalkulačky.
@@ -38,7 +38,7 @@ Navigácia: **Služby · Realizácie · Postup · FFFF · Pre firmy · Otázky �
 
 Poradie homepage:
 
-1. **Úvod:** FilthyFilter by whispAir. Nadpis „V klíme má bývať chlad. Nie nová civilizácia.“ Text: „Čistenie, údržba a servis klimatizácií pre domácnosti a firmy. Senec a okolie do približne 100 km. Rozsah práce a cenu si dohodneme vopred.“ CTA **Vyžiadať cenovú ponuku** a **Pozrieť výsledok pred/po**. Nepodložené hero čísla odstrániť.
+1. **Úvod:** FilthyFilter by whispAir. Nadpis „V klíme má bývať chlad. Nie nová civilizácia.“ Text: „Čistenie, údržba a servis klimatizácií pre domácnosti a firmy. Bratislava, Trnava, Nitra a okolie do 20 km. Rozsah práce a cenu si dohodneme vopred.“ CTA **Vyžiadať cenovú ponuku** a **Pozrieť výsledok pred/po**. Nepodložené hero čísla odstrániť.
 2. **Služby:** karty nižšie; každá má rozsah, „Cena podľa rozsahu“ a CTA predvyberajúce službu v dopyte.
 3. **Výsledok pred/po:** existujúca La Donuteria, fotky, stručný rozsah zásahu, preklik na celý spis. Odstrániť päť prázdnych kariet „foto čoskoro“.
 4. **Postup:** údaje od zákazníka → dohoda o rozsahu, cene a termíne → zásah → výsledok a odporúčanie ďalšej údržby.

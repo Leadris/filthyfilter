@@ -43,8 +43,11 @@ The staging copy is the production release with three differences, and they
 have to be reapplied on every staging deploy:
 
 1. `robots.txt` is replaced with a blanket `Disallow: /`.
-2. Both HTML documents get `<meta name="robots" content="noindex, nofollow">`
-   after the viewport meta.
+2. Every HTML document gets `<meta name="robots" content="noindex, nofollow">`
+   after the viewport meta. There are four of them as of 7 September 2026:
+   the homepage, both landing pages and the case file. Apply it by globbing the
+   package for `*.html` rather than by listing paths, or the next page added will
+   quietly go out indexable.
 3. `sitemap.xml` is left out of the package.
 
 The canonical links keep pointing at `https://filthyfilter.sk/`, so a crawler
@@ -52,15 +55,33 @@ that reaches staging anyway is told where the real page is.
 
 `scripts` for this are not committed; the staging package is built by copying
 `index.html`, `robots.txt`, the root icon files, `site.webmanifest`, `assets/`,
-`css/`, `js/` and `hall/`, applying the
-three changes above, then following the same upload, extract and chmod steps as
-production but against the staging root.
+`css/`, `js/`, `hall/`, `cistenie-klimatizacie/` and `servis-klimatizacie/`,
+applying the three changes above, then following the same upload, extract and
+chmod steps as production but against the staging root.
 
 `.htaccess` is deliberately left out of the staging package. Its only rule
 redirects the production `www` host, which never reaches this document root, so
 shipping it here would add a file that can only ever do nothing or go wrong.
 
 ### Last staging deploy
+
+- Date: 2026-09-07
+- Commit: `778c535`
+- Change: both advertising landing pages, `/cistenie-klimatizacie/` and
+  `/servis-klimatizacie/`, the running service-area ticker on the homepage and on
+  the cleaning page, the corrected service area (Bratislava, Trnava, Nitra plus
+  20 km, replacing a 100 km radius from Senec) and the published prices.
+- Verification over HTTPS: all four documents answer `200` and carry
+  `noindex, nofollow`; `robots.txt` disallows everything and `sitemap.xml` is
+  absent. The stylesheet is served as `?v=sectors-1` and contains the ticker
+  rules, and the ticker markup is in the delivered HTML. In the browser on
+  staging the service page reports its own `ff-servis` token, the ticker is
+  clipped and animating, the container loads and the consent banner appears.
+- Rollback archive:
+  `/home/jg046600/tmp/ff-dev-before-778c535.tar.gz`
+- SSH port used: 22690.
+
+### Previous staging deploy
 
 - Date: 2026-09-06
 - Commit: `12f9d36`, patched to `c2528d0` the same day
@@ -211,6 +232,8 @@ This is a static site. Package only these public paths from the repository root:
 index.html
 robots.txt
 sitemap.xml
+cistenie-klimatizacie/
+servis-klimatizacie/
 favicon.ico
 favicon-16x16.png
 favicon-32x32.png

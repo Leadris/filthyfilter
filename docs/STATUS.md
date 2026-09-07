@@ -19,6 +19,7 @@ nebol úplný.
 | Reklamné stránky | dve, na stagingu |
 | Google Ads | **nezaložený**, čaká na s.r.o. |
 | Produkčný web | **stará verzia**, bez formulára aj bez merania |
+| Ikony | hotové na stagingu; produkcia má ešte starú baktériu |
 
 ## Čo je hotové
 
@@ -43,6 +44,22 @@ migrácie.
 
 **Infraštruktúra.** Produkčné API púšťa `filthyfilter.sk` v CORS. `www` sa presmerúva
 na hlavnú doménu. Staging beží na `dev.filthyfilter.sk` so zákazom indexovania.
+
+## Ikony
+
+Sada s lupou (favicon, apple-touch, PWA aj `maskable`, plus značka
+`assets/brand-mark.png` v hlavičke a pätičke) je **kompletná na stagingu**
+a overená: všetkých deväť súborov aj `site.webmanifest` sa zhoduje s repozitárom,
+všetky štyri verejné stránky odkazujú na tú istú značku a staré `mark-bacteria.png`
+aj `favicon.svg` sú preč.
+
+Produkcia beží na zostave zo 6. 9. rána a má ešte baktériu. Vymeniť ju znamená
+nasadiť samotný web, nie ikony, lebo produkčné HTML odkazuje na starý názov
+súboru. Používateľ 7. 9. rozhodol, že ostrá doména ide neskôr.
+
+Nepokryté zostáva `interne/`. Beží ako samostatný koreň na `interne.filthyfilter.sk`,
+takže by potreboval vlastné kópie súborov. Je to neindexovaná interná príručka,
+zatiaľ bez ikon zámerne.
 
 ## Čo čaká na používateľa
 

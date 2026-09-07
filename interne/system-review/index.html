@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0a0706">
+<title>Technický review funnelu | FilthyFilter interné</title>
+<style>
+  :root{
+    --bg:#0a0706; --panel:#140f0b; --panel-2:#1b140e; --line:#4a3017; --line-2:#7a4f23;
+    --copper:#c8842f; --gold:#e8b057; --cream:#efe6d6; --muted:#c2b49c;
+    --dim:#998a74; --danger:#c0533b; --ok:#8fa54e;
+    --mono:ui-monospace,"Cascadia Mono",Consolas,"Liberation Mono",monospace;
+    --body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;color-scheme:dark}
+  body{margin:0;padding:0;background:var(--bg);color:var(--cream);
+       font:16px/1.65 var(--body);-webkit-text-size-adjust:100%}
+  .layout{display:grid;grid-template-columns:270px minmax(0,1fr);gap:0;min-height:100vh}
+  nav.toc{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;
+          border-right:1px solid var(--line);background:var(--panel);padding:22px 18px 40px}
+  nav.toc .kicker{margin-bottom:14px}
+  nav.toc ul{list-style:none;margin:0;padding:0}
+  nav.toc ul ul{padding-left:12px;margin:2px 0 6px;border-left:1px solid var(--line)}
+  nav.toc li{margin:0}
+  nav.toc a{display:block;padding:5px 6px;color:var(--muted);text-decoration:none;
+            font-size:.86rem;line-height:1.35;border-radius:3px}
+  nav.toc ul ul a{font-size:.78rem;color:var(--dim)}
+  nav.toc a:hover{color:var(--gold);background:rgba(200,132,47,.08)}
+  nav.toc a.active{color:var(--gold);background:rgba(200,132,47,.14)}
+  main{padding:0 0 80px;min-width:0}
+  .wrap{max-width:900px;margin:0 auto;padding:0 32px}
+  header{border-bottom:1px solid var(--line);padding:32px 0 24px;margin-bottom:28px}
+  .kicker{font:0.7rem var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:0 0 8px}
+  h1{margin:0 0 10px;font-size:1.75rem;line-height:1.2}
+  .sub{margin:0;color:var(--muted);font-size:.95rem}
+  .notice{border:1px solid var(--line-2);border-left:3px solid var(--gold);background:var(--panel);
+           border-radius:4px;padding:12px 16px;margin:18px 0 0;font-size:.9rem;color:var(--muted)}
+  h2{margin:52px 0 10px;font-size:1.35rem;color:var(--gold);border-top:1px solid var(--line);padding-top:28px;scroll-margin-top:16px}
+  h2:first-of-type{border-top:0;padding-top:0;margin-top:20px}
+  h3{margin:30px 0 8px;font-size:1.05rem;color:var(--cream);scroll-margin-top:16px}
+  p{margin:0 0 14px;color:var(--muted)}
+  ul,ol{margin:0 0 16px;padding-left:24px;color:var(--muted)}
+  li{margin-bottom:8px}
+  li p{margin:0 0 6px}
+  strong{color:var(--cream)}
+  a{color:var(--gold)}
+  hr{border:0;height:0;margin:0}
+  code{font-family:var(--mono);font-size:.86em;color:var(--gold);background:rgba(200,132,47,.09);
+       padding:1px 5px;border-radius:3px;word-break:break-word}
+  pre{margin:0 0 18px;padding:14px 16px;border:1px solid var(--line);border-radius:4px;background:var(--panel);
+      overflow-x:auto;font:.82rem/1.55 var(--mono);color:var(--cream)}
+  pre code{background:none;padding:0;color:inherit;font-size:inherit;word-break:normal}
+  .scroll{overflow-x:auto;margin:0 0 20px;border:1px solid var(--line);border-radius:4px;background:var(--panel)}
+  table{border-collapse:collapse;width:100%;font-size:.88rem}
+  th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+  th{color:var(--gold);font:0.7rem var(--mono);letter-spacing:.12em;text-transform:uppercase;background:var(--panel-2);white-space:nowrap}
+  tr:last-child td{border-bottom:0}
+  td{color:var(--muted)}
+  td code{white-space:nowrap}
+  td:first-child{color:var(--cream)}
+  footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);
+         font:0.72rem var(--mono);color:var(--dim);letter-spacing:.06em}
+  .menu-btn{display:none}
+  @media (max-width:960px){
+    .layout{display:block}
+    nav.toc{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:16px 20px}
+    nav.toc ul ul{display:none}
+    .wrap{padding:0 20px}
+    h1{font-size:1.45rem}
+    th,td{padding:8px 10px}
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="toc" aria-label="Obsah">
+  <p class="kicker">Obsah</p>
+  <div class="toc">
+<ul>
+<li><a href="#a-existing-co-uz-mame">A. EXISTING — čo už máme</a></li>
+<li><a href="#b-partial-mame-ale-dnesny-tvar-nestaci">B. PARTIAL — máme, ale dnešný tvar nestačí</a></li>
+<li><a href="#c-missing-co-uplne-chyba">C. MISSING — čo úplne chýba</a></li>
+<li><a href="#d-architectural-problems-kde-vznika-dlh">D. ARCHITECTURAL PROBLEMS — kde vzniká dlh</a></li>
+<li><a href="#e-proposed-domain-model-porovnane-s-tym-co-je">E. PROPOSED DOMAIN MODEL — porovnané s tým, čo je</a></li>
+<li><a href="#f-end-to-end-flow-kto-vykonava-ktory-krok">F. END-TO-END FLOW — kto vykonáva ktorý krok</a></li>
+<li><a href="#g-google-ads-a-atribucia-vysvetlenie-pre-vyvojara">G. GOOGLE ADS A ATRIBÚCIA — vysvetlenie pre vývojára</a><ul>
+<li><a href="#1-co-sa-ulozi-pri-navsteve">1. Čo sa uloží pri návšteve</a></li>
+<li><a href="#2-co-sa-ulozi-pri-formulari">2. Čo sa uloží pri formulári</a></li>
+<li><a href="#3-ako-sa-atribucia-zachova-session-customer-job-invoice">3. Ako sa atribúcia zachová session → customer → job → invoice</a></li>
+<li><a href="#4-co-je-primary-conversion">4. Čo je primary conversion</a></li>
+<li><a href="#5-co-je-secondary-conversion">5. Čo je secondary conversion</a></li>
+<li><a href="#6-co-vieme-posielat-spat-google">6. Čo vieme posielať späť Google</a></li>
+<li><a href="#7-ako-pracovat-s-conversion-value">7. Ako pracovať s conversion value</a></li>
+<li><a href="#8-ako-neskor-pocitat-revenue-a-roas">8. Ako neskôr počítať revenue a ROAS</a></li>
+<li><a href="#9-ako-este-lepsie-pracovat-s-marzou">9. Ako ešte lepšie pracovať s maržou</a></li>
+<li><a href="#10-co-musi-byt-implementovane-teraz-aby-sa-to-nezablokovalo">10. Čo musí byť implementované teraz, aby sa to nezablokovalo</a></li>
+</ul>
+</li>
+<li><a href="#h-priority">H. PRIORITY</a><ul>
+<li><a href="#p0-foundation-teraz-neskor-sa-to-preraba-draho">P0 — foundation (teraz; neskôr sa to prerába draho)</a></li>
+<li><a href="#p1-mvp-filthyfilter-na-realny-launch">P1 — MVP FilthyFilter (na reálny launch)</a></li>
+<li><a href="#p2-automation-odstrani-rucnu-pracu-po-rozbehu">P2 — automation (odstráni ručnú prácu po rozbehu)</a></li>
+<li><a href="#p3-optimization">P3 — optimization</a></li>
+</ul>
+</li>
+<li><a href="#i-implementation-plan-male-kroky">I. IMPLEMENTATION PLAN — malé kroky</a><ul>
+<li><a href="#krok-1-strukturovany-lead-p01">Krok 1 — Štruktúrovaný lead (P0.1)</a></li>
+<li><a href="#krok-2-atribucia-pre-meta-a-suhlas-p02">Krok 2 — Atribúcia pre Meta a súhlas (P0.2)</a></li>
+<li><a href="#krok-3-peniaze-na-zakazke-p03">Krok 3 — Peniaze na zákazke (P0.3)</a></li>
+<li><a href="#krok-4-uctovna-kniha-p04">Krok 4 — Účtovná kniha (P0.4)</a></li>
+<li><a href="#krok-5-zakaznik-a-lokalita-p05-p06">Krok 5 — Zákazník a lokalita (P0.5, P0.6)</a></li>
+<li><a href="#krok-6-zrusenie-legacy-emisie-p07">Krok 6 — Zrušenie legacy emisie (P0.7)</a></li>
+<li><a href="#krok-7-servicequoteengine-a-ponuka-p11">Krok 7 — ServiceQuoteEngine a ponuka (P1.1)</a></li>
+<li><a href="#krok-8-dostupnost-a-booking-pre-servis-p12">Krok 8 — Dostupnosť a booking pre servis (P1.2)</a></li>
+<li><a href="#krok-9-technik-a-hodnotenie-p13">Krok 9 — Technik a hodnotenie (P1.3)</a></li>
+<li><a href="#krok-10-recenzie-p15">Krok 10 — Recenzie (P1.5)</a></li>
+<li><a href="#krok-11-mestske-stranky-p17">Krok 11 — Mestské stránky (P1.7)</a></li>
+<li><a href="#krok-12-retencia-p21">Krok 12 — Retencia (P2.1)</a></li>
+<li><a href="#krok-13-report-a-naklady-p23">Krok 13 — Report a náklady (P2.3)</a></li>
+<li><a href="#krok-14-meta-capi-p22-a-upravy-konverzii-p26">Krok 14 — Meta CAPI (P2.2) a úpravy konverzií (P2.6)</a></li>
+</ul>
+</li>
+<li><a href="#co-z-benchmarku-vedome-neberieme">Čo z benchmarku vedome neberieme</a></li>
+<li><a href="#otvorene-rozhodnutia-pre-pouzivatela">Otvorené rozhodnutia pre používateľa</a></li>
+</ul>
+</div>
+
+</nav>
+<main>
+<div class="wrap">
+<header>
+  <p class="kicker">FilthyFilter by whispAir · interný dokument</p>
+  <h1>Technický review: FilthyFilter + whispair-api voči modelu „klik → faktúra → recenzia → ďalšia objednávka“</h1>
+  <p class="sub">Zdroj: <code>docs/SYSTEM_REVIEW.md</code> v repozitári FilthyFilter. Vygenerované 7. 9. 2026.</p>
+  <div class="notice">Neindexovaná, neverejná stránka na stagingu. Nie je chránená heslom, adresu berte ako neuvedenú, nie tajnú.</div>
+</header>
+
+<p>Zapísané 7. 9. 2026. Review voči skutočnému kódu v <code>filthyfilter</code> (vetva
+<code>codex/filthyfilter-redesign</code>, 98873b5) a <code>whispair-api</code> (vetva
+<code>feature/service-package-vat</code>, a1cbb1e, plus <code>main</code> a <code>wip/installation-slots</code>).
+Benchmark VyčistímKlímu slúži len ako zoznam schopností; ich čísla sa neberú
+ako fakt. Nič z tohto dokumentu ešte nie je implementované; je to zadanie.</p>
+<p>Poradie prednosti zostáva: pokyny používateľa → <code>STATUS.md</code> → <code>MARKETING_PLAN.md</code>
+→ <code>REDESIGN_PLAN.md</code> → tento súbor. Tento súbor opisuje architektúru
+a implementačný plán, nie stav; stav sa píše do <code>STATUS.md</code>.</p>
+<p>Hlavný nález v jednej vete: <strong>cesta klik → lead → zákazka → konverzia do
+Google existuje a je overená, ale ide po nej len udalosť, nie peniaze.</strong>
+Zákazka nemá cenu, faktúra v systéme neexistuje, takže <code>job_completed</code>
+odchádza do Google s prázdnou hodnotou a otázka „koľko eur priniesla kampaň“
+sa dnes nedá zodpovedať z dát.</p>
+<hr />
+<h2 id="a-existing-co-uz-mame">A. EXISTING — čo už máme</h2>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>Schopnosť</th>
+<th>Kde presne</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zachytenie atribúcie na webe (gclid, gbraid, wbraid, 5× utm, landing_url, referrer, landing_token), first touch, len so súhlasom</td>
+<td><code>filthyfilter/js/attribution.js</code>, <code>js/consent.js</code> (Consent Mode v2 basic, GTM <code>GTM-57M8XLQJ</code>)</td>
+</tr>
+<tr>
+<td>Udalosti <code>form_start</code>, <code>lead_submitted</code> (až po 2xx z API), <code>phone_click</code>, <code>whatsapp_click</code></td>
+<td><code>js/main.js</code></td>
+</tr>
+<tr>
+<td>Verejný príjem leadu: honeypot, validácia, limit 5/IP/h, uloženie leadu + atribúcie v jednej transakcii</td>
+<td><code>POST /api/v1/leads</code> → <code>src/Controllers/LeadsController.php</code>, <code>src/Services/LeadsService.php</code>, <code>src/Repositories/LeadsRepository.php</code>, <code>endpoints/_lead_helpers.php</code>; legacy <code>endpoints/submit_lead.php</code></td>
+</tr>
+<tr>
+<td>Lead ako entita</td>
+<td>tabuľka <code>captured_messages</code> (<code>source='WebLead'</code>, stavy Open → NeedsDetails → ReadyForJob → JobCreated → Discarded/Archived), <code>parsed_*</code> polia</td>
+</tr>
+<tr>
+<td>Atribučný záznam</td>
+<td>tabuľka <code>lead_attribution</code> (migrácia <code>20260619100500</code>), FK na <code>captured_message_id</code>, <code>client_id</code>, <code>job_id</code></td>
+</tr>
+<tr>
+<td>Deterministický parser voľného textu (typ práce, telefón, e-mail, značka, adresa, termín)</td>
+<td><code>src/Services/CapturedMessageParser.php</code></td>
+</tr>
+<tr>
+<td>Lead → zákazka (dve cesty)</td>
+<td><code>POST /api/v1/captured-messages/{id}/convert</code> (<code>CapturedMessagesService::convert</code>) a <code>job_drafts</code> → <code>POST /api/v1/job-drafts/{id}/publish</code> (<code>JobDraftsService</code>)</td>
+</tr>
+<tr>
+<td>Konverzné udalosti</td>
+<td>tabuľka <code>conversion_events</code> (<code>lead_qualified</code>, <code>job_created</code>, <code>job_completed</code>, <code>package_sold</code>; gclid/gbraid/wbraid, hash e-mail/telefón, <code>upload_status</code>), <code>endpoints/_conversion_helpers.php</code></td>
+</tr>
+<tr>
+<td>Emisia udalostí</td>
+<td><code>CapturedMessagesService</code> (lead_qualified pri ReadyForJob, job_created pri convert), <code>JobDraftsService::publish</code> (job_created), <code>JobsService::update</code> (job_completed pri Done), <code>ServiceContractsService</code> (package_sold s hodnotou)</td>
+</tr>
+<tr>
+<td>Nahrávanie konverzií do Google (Data Manager API <code>events:ingest</code>, service account, validateOnly, retry)</td>
+<td><code>cron/google_ads_conversion_worker.php</code>, <code>endpoints/_data_manager_helpers.php</code>, <code>endpoints/_google_oauth_helpers.php</code>; <code>.env</code> <code>GOOGLE_DM_*</code></td>
+</tr>
+<tr>
+<td>Ručný CSV export konverzií</td>
+<td><code>endpoints/export_conversions.php</code></td>
+</tr>
+<tr>
+<td>Zákazky, technici, priradenie, optimistické zamykanie, audit</td>
+<td>tabuľky <code>jobs</code>, <code>job_assignments</code>, <code>app_users</code> (roly technician &lt; senior_technician &lt; manager &lt; owner), <code>audit_logs</code>; <code>JobsService</code>, <code>JobsRepository</code></td>
+</tr>
+<tr>
+<td>Časová os zákazky s médiami a GPS</td>
+<td><code>job_timeline_entries</code> (Text/Photo/Voice/Video/Document, <code>gps_*</code>, <code>marketing_role</code> Hero/Before/After/Detail/Exclude, <code>marketing_sort_order</code>, <code>marketing_privacy_override</code>); <code>POST /api/v1/jobs/{id}/timeline</code>, <code>POST /api/v1/jobs/{id}/photos</code></td>
+</tr>
+<tr>
+<td>Marketingový obsah z realizácie (AI výber fotiek, privacy gate, GD render 4:5 a 9:16, schválenie)</td>
+<td><code>marketing_drafts</code>, <code>marketing_draft_photos</code>, <code>marketing_assets</code>, <code>marketing_caption_templates</code> (kategória <code>AcCleaning</code> existuje); <code>MarketingDraftsService</code>, <code>MarketingVisionService</code>, <code>MarketingImageRenderer</code>; <code>cron/marketing_draft_worker.php</code></td>
+</tr>
+<tr>
+<td>Zariadenia zákazníka a servisná história</td>
+<td><code>customer_devices</code>, <code>installed_products</code>, <code>device_service_plans</code> (<code>last_service_at</code>, <code>next_service_due_at</code>), <code>service_visits</code> (<code>visit_type</code> vrátane <code>Cleaning</code>, <code>checklist_json</code>, <code>measurements_json</code>, <code>next_recommended_service_at</code>), <code>service_visit_attachments</code></td>
+</tr>
+<tr>
+<td>Servisné balíky s cenou, kódom, DPH režimom, verejným názvom a obrázkom</td>
+<td><code>service_packages</code> (<code>price_amount</code>, <code>currency</code>, <code>price_vat_mode</code>, <code>package_code</code>, <code>is_published</code>, <code>interval_months</code>, <code>reminder_days_before</code>); FF balíky <code>FF-CIST-NASTENNA</code>, <code>FF-CIST-KAZETOVA</code>, <code>FF-UDRZBA</code>, <code>FF-DIAGNOSTIKA</code>, <code>FF-EXPRES-24H</code> na dev</td>
+</tr>
+<tr>
+<td>Verejný cenník pre web</td>
+<td><code>GET /api/v1/service-packages/published</code>; web ho číta v <code>js/main.js</code> nad záložnou tabuľkou <code>PRICES</code></td>
+</tr>
+<tr>
+<td>Servisné zmluvy s platobným stavom</td>
+<td><code>service_contracts</code> (<code>payment_status</code> Unpaid/PartiallyPaid/Paid/Waived, <code>price_amount</code>)</td>
+</tr>
+<tr>
+<td>Cenový engine (verzované pravidlá, nemenné verzie a snapshoty, riadky výpočtu, ručný override s dôvodom)</td>
+<td><code>pricing_rulesets</code>, <code>pricing_ruleset_versions</code>, <code>pricing_calculations</code>, <code>pricing_calculation_lines</code>, <code>price_snapshots</code>; <code>src/Services/PricingEngine.php</code>, <code>PricingService.php</code>, <code>ReferencePricePolicy.php</code>; <code>/api/v1/pricing/*</code></td>
+</tr>
+<tr>
+<td>Servisná oblasť podľa PSČ, verejný dopyt na jedno PSČ</td>
+<td><code>service_area_postcodes</code>, <code>GET /api/v1/service-areas/lookup</code>, <code>scripts/import_service_area_postcodes.php</code></td>
+</tr>
+<tr>
+<td>WhatsApp Cloud API: príjem (HMAC, idempotencia), médiá, odosielanie (fronta, retry), súhlas s marketingovými šablónami, STOP</td>
+<td><code>endpoints/whatsapp_webhook.php</code>, <code>endpoints/_whatsapp_helpers.php</code>, <code>endpoints/whatsapp_reply.php</code>; tabuľky <code>whatsapp_messages</code>, <code>outbound_messages</code>, <code>whatsapp_consent</code>; <code>cron/whatsapp_outbound_worker.php</code>, <code>cron/whatsapp_media_worker.php</code></td>
+</tr>
+<tr>
+<td>Rezervácia termínu (rozpracované, nezlúčené)</td>
+<td>vetva <code>wip/installation-slots</code>: <code>installation_slot_holds</code>, <code>InstallationSlotsService</code> (kapacita na deň, prednostný deň, držanie 15 min, <code>blocked_dates</code>), verejné <code>next()</code>/<code>hold()</code></td>
+</tr>
+<tr>
+<td>E-shop objednávky s atribučným stĺpcom</td>
+<td><code>commerce_orders.attribution JSONB</code> (stĺpec existuje, zatiaľ ho nič nezapisuje)</td>
+</tr>
+<tr>
+<td>Push notifikácie technikom, pripomienky na zajtra</td>
+<td><code>push_device_tokens</code>, <code>notification_events</code>, <code>cron/tomorrow_job_reminders.php</code></td>
+</tr>
+<tr>
+<td>AI tam, kde je to opodstatnené</td>
+<td>Groq prepis hlasu (<code>GroqTranscriptionService</code>), OpenAI vision pri výbere fotiek, OpenAI pri cenníkoch dodávateľov</td>
+</tr>
+<tr>
+<td>Testy</td>
+<td><code>whispair-api/tests/Unit</code> (PHPUnit, 54 súborov vrátane <code>ConversionHelpersTest</code>, <code>DataManagerHelpersTest</code>, <code>LeadHelpersTest</code>, <code>WhatsAppHelpersTest</code>, <code>PricingEngineTest</code>); <code>filthyfilter/tests/browser.test.cjs</code> (Playwright)</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="b-partial-mame-ale-dnesny-tvar-nestaci">B. PARTIAL — máme, ale dnešný tvar nestačí</h2>
+<ol>
+<li>
+<p><strong>Lead je voľný text.</strong> Web skladá službu, počet jednotiek, termín a expres
+   do reťazca <code>message</code> (<code>js/main.js</code> <code>buildMessage</code>) a API ukladá iba
+   <code>parsed_contact_name/phone/email/address/notes</code>. Kód balíka, počet a typ
+   jednotiek, PSČ ani expres neexistujú ako stĺpce. Žiadny cenový engine sa
+   nad tým nedá spustiť; človek to musí prečítať.</p>
+</li>
+<li>
+<p><strong>Hodnota konverzie chýba tam, kde záleží.</strong> <code>JobsService::update</code> posiela
+   <code>job_completed</code> bez <code>value</code> a <code>currency</code>, lebo <code>jobs</code> nemá cenu. Hodnotu
+   nesie iba <code>package_sold</code>. Google dostane fakt, že sa niečo stalo, nie koľko
+   to stálo. Rovnako <code>job_completed</code> nemá hash e-mailu, iba telefónu.</p>
+</li>
+<li>
+<p><strong>Atribúcia žije na leade, nie na zákazníkovi.</strong> <code>lead_attribution</code> sa pri
+   convert prepojí na <code>client_id</code> a <code>job_id</code>. Druhá zákazka toho istého
+   zákazníka o rok nemá žiadny záznam, z ktorého by sa dalo povedať „tento
+   zákazník prišiel z kampane X“. Pre Google je to správne (okno kliku je
+   ~90 dní), pre vlastné vyhodnotenie LTV kampane nie.</p>
+</li>
+<li>
+<p><strong>Google-centrická atribúcia.</strong> <code>lead_attribution</code> a <code>conversion_events</code>
+   poznajú tri Google identifikátory. Používateľ zvolil ako prvý kanál Meta →
+   WhatsApp. Meta click-to-WhatsApp reklama posiela vo webhooku pole
+   <code>messages[].referral</code> (<code>ctwa_clid</code>, <code>source_url</code>, <code>source_id</code>, <code>headline</code>),
+   ktoré <code>whatsapp_parse_inbound</code> <strong>ignoruje</strong>. <code>fbclid</code> z webu sa nezachytáva.
+   Bez toho sa kampaň, ktorú chcete spustiť ako prvú, nedá zmerať ďalej než
+   po počet správ.</p>
+</li>
+<li>
+<p><strong>WhatsApp je inbox, nie konverzácia.</strong> Každá prichádzajúca správa vytvorí
+   nový riadok <code>captured_messages</code> (<code>whatsapp_store_inbound</code>). Neexistuje
+   entita konverzácie ani stav („pýtame sa na počet jednotiek“). Odpoveď sa
+   posiela ručne z portálu. Na „WhatsApp ako frontend nad tým istým backendom“
+   to nestačí, na ručné vybavovanie áno.</p>
+</li>
+<li>
+<p><strong>Dva cenové systémy, žiadny pre čistenie.</strong> <code>service_packages.price_amount</code>
+   je plochý cenník. <code>PricingEngine</code> počíta materiál → marža → zľava → DPH nad
+   <code>catalog_listings</code> a <code>pricing_calculations.catalog_listing_id</code> je <code>NOT NULL</code>.
+   Ani jeden nepozná počet jednotiek, typ, dojazd, expres, B2B ani objemovú
+   zľavu. Web má tretiu vrstvu: záložnú tabuľku <code>PRICES</code> a expres príplatok
+   v kóde. Dobré je, že slovník <code>vat_mode</code> je jeden a <code>pricing_ruleset_versions</code>
+   sú už nemenné, takže sa do nich dá vložiť aj druhý druh pravidiel.</p>
+</li>
+<li>
+<p><strong>Lokalita je reťazec.</strong> <code>clients.address</code> a <code>jobs.address</code> sú VARCHAR bez
+   PSČ a súradníc. <code>service_area_postcodes</code> vie len áno/nie a je pomenovaná
+   pre montáže. Mestské landing pages, dojazdová zóna aj plánovanie trasy
+   potrebujú lokalitu ako entitu.</p>
+</li>
+<li>
+<p><strong>Termín bez kapacity.</strong> <code>jobs.scheduled_start/end</code> sa zadávajú ručne.
+   <code>InstallationSlotsService</code> počíta iba e-shopové sloty a v komentári sám
+   hovorí, že tímy neexistujú a počet zákaziek nie je signál kapacity.
+   Dostupnosť technika, pracovná doba, trvanie práce ani dojazd nie sú
+   modelované. GPS existuje len na záznamoch časovej osi, teda spätne.</p>
+</li>
+<li>
+<p><strong>Zariadenia vznikajú len z montáže.</strong> <code>ensure_customer_devices_for_installation_job</code>
+   zakladá <code>customer_devices</code> iba pri <code>Installation</code> + <code>Done</code>. Pri čistení
+   cudzej jednotky musí zariadenie založiť manažér (<code>POST /api/v1/customer-devices</code>
+   je <code>RequireManager</code>), technik nemôže. <code>service_visits</code> má <code>Cleaning</code>,
+   <code>checklist_json</code> aj <code>measurements_json</code>, čo je správne miesto pre FFFF/PPPP
+   skóre, ale skóre nie je stĺpec a nedá sa podľa neho filtrovať.</p>
+</li>
+<li>
+<p><strong>Marketingový obsah len z montáží.</strong> <code>MarketingDraftsService::queueCompletedInstallation</code>
+    sa spúšťa iba pre <code>type=Installation</code>. Pred/po z čistenia sa nespracuje,
+    hoci role <code>Before</code>/<code>After</code> a šablóna <code>AcCleaning</code> existujú.</p>
+</li>
+<li>
+<p><strong>Retencia má dáta, nemá motor.</strong> <code>device_service_plans.next_service_due_at</code>,
+    <code>service_packages.interval_months</code> a <code>reminder_days_before</code> sa zapisujú, ale
+    žiadny cron ich nečíta. <code>tomorrow_job_reminders</code> je pre technikov.</p>
+</li>
+<li>
+<p><strong>Zákazník je meno, telefón, adresa.</strong> <code>clients</code> nemá e-mail, typ
+    (domácnosť/firma), IČO ani záznam o súhlase. Párovanie pri convert je
+    <code>WHERE phone = :phone</code> bez normalizácie, hoci <code>conversion_normalize_phone</code>
+    existuje. <code>+421 902…</code> a <code>0902…</code> sú dvaja zákazníci.</p>
+</li>
+<li>
+<p><strong>Súhlas nie je doložený na serveri.</strong> <code>PRIVACY_IMPLEMENTATION.md</code> bod 1:
+    frontend posiela click ID iba so súhlasom, ale <code>lead_attribution</code> nemá
+    verziu a čas súhlasu. Pred prvým ostrým exportom to musí existovať.</p>
+</li>
+<li>
+<p><strong>Legacy a v1 emitujú konverzie dvakrát.</strong> <code>endpoints/update_captured_message.php</code>,
+    <code>convert_captured_message_to_job.php</code>, <code>create_service_contract.php</code>,
+    <code>update_job.php</code> obsahujú tú istú emisiu ako služby v <code>src/Services</code>.
+    <code>ARCHITECTURE.md</code> hovorí, že klienti už legacy nevolajú; kód tam stále je
+    a každá zmena atribúcie sa musí robiť na dvoch miestach.</p>
+</li>
+<li>
+<p><strong>Formulár na webe je trikrát.</strong> Ten istý blok v <code>index.html</code>,
+    <code>cistenie-klimatizacie/index.html</code>, <code>servis-klimatizacie/index.html</code>.
+    Pridanie štruktúrovaného poľa = tri úpravy (známy dlh v <code>STATUS.md</code>).</p>
+</li>
+</ol>
+<hr />
+<h2 id="c-missing-co-uplne-chyba">C. MISSING — čo úplne chýba</h2>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>Chýba</th>
+<th>Poznámka</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Faktúra a platba</strong></td>
+<td>V API nie je ani tabuľka. Fakturuje sa v Billdu mimo systému. <code>plan_nahrady_billdu_whispair.pdf</code> (18. 7. 2026) navrhuje celú náhradu Billdu v inom stacku (NestJS, Next.js, React Native), čo je v priamom rozpore s <code>ARCHITECTURE.md</code> („bez frameworku“) a s pravidlom „nestavaj druhé CRM“. Pozri D.1.</td>
+</tr>
+<tr>
+<td><strong>Náklady zákazky a marža</strong></td>
+<td>Nič. <code>inventory_units.purchase_price</code> je jediný náklad v systéme a týka sa skladu.</td>
+</tr>
+<tr>
+<td><strong>Cenová ponuka ako entita</strong></td>
+<td>Žiadny <code>quote</code>: cena sa dohodne v správe alebo telefonicky a nikde sa nezapíše.</td>
+</tr>
+<tr>
+<td><strong>Rezervácia/booking pre servis</strong></td>
+<td>Len rozpracované montážne držanie na vetve <code>wip/installation-slots</code>.</td>
+</tr>
+<tr>
+<td><strong>Dostupnosť technika</strong></td>
+<td>Žiadna tabuľka, žiadny výpočet.</td>
+</tr>
+<tr>
+<td><strong>Žiadosť o recenziu a jej sledovanie</strong></td>
+<td>Nič. <code>B2B_TRUST_LAYER.md</code> opisuje pravidlá, kód žiadny.</td>
+</tr>
+<tr>
+<td><strong>Retenčný worker a „objednať znovu“</strong></td>
+<td>Nič.</td>
+</tr>
+<tr>
+<td><strong>Meta Pixel, Meta Conversions API, <code>fbclid</code>, <code>ctwa_clid</code></strong></td>
+<td>Nič (Pixel je v <code>STATUS.md</code> ako blokujúci pre Meta kampaň).</td>
+</tr>
+<tr>
+<td><strong>Import nákladov na reklamu</strong></td>
+<td>Nič. Bez toho sa ROAS nedá spočítať v systéme.</td>
+</tr>
+<tr>
+<td><strong>Report atribúcie</strong></td>
+<td>Žiadny endpoint, ktorý by zložil kampaň → leady → zákazky → fakturované → marža.</td>
+</tr>
+<tr>
+<td><strong>Meranie hovorov</strong></td>
+<td><code>phone_click</code> je klik; hovor sa zapisuje ručne ako <code>PhoneNote</code>.</td>
+</tr>
+<tr>
+<td><strong>Mestské stránky</strong></td>
+<td>Len <code>/cistenie-klimatizacie/</code> a <code>/servis-klimatizacie/</code>; žiadny dátový model lokality.</td>
+</tr>
+<tr>
+<td><strong>Verejný endpoint realizácií (Hall of Filth)</strong></td>
+<td>Spis La Donuteria je ručne písané HTML; <code>marketing_assets</code> nemajú publikačnú fázu (<code>publicationUrl</code> je vždy <code>null</code>).</td>
+</tr>
+<tr>
+<td><strong>B2B</strong></td>
+<td>Žiadne organizácie, kontakty, sekvencie.</td>
+</tr>
+<tr>
+<td><strong>Konverzačný stav pre WhatsApp</strong></td>
+<td>Nič.</td>
+</tr>
+<tr>
+<td><strong>Angličtina s vlastnou URL</strong></td>
+<td>Prepína sa len v prehliadači (známe).</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="d-architectural-problems-kde-vznika-dlh">D. ARCHITECTURAL PROBLEMS — kde vzniká dlh</h2>
+<ol>
+<li>
+<p><strong>Dva plány na fakturáciu sa vylučujú.</strong> Billdu-náhrada v PDF by znamenala
+   tretí backend a druhé CRM. Odporúčanie: <strong>Billdu zostáva fakturačným
+   nástrojom</strong>, <code>whispair-api</code> dostane iba <strong>účtovnú knihu</strong> (<code>invoices</code>,
+   <code>invoice_payments</code>, <code>job_costs</code>) s odkazom na externý doklad. Tým sa dá
+   odpovedať na otázku o tržbe a marži bez toho, aby sa stavala fakturácia.
+   PDF plán treba označiť za pozastavený, inak sa doň niekto oprie.</p>
+</li>
+<li>
+<p><strong>Pricing na troch miestach</strong> (B.6). Riešenie nie je štvrté miesto, ale
+   jeden <code>ServiceQuoteEngine</code> v tom istom rámci ako <code>PricingEngine</code>: pravidlá
+   v <code>pricing_ruleset_versions.rules_json</code> s novým slovníkom krokov, výstup
+   v tvare <code>pricing_calculation_lines</code>, a web aj WhatsApp aj portál volajú
+   ten istý endpoint. Tabuľka <code>PRICES</code> v <code>js/main.js</code> ostane iba ako záloha
+   pre výpadok API, čo už dnes je.</p>
+</li>
+<li>
+<p><strong>Peniaze nie sú na zákazke.</strong> <code>jobs</code> nemá riadky, cenu ani DPH režim.
+   Všetko, čo sa o hodnote dá povedať, je v texte alebo v Billdu. Toto je
+   najdrahší dlh, lebo bez neho je celý konverzný okruh prázdny.</p>
+</li>
+<li>
+<p><strong>Adresa ako reťazec</strong> na troch miestach (<code>clients.address</code>, <code>jobs.address</code>,
+   <code>captured_messages.parsed_address</code>) bez PSČ. Každá funkcia s geografiou
+   (dojazd, mestské stránky, trasa, kapacita) na tom stroskotá.</p>
+</li>
+<li>
+<p><strong>Legacy endpointy duplikujú biznis logiku</strong> (B.14). Pokiaľ sa nezmažú,
+   každý zásah do atribúcie a konverzií je dvojitý. <code>ARCHITECTURE.md</code> má
+    postup mazania; treba ho vykonať aspoň pre <code>update_captured_message</code>,
+   <code>convert_captured_message_to_job</code>, <code>update_job</code>, <code>create_service_contract</code>.</p>
+</li>
+<li>
+<p><strong>Zariadenie viazané na montáž</strong> (B.9). Pre čistenie je zariadenie zákazníka
+   primárny objekt (opakovaná služba), nie vedľajší produkt montáže.</p>
+</li>
+<li>
+<p><strong>Konverzný model pozná len Google.</strong> <code>conversion_events</code> nemá <code>platform</code>;
+   pridanie Meta bude buď kopírovať tabuľku, alebo ju rozšíriť. Rozšíriť teraz
+   je lacnejšie.</p>
+</li>
+<li>
+<p><strong>Marketingový trigger pevne na <code>Installation</code>.</strong> Podmienka v kóde, nie
+   v dátach; čistenie ako hlavný obsahový zdroj FilthyFilter cez ňu neprejde.</p>
+</li>
+<li>
+<p><strong>Web bez buildu má tri kópie formulára.</strong> Pri štruktúrovaných poliach
+   (P0.1) to bude bolieť tretíkrát. Odporúčanie držať pravidlo „bez buildu“
+   pre nasadenie, ale pripustiť <strong>kontrolný test</strong> v <code>tests/</code>, ktorý porovná
+   tri formuláre a zlyhá pri nesúlade. Lacné a v duchu existujúcich testov.</p>
+</li>
+<li>
+<p><strong><code>commerce_orders.attribution</code></strong> je stĺpec bez zapisovateľa. Buď ho
+    WooCommerce webhook začne plniť (cookie → hidden field v checkoute), alebo
+    prechod FilthyFilter → whispAir zostane nemerateľný (bod 6 v <code>STATUS.md</code>).</p>
+</li>
+</ol>
+<hr />
+<h2 id="e-proposed-domain-model-porovnane-s-tym-co-je">E. PROPOSED DOMAIN MODEL — porovnané s tým, čo je</h2>
+<p>Zásada: rozšíriť existujúce tabuľky, nové zakladať len tam, kde entita naozaj
+chýba. Názvy nových tabuliek sú návrh.</p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>Entita zo zadania</th>
+<th>Rozhodnutie</th>
+<th>Konkrétne</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lead</td>
+<td><strong>existuje</strong> = <code>captured_messages</code></td>
+<td>pridať štruktúru: <code>lead_details JSONB</code> (kód služby, počet jednotiek, typ, PSČ, preferovaný termín, expres, zdrojová stránka) + <code>postcode CHAR(5)</code>, <code>locality_id</code></td>
+</tr>
+<tr>
+<td>Customer</td>
+<td><strong>existuje</strong> = <code>clients</code></td>
+<td>pridať <code>email</code>, <code>phone_normalized</code> (E.164, index), <code>customer_type</code> (<code>residential</code>/<code>business</code>), <code>company_name</code>, <code>ico</code>, <code>dic</code>, <code>ic_dph</code>, <code>acquisition_lead_attribution_id</code> (first touch na úrovni zákazníka), <code>marketing_consent_at</code>, <code>notes</code></td>
+</tr>
+<tr>
+<td>CustomerLocation</td>
+<td><strong>nová</strong> <code>client_locations</code></td>
+<td><code>client_id</code>, <code>label</code>, <code>street</code>, <code>city</code>, <code>postcode</code>, <code>lat</code>, <code>lng</code>, <code>locality_id</code>, <code>access_notes</code> (parkovanie, poschodie, výška montáže), <code>is_primary</code>. <code>jobs.address</code> zostáva snímkou + <code>jobs.client_location_id</code></td>
+</tr>
+<tr>
+<td>Contact</td>
+<td><strong>odložiť (P3)</strong></td>
+<td>pre B2B: <code>client_contacts</code> (<code>client_id</code>, meno, rola, telefón, e-mail, súhlas)</td>
+</tr>
+<tr>
+<td>MarketingTouch / CampaignAttribution</td>
+<td><strong>existuje</strong> = <code>lead_attribution</code></td>
+<td>pridať <code>platform</code> (<code>google</code>/<code>meta</code>/<code>organic</code>/<code>direct</code>/<code>referral</code>), <code>fbclid</code>, <code>ctwa_clid</code>, <code>campaign_id</code>, <code>adgroup_id</code>, <code>keyword_id</code>, <code>ad_id</code>, <code>consent_version</code>, <code>consent_at</code>, <code>channel</code> (<code>web_form</code>/<code>whatsapp</code>/<code>phone</code>/<code>eshop</code>)</td>
+</tr>
+<tr>
+<td>Quote</td>
+<td><strong>nová</strong> <code>quotes</code></td>
+<td><code>captured_message_id</code>, <code>client_id</code>, <code>client_location_id</code>, <code>pricing_ruleset_version_id</code>, <code>inputs_json</code>, <code>lines_json</code> (tvar <code>pricing_calculation_lines</code>), <code>total_net</code>, <code>total_vat</code>, <code>total_gross</code>, <code>vat_mode</code>, <code>currency</code>, <code>status</code> (Draft/Sent/Accepted/Declined/Expired), <code>valid_until</code>, <code>sent_via</code>, <code>accepted_at</code>, <code>public_token</code></td>
+</tr>
+<tr>
+<td>Booking</td>
+<td><strong>rozšíriť</strong> <code>installation_slot_holds</code> → <code>booking_holds</code></td>
+<td>+ <code>service_kind</code> (<code>installation</code>/<code>cleaning</code>/<code>service</code>), <code>quote_id</code>, <code>duration_minutes</code>, <code>postcode</code>. Potvrdená rezervácia = <code>jobs</code> v stave <code>Planned</code> s <code>quote_id</code>; samostatná tabuľka bookingov v MVP netreba</td>
+</tr>
+<tr>
+<td>Job</td>
+<td><strong>existuje</strong> = <code>jobs</code></td>
+<td>pridať <code>quote_id</code>, <code>client_location_id</code>, <code>postcode</code>, <code>locality_id</code>, <code>source_channel</code>, <code>unit_count</code>, <code>estimated_minutes</code>, <code>price_net</code>, <code>price_vat</code>, <code>price_gross</code>, <code>vat_mode</code>, <code>currency</code>, <code>completed_at</code>, <code>cancel_reason</code>. Typ <code>Service</code> pokrýva čistenie; ak treba rozlíšiť, <code>service_kind</code> a nie nový enum</td>
+</tr>
+<tr>
+<td>JobService</td>
+<td><strong>nová</strong> <code>job_services</code></td>
+<td><code>job_id</code>, <code>service_package_id</code>, <code>package_code</code> (snímka), <code>description</code>, <code>qty</code>, <code>unit_price_net</code>, <code>vat_rate</code>, <code>line_net</code>, <code>line_gross</code>, <code>device_id</code> (voliteľne)</td>
+</tr>
+<tr>
+<td>Asset / HVACUnit</td>
+<td><strong>existuje</strong> = <code>customer_devices</code></td>
+<td>pridať <code>client_location_id</code>, <code>unit_type</code> (<code>wall</code>/<code>cassette</code>/<code>duct</code>/<code>floor</code>/<code>outdoor</code>), <code>mount_height</code> (<code>standard</code>/<code>high</code>), <code>last_cleaned_at</code>; povoliť technikovi založiť zariadenie z priradenej zákazky</td>
+</tr>
+<tr>
+<td>JobMedia</td>
+<td><strong>existuje</strong> = <code>job_timeline_entries</code></td>
+<td>pridať <code>device_id</code>, <code>capture_phase</code> (<code>before</code>/<code>during</code>/<code>after</code>) ako dáta, nie iba marketingová rola; <code>public_use_consent</code> (súhlas zákazníka so zverejnením)</td>
+</tr>
+<tr>
+<td>Inspection / Rating</td>
+<td><strong>existuje</strong> = <code>service_visits</code></td>
+<td>pridať <code>filth_rating_before SMALLINT</code>, <code>filth_rating_after SMALLINT</code> (1–5, FFFF/PPPP), <code>problem_summary_public</code> (anonymizovaný popis); <code>visit_type='Cleaning'</code> už je</td>
+</tr>
+<tr>
+<td>Invoice</td>
+<td><strong>nová</strong> <code>invoices</code></td>
+<td><code>job_id</code>, <code>client_id</code>, <code>provider</code> (<code>billdu</code>/<code>manual</code>), <code>external_id</code>, <code>number</code>, <code>issued_at</code>, <code>due_at</code>, <code>net</code>, <code>vat</code>, <code>gross</code>, <code>currency</code>, <code>status</code> (Draft/Issued/Paid/PartiallyPaid/Cancelled/Credited), <code>paid_at</code>, <code>paid_amount</code>, <code>pdf_url</code></td>
+</tr>
+<tr>
+<td>Payment</td>
+<td><strong>nová, malá</strong> <code>invoice_payments</code></td>
+<td><code>invoice_id</code>, <code>amount</code>, <code>method</code> (cash/card/transfer/gateway), <code>paid_at</code>, <code>external_ref</code>. V P1 stačí <code>invoices.paid_at</code>; tabuľka v P2</td>
+</tr>
+<tr>
+<td>(nové) JobCost</td>
+<td><strong>nová</strong> <code>job_costs</code></td>
+<td><code>job_id</code>, <code>kind</code> (labor/material/travel/subcontract/other), <code>amount_net</code>, <code>note</code>, <code>technician_user_id</code>, <code>minutes</code> — z toho hrubá marža</td>
+</tr>
+<tr>
+<td>ReviewRequest</td>
+<td><strong>nová</strong> <code>review_requests</code></td>
+<td><code>job_id</code>, <code>client_id</code>, <code>channel</code> (whatsapp/sms/email), <code>outbound_message_id</code>, <code>scheduled_at</code>, <code>sent_at</code>, <code>follow_up_sent_at</code>, <code>link_token</code>, <code>clicked_at</code>, <code>status</code> (Scheduled/Sent/Clicked/ProbablyReviewed/Suppressed), <code>suppressed_reason</code></td>
+</tr>
+<tr>
+<td>Communication</td>
+<td><strong>existuje</strong> = <code>whatsapp_messages</code> + <code>outbound_messages</code></td>
+<td>pridať do <code>outbound_messages</code>: <code>client_id</code>, <code>job_id</code>, <code>purpose</code> (confirmation/reminder/review_request/retention/quote), <code>channel</code> (whatsapp/email/sms) — e-mail odosielanie existuje vo <code>_feedback_helpers.php</code>, dá sa zovšeobecniť</td>
+</tr>
+<tr>
+<td>(nové) Conversation</td>
+<td><strong>nová (P2)</strong> <code>conversations</code></td>
+<td><code>phone</code>, <code>client_id</code>, <code>captured_message_id</code>, <code>state</code> (JSON stavového automatu), <code>mode</code> (<code>bot</code>/<code>human</code>), <code>last_inbound_at</code>, <code>handover_at</code></td>
+</tr>
+<tr>
+<td>Technician</td>
+<td><strong>existuje</strong> = <code>app_users</code> + <code>job_assignments</code></td>
+<td>nič nové</td>
+</tr>
+<tr>
+<td>Availability</td>
+<td><strong>nová (P2)</strong> <code>technician_availability</code></td>
+<td><code>user_id</code>, <code>weekday</code> alebo <code>date</code>, <code>start_time</code>, <code>end_time</code>, <code>base_postcode</code>, <code>max_minutes</code></td>
+</tr>
+<tr>
+<td>PricingRule</td>
+<td><strong>existuje</strong> = <code>pricing_rulesets</code> / <code>pricing_ruleset_versions</code></td>
+<td>nový slovník krokov pre služby (F.2), žiadna nová tabuľka</td>
+</tr>
+<tr>
+<td>(nové) Locality</td>
+<td><strong>nová</strong> <code>service_localities</code></td>
+<td><code>slug</code> (<code>bratislava</code>), <code>name_sk</code>, <code>name_en</code>, <code>kind</code> (city/district), <code>center_lat</code>, <code>center_lng</code>, <code>travel_zone</code> (0/1/2), <code>is_published</code>, <code>faq_json</code>, <code>hero_asset_id</code>; <code>service_area_postcodes.locality_id</code>, <code>service_area_postcodes.travel_zone</code></td>
+</tr>
+<tr>
+<td>(nové) AdSpend</td>
+<td><strong>nová (P2)</strong> <code>ad_spend_daily</code></td>
+<td><code>platform</code>, <code>account_id</code>, <code>campaign_id</code>, <code>campaign_name</code>, <code>date</code>, <code>cost</code>, <code>clicks</code>, <code>impressions</code>, <code>currency</code>, <code>imported_at</code></td>
+</tr>
+</tbody>
+</table></div>
+<p><code>conversion_events</code> navyše dostane <code>platform</code>, <code>fbclid</code>, <code>ctwa_clid</code>,
+<code>value_kind</code> (<code>revenue_net</code>/<code>margin</code>), <code>invoice_id</code>.</p>
+<hr />
+<h2 id="f-end-to-end-flow-kto-vykonava-ktory-krok">F. END-TO-END FLOW — kto vykonáva ktorý krok</h2>
+<pre><code class="language-text">1. Google Ads / Meta ad
+   └─ URL nesie gclid|gbraid|wbraid alebo fbclid + utm_* (ValueTrack {campaignid} atď.)
+      Meta CTWA: reklama otvára WhatsApp priamo, referral ide vo webhooku
+
+2. Landing page (filthyfilter, statická)
+   └─ js/consent.js         súhlas, Consent Mode v2, GTM, (Meta Pixel — chýba)
+   └─ js/attribution.js     first touch do sessionStorage (+ fbclid — chýba)
+   └─ js/main.js            ceny z GET /api/v1/service-packages/published, záloha PRICES
+                            (mestské stránky + lokalitné dáta — chýba)
+
+3. Lead
+   └─ web:      POST /api/v1/leads → LeadsService → captured_messages + lead_attribution
+   └─ WhatsApp: whatsapp_webhook.php → whatsapp_messages + captured_messages (referral — chýba)
+   └─ telefón:  ručne POST /api/v1/captured-messages (source PhoneNote)
+   └─ štruktúra leadu (služba, jednotky, PSČ) — chýba
+
+4. Quote
+   └─ ServiceQuoteEngine nad pricing_ruleset_versions → quotes  — chýba
+      volá: web (okamžitá cena), portál (ručná ponuka), WhatsApp (bot v P2)
+
+5. Booking
+   └─ booking_holds (z installation_slot_holds) + kapacita z app_settings — chýba pre servis
+   └─ potvrdenie: JobDraftsService::publish alebo CapturedMessagesService::convert
+      → jobs (Planned) + job_services + conversion_events(job_created)   ← existuje, bez riadkov
+
+6. Job / Technician
+   └─ job_assignments, push (tomorrow_job_reminders)                       ← existuje
+   └─ whispAirField: timeline Photo before/after (marketing_role), GPS     ← existuje
+   └─ customer_devices z čistenia, service_visits + filth_rating          ← čiastočne
+   └─ PATCH /api/v1/jobs/{id} status=Done → conversion_events(job_completed)
+      + MarketingDraftsService (len Installation — rozšíriť)
+
+7. Invoice / Payment
+   └─ Billdu (mimo) → invoices + invoice_payments v API                    — chýba
+   └─ job_costs → marža                                                    — chýba
+   └─ conversion_events.value = invoices.net                               — chýba
+
+8. Google / Meta spätná väzba
+   └─ cron/google_ads_conversion_worker.php → Data Manager API            ← existuje
+   └─ Meta CAPI worker                                                     — chýba
+
+9. Review
+   └─ review_requests + outbound_messages (šablóna) + cron                 — chýba
+
+10. Retention
+   └─ device_service_plans.next_service_due_at → cron → outbound_messages
+      → link „objednať znovu“ s tokenom → quote → booking                  — chýba
+
+11. Report
+   └─ GET /api/v1/reports/attribution: spend ↔ leads ↔ jobs ↔ invoices ↔ marža — chýba
+</code></pre>
+<hr />
+<h2 id="g-google-ads-a-atribucia-vysvetlenie-pre-vyvojara">G. GOOGLE ADS A ATRIBÚCIA — vysvetlenie pre vývojára</h2>
+<p>Toto je jediná kapitola, kde treba rozumieť aj Google, nie len nášmu kódu.
+Píšem to tak, ako to reálne beží v našom kóde.</p>
+<h3 id="1-co-sa-ulozi-pri-navsteve">1. Čo sa uloží pri návšteve</h3>
+<p>Reklama pošle návštevníka na URL typu
+<code>https://filthyfilter.sk/cistenie-klimatizacie/?gclid=EAIa…&amp;utm_source=google&amp;utm_campaign=…</code>.
+<code>gclid</code> je „Google Click ID“: náhodný reťazec, ktorý Google vie spojiť späť
+s konkrétnym klikom, kampaňou, kľúčovým slovom a časom. Bez neho Google nevie,
+ktorý klik priniesol čo. <code>gbraid</code>/<code>wbraid</code> sú náhrady pre iOS, kde <code>gclid</code>
+niekedy neexistuje.</p>
+<p>Na webe sa stane toto (<code>js/attribution.js</code>): ak je súhlas s meraním, uložia sa
+<code>gclid|gbraid|wbraid</code>, päť <code>utm_*</code>, vstupná URL bez query a origin referrera do
+<code>sessionStorage</code> pod <code>ff_attr_v2</code>. Prvý dotyk v relácii vyhráva. Bez súhlasu sa
+neuloží nič okrem <code>landing_token</code> (ktorá stránka).</p>
+<p>Súbežne po súhlase GTM načíta Google tag, ktorý si sám uloží cookie <code>_gcl_aw</code>
+s tým istým <code>gclid</code>. Tú cookie používajú <strong>webové</strong> konverzie (bod 4). Naša
+<code>sessionStorage</code> kópia slúži <strong>offline</strong> konverziám (bod 6). Sú to dve
+nezávislé cesty a obe potrebujeme.</p>
+<p><strong>Čo pridať:</strong> do finálnej URL v Google Ads nastaviť „final URL suffix“
+<code>utm_source=google&amp;utm_medium=cpc&amp;utm_campaign={campaignid}&amp;utm_content={adgroupid}&amp;utm_term={keyword}</code>.
+ValueTrack <code>{campaignid}</code> Google dosadí sám. Potom <code>lead_attribution.utm_campaign</code>
+nesie <strong>ID kampane</strong>, nie ručne písaný názov, a dá sa spojiť s exportom nákladov.</p>
+<h3 id="2-co-sa-ulozi-pri-formulari">2. Čo sa uloží pri formulári</h3>
+<p><code>js/main.js</code> pošle na <code>POST /api/v1/leads</code> meno, kontakt, obec, text a všetko
+z <code>ffAttribution.get()</code>. <code>LeadsRepository::insert</code> zapíše v jednej transakcii
+<code>captured_messages</code> a <code>lead_attribution</code> (s <code>captured_message_id</code>, <code>ip_hash</code>,
+<code>user_agent</code>). Až po HTTP 2xx web odpáli <code>lead_submitted</code> do GTM; GTM ho pošle
+Google ako webovú konverziu (spojenie cez cookie <code>_gcl_aw</code>).</p>
+<p><strong>Čo pridať:</strong> <code>consent_version</code> + <code>consent_at</code> do <code>lead_attribution</code> (web ich
+už pozná z <code>ff_consent_v2</code>), <code>fbclid</code>, <code>platform</code>, a štruktúrované polia leadu.</p>
+<h3 id="3-ako-sa-atribucia-zachova-session-customer-job-invoice">3. Ako sa atribúcia zachová session → customer → job → invoice</h3>
+<p>Reťaz dnes: <code>lead_attribution.captured_message_id</code> → pri convert
+<code>conversion_link_attribution</code> dopíše <code>job_id</code> a <code>client_id</code> → pri Done
+<code>conversion_attribution_for_job</code> nájde riadok a skopíruje click ID do
+<code>conversion_events</code>.</p>
+<p>Kde sa reťaz trhá:</p>
+<ul>
+<li>zákazka vytvorená priamo cez <code>POST /api/v1/jobs</code> bez zachytenej správy
+  nemá atribúciu (opraviť: v portáli povinne „zdroj“ alebo výber zachytenej správy);</li>
+<li>druhá zákazka zákazníka (opraviť: <code>clients.acquisition_lead_attribution_id</code>,
+  aby sa dala počítať LTV kampane, ale <strong>neposielať</strong> ju Google ako novú
+  konverziu po 90 dňoch, lebo Google ju odmietne);</li>
+<li>faktúra (opraviť: <code>invoices.job_id</code>, hodnota konverzie sa berie z nej).</li>
+</ul>
+<p>Pravidlo: <strong><code>lead_attribution</code> sa nikdy nemaže ani neprepisuje</strong>, len sa
+dopĺňajú väzby. Pri výmaze na žiadosť dotknutej osoby sa maže celý reťazec
+(<code>PRIVACY_IMPLEMENTATION.md</code> bod 2).</p>
+<h3 id="4-co-je-primary-conversion">4. Čo je primary conversion</h3>
+<p>V Google Ads má každá konverzná akcia prepínač „primárna“/„sekundárna“.
+<strong>Primárne</strong> akcie sa počítajú do stĺpca „Konverzie“ a <strong>na ne sa optimalizuje
+Smart Bidding</strong> (Google posúva ponuky tak, aby ich bolo viac). Sekundárne
+sa iba zobrazujú.</p>
+<p>Odporúčanie pre nás, v troch fázach:</p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>Fáza</th>
+<th>Primárna</th>
+<th>Sekundárne</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Štart (prvé týždne)</td>
+<td><code>lead_submitted</code> (webová, z GTM)</td>
+<td><code>phone_click</code>, <code>whatsapp_click</code>, importované <code>lead_qualified</code>, <code>job_created</code>, <code>job_completed</code></td>
+</tr>
+<tr>
+<td>Keď má import stabilne dáta (≥ 30 konverzií/mesiac)</td>
+<td>importovaná <code>job_created</code></td>
+<td><code>lead_submitted</code> prepnúť na sekundárnu, ostatné zostávajú</td>
+</tr>
+<tr>
+<td>Keď ide hodnota spoľahlivo</td>
+<td><code>job_completed</code> <strong>s hodnotou</strong> (stratégia tROAS)</td>
+<td>ostatné</td>
+</tr>
+</tbody>
+</table></div>
+<p>Dôvod poradia: Google potrebuje objem, aby sa učil. Zákaziek je menej než
+leadov, tak sa začína leadom a prechádza na kvalitnejší signál, keď je ho dosť.</p>
+<h3 id="5-co-je-secondary-conversion">5. Čo je secondary conversion</h3>
+<p>Akcia, ktorú chceme vidieť, ale nechceme, aby ju Google naháňal. <code>phone_click</code>
+a <code>whatsapp_click</code> musia byť sekundárne navždy (kapitola 7b
+<code>MARKETING_PLAN.md</code>): sú to úmysly, nie výsledky. Ak by boli primárne, Google
+sa naučí privádzať ľudí, ktorí klikajú na telefón a nevolajú.</p>
+<h3 id="6-co-vieme-posielat-spat-google">6. Čo vieme posielať späť Google</h3>
+<p>Cez Data Manager API (<code>cron/google_ads_conversion_worker.php</code>) posielame
+udalosť s: click ID (<code>gclid</code>/<code>gbraid</code>/<code>wbraid</code>), čas, názov konverznej akcie
+(cez <code>GOOGLE_DM_ACTION_*</code>), hodnota + mena, hashovaný e-mail a telefón
+(„enhanced conversions for leads“: keď click ID chýba, Google skúsi spárovať
+hash s prihláseným používateľom). <code>transactionId</code> = ID riadku, takže opakované
+odoslanie sa nezdvojí.</p>
+<p>Čo API vie a my nepoužívame: <strong>úpravy konverzií</strong> (retraction pri storne,
+restatement pri zmene sumy). Potrebné, keď hodnota = fakturovaná suma a faktúra
+sa dobropisuje. P2.</p>
+<p>Obmedzenia: click ID platí ~90 dní od kliku; konverzia staršia ako to sa
+neprijme. Hodnotu treba posielať v mene účtu Google Ads (EUR).</p>
+<h3 id="7-ako-pracovat-s-conversion-value">7. Ako pracovať s conversion value</h3>
+<p>Hodnota je číslo, ktoré Google pri tROAS delí nákladom na klik. Musí byť
+<strong>konzistentná</strong> (vždy to isté: napr. vždy netto bez DPH) a <strong>overiteľná</strong>.</p>
+<p>Návrh: <code>job_completed.value = invoices.net</code> (fakturovaná suma bez DPH). Kým
+faktúra nie je v systéme, dočasne <code>jobs.price_net</code> z ponuky. Bez hodnoty je
+lepšie <strong>posielať 0 než odhad</strong>, inak si Google naučí nezmysel.</p>
+<p>Pri rezervačnom expres príplatku a viacerých jednotkách je hodnota súčet
+<code>job_services</code>, nie cena balíka.</p>
+<h3 id="8-ako-neskor-pocitat-revenue-a-roas">8. Ako neskôr počítať revenue a ROAS</h3>
+<p>Google <strong>nevracia</strong> náklady kampaní cez Data Manager. Náklady treba dostať k nám
+inak: mesačný CSV export z Google Ads (Kampane → Stiahnuť) do <code>ad_spend_daily</code>,
+alebo neskôr Google Ads API na čítanie (vyžaduje developer token, ktorý sme
+pre upload obišli; na čítanie vlastného účtu stačí základný prístup).</p>
+<p>Potom je otázka „500 € na kampaň X → koľko fakturovaných eur“ jeden SQL:</p>
+<pre><code class="language-sql">SELECT a.utm_campaign,
+       SUM(s.cost)                                   AS spend,
+       COUNT(DISTINCT a.captured_message_id)         AS leads,
+       COUNT(DISTINCT a.job_id)                      AS jobs,
+       COALESCE(SUM(i.net), 0)                       AS invoiced_net,
+       COALESCE(SUM(i.paid_amount), 0)               AS paid,
+       COALESCE(SUM(i.net) - SUM(c.amount_net), 0)   AS gross_margin
+FROM lead_attribution a
+LEFT JOIN invoices  i ON i.job_id = a.job_id
+LEFT JOIN job_costs c ON c.job_id = a.job_id
+LEFT JOIN ad_spend_daily s ON s.campaign_id = a.utm_campaign AND s.date BETWEEN … AND …
+WHERE a.platform = 'google'
+GROUP BY a.utm_campaign;
+</code></pre>
+<p>Preto je dôležité, aby <code>utm_campaign</code> niesol <code>{campaignid}</code> (bod 1): spája
+naše dáta s exportom Google bez ručného prepisovania názvov.</p>
+<h3 id="9-ako-este-lepsie-pracovat-s-marzou">9. Ako ešte lepšie pracovať s maržou</h3>
+<p>Krok 1: <code>job_costs</code> (práca v minútach × sadzba, materiál, dojazd). Marža =
+<code>invoices.net − Σ job_costs</code>. Krok 2: v Google <strong>druhá konverzná akcia</strong>
+„Job Margin“ (sekundárna), kam ide marža ako hodnota; tržba zostáva v
+„Job Completed“. Tak vidíte obe a kedykoľvek prepnete, na ktorú sa optimalizuje.
+Nemiešať obe do jednej akcie. Alternatíva bez druhej akcie: „conversion value
+rules“ v Google Ads (násobenie podľa geo/zariadenia) — hrubé, neodporúčam.</p>
+<h3 id="10-co-musi-byt-implementovane-teraz-aby-sa-to-nezablokovalo">10. Čo musí byť implementované teraz, aby sa to nezablokovalo</h3>
+<ol>
+<li>ValueTrack v final URL suffix (nastavenie v Google Ads, nie kód).</li>
+<li><code>lead_attribution</code>: <code>consent_version</code>, <code>consent_at</code>, <code>platform</code>, <code>fbclid</code>,
+   <code>ctwa_clid</code>, <code>campaign_id</code>, <code>adgroup_id</code>, <code>keyword_id</code>.</li>
+<li><code>conversion_events</code>: <code>value</code>, <code>currency</code> pri <code>job_completed</code> (z <code>jobs.price_net</code>
+   dnes, z <code>invoices.net</code> neskôr), <code>hashed_email</code>, <code>platform</code>, <code>invoice_id</code>.</li>
+<li><code>jobs.price_*</code> + <code>job_services</code>, aby hodnota mala odkiaľ prísť.</li>
+<li><code>invoices</code> aspoň ako ručný zápis v portáli.</li>
+<li><code>clients.acquisition_lead_attribution_id</code> a normalizovaný telefón.</li>
+<li>WhatsApp <code>referral</code> do atribúcie (pre Meta kampaň, ktorá ide prvá).</li>
+<li>Nikdy nemazať <code>lead_attribution</code> mimo GDPR výmazu.</li>
+</ol>
+<hr />
+<h2 id="h-priority">H. PRIORITY</h2>
+<h3 id="p0-foundation-teraz-neskor-sa-to-preraba-draho">P0 — foundation (teraz; neskôr sa to prerába draho)</h3>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Čo</th>
+<th>Prečo teraz</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P0.1</td>
+<td>Štruktúrovaný lead: <code>captured_messages.lead_details JSONB</code>, <code>postcode</code>; web posiela <code>service_code</code>, <code>unit_count</code>, <code>unit_type</code>, <code>preferred_date</code>, <code>express</code>, <code>postcode</code> ako polia</td>
+<td>bez toho nie je cenový engine, booking ani report podľa služby</td>
+</tr>
+<tr>
+<td>P0.2</td>
+<td>Atribúcia neutrálna k platforme + súhlas: rozšírenie <code>lead_attribution</code> a <code>conversion_events</code>; WhatsApp <code>referral</code>; <code>fbclid</code> na webe; <code>clients.acquisition_lead_attribution_id</code></td>
+<td>Meta kampaň je prvá; súhlas musí byť doložený pred prvým exportom</td>
+</tr>
+<tr>
+<td>P0.3</td>
+<td>Peniaze na zákazke: <code>job_services</code>, <code>jobs.price_*</code>, <code>vat_mode</code>; <code>job_completed.value</code></td>
+<td>konverzný okruh je bez toho prázdny</td>
+</tr>
+<tr>
+<td>P0.4</td>
+<td>Účtovná kniha: <code>invoices</code>, <code>job_costs</code> s ručným zápisom v portáli; PDF plán Billdu označiť ako pozastavený</td>
+<td>odpovedá na otázku o tržbe a marži; zabráni tretiemu backendu</td>
+</tr>
+<tr>
+<td>P0.5</td>
+<td>Identita zákazníka: <code>clients.email</code>, <code>phone_normalized</code>, <code>customer_type</code>, firemné polia; párovanie cez normalizovaný telefón</td>
+<td>inak vznikajú duplicity a retencia nemá koho osloviť</td>
+</tr>
+<tr>
+<td>P0.6</td>
+<td>Lokalita ako dáta: <code>service_localities</code>, <code>client_locations</code>, PSČ na <code>jobs</code>, <code>service_area_postcodes.locality_id/travel_zone</code></td>
+<td>mestské stránky, dojazd aj kapacita to potrebujú</td>
+</tr>
+<tr>
+<td>P0.7</td>
+<td>Zmazať legacy emisiu konverzií (4 súbory) podľa postupu v <code>ARCHITECTURE.md</code></td>
+<td>jeden zapisovateľ pre atribúciu</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="p1-mvp-filthyfilter-na-realny-launch">P1 — MVP FilthyFilter (na reálny launch)</h3>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Čo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1.1</td>
+<td><code>ServiceQuoteEngine</code> + <code>quotes</code> + verejný <code>POST /api/v1/public/quotes</code> (rate limit); web ukáže cenu hneď po zadaní obce, typu a počtu jednotiek; portál tvorí ponuku tým istým</td>
+</tr>
+<tr>
+<td>P1.2</td>
+<td>Dostupnosť pre servis: <code>booking_holds</code>, <code>GET /api/v1/public/availability?kind=cleaning&amp;postcode=</code>, kapacita z <code>app_settings</code> (<code>cleaning.max_minutes_per_day</code>, <code>working_weekdays</code>, <code>blocked_dates</code>); potvrdenie = zákazka <code>Planned</code> z ponuky</td>
+</tr>
+<tr>
+<td>P1.3</td>
+<td>Technik: zariadenie z čistenia (<code>customer_devices</code> pre technika na priradenej zákazke), <code>service_visits</code> s <code>filth_rating_before/after</code>, checklist v <code>checklist_json</code>; marketingový trigger aj pre <code>Service</code></td>
+</tr>
+<tr>
+<td>P1.4</td>
+<td>Faktúra: pri <code>Done</code> portál vyžiada číslo a sumy z Billdu (ručne), zapíše <code>invoices</code>; <code>job_completed</code> dostane hodnotu</td>
+</tr>
+<tr>
+<td>P1.5</td>
+<td><code>review_requests</code> + <code>cron/review_request_worker.php</code>: 2 dni po Done šablóna WhatsApp (vyžaduje schválenú Meta šablónu) s fallbackom e-mail; sledovanie odoslania, follow-upu a kliku cez <code>link_token</code></td>
+</tr>
+<tr>
+<td>P1.6</td>
+<td>Meta Pixel v <code>js/consent.js</code>, WhatsApp v mobilnej lište, <code>LocalBusiness</code> JSON-LD (už v <code>STATUS.md</code>)</td>
+</tr>
+<tr>
+<td>P1.7</td>
+<td>Tri mestské stránky (Bratislava, Trnava, Nitra) ako ručné HTML z jednej šablóny; dynamické časti (počet realizácií, najbližší termín, recenzie) z <code>GET /api/v1/public/localities/{slug}</code></td>
+</tr>
+<tr>
+<td>P1.8</td>
+<td>Test v <code>tests/</code>, ktorý zlyhá, keď sa tri kópie formulára rozídu</td>
+</tr>
+<tr>
+<td>P1.9</td>
+<td>Telefónny lead: v portáli/aplikácii rýchly zápis so <code>source=PhoneNote</code> a povinným <code>lead_details.service_code</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="p2-automation-odstrani-rucnu-pracu-po-rozbehu">P2 — automation (odstráni ručnú prácu po rozbehu)</h3>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Čo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P2.1</td>
+<td>Retenčný worker: <code>next_service_due_at − reminder_days_before</code> → <code>outbound_messages</code> (<code>purpose=retention</code>) s odkazom <code>/objednat-znova/?t=&lt;token&gt;</code>, ktorý predvyplní ponuku z <code>customer_devices</code> a <code>client_locations</code></td>
+</tr>
+<tr>
+<td>P2.2</td>
+<td>Meta Conversions API worker (zrkadlo Google workera) pre <code>conversion_events.platform='meta'</code> s <code>fbclid</code>/<code>ctwa_clid</code></td>
+</tr>
+<tr>
+<td>P2.3</td>
+<td><code>ad_spend_daily</code> import (CSV z Google Ads a Meta) + <code>GET /api/v1/reports/attribution</code></td>
+</tr>
+<tr>
+<td>P2.4</td>
+<td>WhatsApp vedený tok: <code>conversations</code> so stavovým automatom (služba → jednotky → PSČ → foto → cena → termín), deterministický, s prepnutím na človeka slovom alebo tlačidlom; človek vždy dostupný</td>
+</tr>
+<tr>
+<td>P2.5</td>
+<td>Technická dostupnosť: <code>technician_availability</code>, odhad trvania (<code>unit_count × minúty + dojazd zo zóny</code>), automatické priradenie</td>
+</tr>
+<tr>
+<td>P2.6</td>
+<td>Úpravy konverzií (storno, dobropis) do Google</td>
+</tr>
+<tr>
+<td>P2.7</td>
+<td>Publikačná fáza <code>marketing_assets</code> → verejný <code>GET /api/v1/public/cases</code> pre Hall of Filth a mestské stránky</td>
+</tr>
+<tr>
+<td>P2.8</td>
+<td><code>commerce_orders.attribution</code> z WooCommerce (prechod na whispAir)</td>
+</tr>
+<tr>
+<td>P2.9</td>
+<td>Import z Billdu (ak má export/API), inak zostáva ručný zápis</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="p3-optimization">P3 — optimization</h3>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Čo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P3.1</td>
+<td>AI klasifikácia a extrakcia z voľného textu WhatsApp/e-mail do <code>lead_details</code> s deterministickým fallbackom na <code>CapturedMessageParser</code>; nikdy nerozhoduje o cene ani termíne</td>
+</tr>
+<tr>
+<td>P3.2</td>
+<td>B2B: <code>organisations</code>, <code>client_contacts</code>, <code>outreach_sequences</code>; <strong>najprv právne posúdenie</strong> (<code>MARKETING_PLAN.md</code> kap. 5 bod 6); zdroj kontaktov len verejné registre a vlastné obhliadky, žiadny scraping osobných údajov</td>
+</tr>
+<tr>
+<td>P3.3</td>
+<td>Trasa a „mini robotky“: <code>jobs.is_flexible</code>, okno dní, dopĺňanie podľa <code>client_locations.lat/lng</code> a GPS technika</td>
+</tr>
+<tr>
+<td>P3.4</td>
+<td>Hodnota = marža ako bidding signál (druhá akcia „Job Margin“)</td>
+</tr>
+<tr>
+<td>P3.5</td>
+<td>Google Business Profile API: počet recenzií denne → <code>review_requests.status='ProbablyReviewed'</code></td>
+</tr>
+<tr>
+<td>P3.6</td>
+<td>Angličtina s vlastnou URL a <code>hreflang</code></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="i-implementation-plan-male-kroky">I. IMPLEMENTATION PLAN — malé kroky</h2>
+<p>Každý krok je samostatne nasaditeľný a spätne kompatibilný (aditívne
+migrácie, nullable stĺpce). Poradie zodpovedá P0 → P1.</p>
+<h3 id="krok-1-strukturovany-lead-p01">Krok 1 — Štruktúrovaný lead (P0.1)</h3>
+<ul>
+<li><strong>Cieľ:</strong> lead nesie službu, počet a typ jednotiek, PSČ, termín, expres ako dáta.</li>
+<li><strong>Komponenty:</strong> <code>filthyfilter/js/main.js</code> (3× formulár), <code>whispair-api</code>
+  <code>_lead_helpers.php</code>, <code>LeadsRepository</code>, <code>CapturedMessagesService</code>, portál (zobrazenie).</li>
+<li><strong>Migrácia:</strong> <code>captured_messages ADD lead_details JSONB NULL, postcode CHAR(5) NULL</code>; index na <code>(postcode)</code>.</li>
+<li><strong>Backend:</strong> <code>extract_lead_details()</code> whitelist (<code>service_code</code> musí byť existujúci <code>package_code</code>, <code>unit_count</code> 1–50, <code>unit_type</code> z enumu, <code>preferred_date</code> dátum, <code>express</code> bool); text správy sa ďalej skladá ako doteraz (technik ho číta).</li>
+<li><strong>Frontend:</strong> formulár pridá <code>unit_type</code> (nástenná/kazetová/neviem) a PSČ; posiela polia vedľa <code>message</code>.</li>
+<li><strong>Testy:</strong> <code>LeadHelpersTest</code> pre whitelist; <code>browser.test.cjs</code> pre payload.</li>
+<li><strong>Riziká:</strong> tri kópie formulára; app whispAirField musí ignorovať neznáme polia (JSON, robí to).</li>
+</ul>
+<h3 id="krok-2-atribucia-pre-meta-a-suhlas-p02">Krok 2 — Atribúcia pre Meta a súhlas (P0.2)</h3>
+<ul>
+<li><strong>Cieľ:</strong> jeden atribučný riadok bez ohľadu na platformu, so súhlasom.</li>
+<li><strong>Komponenty:</strong> <code>js/attribution.js</code>, <code>_lead_helpers.php</code>, <code>_whatsapp_helpers.php</code>, <code>_conversion_helpers.php</code>, <code>ClientsRepository</code>.</li>
+<li><strong>Migrácia:</strong> <code>lead_attribution ADD platform, fbclid, ctwa_clid, campaign_id, adgroup_id, keyword_id, ad_id, consent_version, consent_at, channel</code>; <code>conversion_events ADD platform, fbclid, ctwa_clid</code>; <code>clients ADD acquisition_lead_attribution_id</code>.</li>
+<li><strong>Backend:</strong> <code>whatsapp_parse_inbound</code> číta <code>messages[].referral</code> a pri vzniku <code>captured_messages</code> založí <code>lead_attribution</code> (<code>platform='meta'</code>, <code>channel='whatsapp'</code>); <code>platform</code> sa odvodí z click ID a <code>utm_source</code>; pri convert sa <code>acquisition_lead_attribution_id</code> nastaví, ak je zákazník nový.</li>
+<li><strong>Frontend:</strong> <code>PARAMS</code> + <code>fbclid</code>; payload + <code>consent_version</code>, <code>consent_at</code>.</li>
+<li><strong>Integrácie:</strong> Google Ads final URL suffix s ValueTrack (nastavenie účtu).</li>
+<li><strong>Testy:</strong> <code>WhatsAppHelpersTest</code> s referral payloadom; <code>LeadHelpersTest</code>.</li>
+<li><strong>Riziká:</strong> <code>referral</code> prichádza len pri prvej správe z reklamy; ďalšie správy ho nemajú, preto sa viaže na telefón v okne 24 h.</li>
+</ul>
+<h3 id="krok-3-peniaze-na-zakazke-p03">Krok 3 — Peniaze na zákazke (P0.3)</h3>
+<ul>
+<li><strong>Cieľ:</strong> zákazka má riadky, cenu a DPH režim; <code>job_completed</code> má hodnotu.</li>
+<li><strong>Komponenty:</strong> <code>JobsService</code>, <code>JobsRepository</code>, <code>JobDraftsService</code>, <code>CapturedMessagesService</code>, portál (editor riadkov), whispAirField (iba čítanie).</li>
+<li><strong>Migrácia:</strong> <code>job_services</code> (nová); <code>jobs ADD price_net, price_vat, price_gross, vat_mode, currency, completed_at</code>.</li>
+<li><strong>Backend:</strong> riadky sa predvyplnia z <code>service_packages</code> podľa <code>lead_details.service_code</code>; <code>record_conversion_event('job_completed', value = price_net)</code>; <code>hashed_email</code> z <code>clients.email</code>.</li>
+<li><strong>Frontend:</strong> portál: riadky na zákazke; aplikácia: zobrazenie sumy.</li>
+<li><strong>Testy:</strong> <code>ConversionHelpersTest</code> na value; kontraktový test <code>JobSyncContractTest</code> (nové polia nullable).</li>
+<li><strong>Riziká:</strong> MAUI sync feed musí prežiť nové stĺpce; kontrola <code>JobSyncRepository</code>.</li>
+</ul>
+<h3 id="krok-4-uctovna-kniha-p04">Krok 4 — Účtovná kniha (P0.4)</h3>
+<ul>
+<li><strong>Cieľ:</strong> fakturovaná suma, platba a náklady na zákazke.</li>
+<li><strong>Komponenty:</strong> nový <code>InvoicesController/Service/Repository</code>, portál.</li>
+<li><strong>Migrácia:</strong> <code>invoices</code>, <code>job_costs</code> (obe nové); <code>conversion_events ADD invoice_id, value_kind</code>.</li>
+<li><strong>Backend:</strong> <code>POST /api/v1/jobs/{id}/invoices</code> (manager+), <code>PATCH .../invoices/{id}</code> (paid); pri zápise faktúry sa hodnota <code>job_completed</code> prepíše z <code>invoices.net</code> (ak ešte nebola nahratá) alebo sa vytvorí úprava (P2.6).</li>
+<li><strong>Frontend:</strong> portál formulár s číslom z Billdu a sumami.</li>
+<li><strong>Integrácie:</strong> žiadne; Billdu zostáva.</li>
+<li><strong>Testy:</strong> stavový automat faktúry.</li>
+<li><strong>Riziká:</strong> dvojité vedenie (Billdu + náš zápis). Zámerne minimálne polia.</li>
+</ul>
+<h3 id="krok-5-zakaznik-a-lokalita-p05-p06">Krok 5 — Zákazník a lokalita (P0.5, P0.6)</h3>
+<ul>
+<li><strong>Migrácia:</strong> <code>clients ADD email, phone_normalized, customer_type, company_name, ico, dic, ic_dph, marketing_consent_at</code>; unikátny index <code>(phone_normalized)</code> čiastočný; <code>client_locations</code>; <code>service_localities</code>; <code>service_area_postcodes ADD locality_id, travel_zone</code>; <code>jobs ADD client_location_id, postcode, locality_id</code>.</li>
+<li><strong>Backend:</strong> <code>ClientsRepository::findByPhone</code> cez <code>conversion_normalize_phone</code>; backfill <code>phone_normalized</code>; <code>import_service_area_postcodes.php</code> rozšíriť o lokalitu a zónu (41 obcí z bežiaceho pruhu).</li>
+<li><strong>Riziká:</strong> duplicitní zákazníci pri backfille; riešiť reportom, nie automatickým zlúčením.</li>
+</ul>
+<h3 id="krok-6-zrusenie-legacy-emisie-p07">Krok 6 — Zrušenie legacy emisie (P0.7)</h3>
+<ul>
+<li>Zmazať <code>endpoints/update_captured_message.php</code>, <code>convert_captured_message_to_job.php</code>, <code>update_job.php</code>, <code>create_service_contract.php</code> a ich riadky v <code>index.php</code>; <code>scripts/smoke-test.ps1</code> po nasadení. Predtým overiť access log, ako káže <code>ARCHITECTURE.md</code>.</li>
+</ul>
+<h3 id="krok-7-servicequoteengine-a-ponuka-p11">Krok 7 — ServiceQuoteEngine a ponuka (P1.1)</h3>
+<ul>
+<li><strong>Cieľ:</strong> jedna cenová logika pre web, WhatsApp, portál, technika a faktúru.</li>
+<li><strong>Komponenty:</strong> nový <code>src/Services/ServiceQuoteEngine.php</code> (čistý, bez DB), <code>QuotesService</code>, <code>PricingService</code> (načítanie aktívnej verzie), <code>js/main.js</code>.</li>
+<li><strong>Migrácia:</strong> <code>quotes</code>; <code>pricing_rulesets ADD kind ('product'|'service')</code>.</li>
+<li><strong>Pravidlá (rules_json, príklad):</strong>
+  <code>json
+  { "kind": "service", "currency": "EUR", "vat": { "rate": 0.23 },
+    "steps": [
+      { "type": "package_base",   "per": "unit" },
+      { "type": "unit_type",      "multipliers": { "wall": 1, "cassette": 1.63, "duct": 1.8 } },
+      { "type": "volume_discount","from": 2, "percent": 10 },
+      { "type": "travel_zone",    "amounts": { "0": 0, "1": 15, "2": 30 } },
+      { "type": "mount_height",   "amount": 20 },
+      { "type": "express",        "package_code": "FF-EXPRES-24H" },
+      { "type": "customer_type",  "business_percent": 0 },
+      { "type": "vat" }, { "type": "rounding", "to": 1 }, { "type": "total" } ] }</code>
+  Základ vždy z <code>service_packages.price_amount</code> podľa kódu; engine nikdy
+  nemá čísla v kóde.</li>
+<li><strong>Backend:</strong> <code>POST /api/v1/public/quotes</code> (rate limit ako leady, vracia riadky a súčet, uloží <code>quotes</code> so stavom Draft a <code>public_token</code>); <code>POST /api/v1/quotes</code> (manager) pre ručnú ponuku; ponuka sa pri booking zamrazí do <code>job_services</code>.</li>
+<li><strong>Frontend:</strong> po vyplnení obce/PSČ, typu a počtu web ukáže „orientačne X €“ z API; záloha <code>PRICES</code> zostáva.</li>
+<li><strong>Testy:</strong> <code>ServiceQuoteEngineTest</code> s tabuľkou prípadov (1 nástenná BA, 3 kazetové Nitra expres, B2B).</li>
+<li><strong>Riziká:</strong> verejná cena musí sedieť s textom „od“; DPH 23 % overiť voči aktuálnej sadzbe pri implementácii, nie preberať z tohto príkladu.</li>
+</ul>
+<h3 id="krok-8-dostupnost-a-booking-pre-servis-p12">Krok 8 — Dostupnosť a booking pre servis (P1.2)</h3>
+<ul>
+<li>Zovšeobecniť vetvu <code>wip/installation-slots</code>: premenovať na <code>booking_holds</code> s <code>service_kind</code>, kapacita v minútach na deň, verejný <code>GET /api/v1/public/availability</code>, <code>POST /api/v1/public/bookings</code> (z <code>quote.public_token</code>) → <code>job_drafts</code> alebo rovno <code>jobs Planned</code> s <code>source_channel='web'</code>; potvrdenie manažérom zostáva ako dnes pri e-shope.</li>
+<li><strong>Riziká:</strong> vetva nebola overená; najprv ju zlúčiť samostatne, potom rozširovať.</li>
+</ul>
+<h3 id="krok-9-technik-a-hodnotenie-p13">Krok 9 — Technik a hodnotenie (P1.3)</h3>
+<ul>
+<li><code>customer_devices</code> pre technika na priradenej zákazke (nová routa alebo uvoľnenie <code>RequireManager</code> na <code>Authenticate</code> + kontrola priradenia v službe); <code>service_visits ADD filth_rating_before, filth_rating_after, problem_summary_public</code>; <code>job_timeline_entries ADD device_id, capture_phase, public_use_consent</code>; <code>MarketingDraftsService::queueCompleted*</code> podľa <code>service_visits</code>, nie typu zákazky.</li>
+<li>whispAirField: obrazovka START → pred → skóre → checklist → po → DONE (mimo tento repozitár).</li>
+</ul>
+<h3 id="krok-10-recenzie-p15">Krok 10 — Recenzie (P1.5)</h3>
+<ul>
+<li><strong>Migrácia:</strong> <code>review_requests</code>; <code>outbound_messages ADD client_id, job_id, purpose, channel</code>.</li>
+<li><strong>Backend:</strong> <code>cron/review_request_worker.php</code>: kandidáti = <code>jobs Done</code> pred ≥ 2 dňami, bez požiadavky, s <code>whatsapp_consent</code> opt_in alebo e-mailom; follow-up po 7 dňoch, max 1; <code>GET /r/{token}</code> presmeruje na Google odkaz a zapíše <code>clicked_at</code>.</li>
+<li><strong>Pravidlá:</strong> žiadne filtrovanie podľa spokojnosti, žiadna odmena (<code>B2B_TRUST_LAYER.md</code>).</li>
+<li><strong>Integrácie:</strong> Meta schválenie šablóny správy; Google Place ID (otvorené).</li>
+<li><strong>Riziká:</strong> bez schválenej šablóny WhatsApp neodíde; e-mail fallback musí existovať od začiatku.</li>
+</ul>
+<h3 id="krok-11-mestske-stranky-p17">Krok 11 — Mestské stránky (P1.7)</h3>
+<ul>
+<li><code>GET /api/v1/public/localities/{slug}</code> (počet realizácií, priemerný FFFF, najbližší voľný deň, počet recenzií ak je Place ID); tri HTML stránky z jednej šablóny; <code>LocalBusiness</code> + <code>areaServed</code>; <code>sitemap.xml</code>.</li>
+<li><strong>Riziká:</strong> obsah musí byť odlišný (referencie, FAQ, dojazd), inak je to práve ten spam, ktorý nechceme.</li>
+</ul>
+<h3 id="krok-12-retencia-p21">Krok 12 — Retencia (P2.1)</h3>
+<ul>
+<li><code>cron/retention_reminder_worker.php</code>; token <code>objednat-znova</code>; predvyplnená ponuka z <code>customer_devices</code>; po zákazke čistenia sa <code>device_service_plans.next_service_due_at</code> nastaví na <code>+interval_months</code> balíka.</li>
+</ul>
+<h3 id="krok-13-report-a-naklady-p23">Krok 13 — Report a náklady (P2.3)</h3>
+<ul>
+<li><code>ad_spend_daily</code>, import CSV cez portál; <code>GET /api/v1/reports/attribution?from&amp;to&amp;platform</code> s SQL z kapitoly G.8; portál tabuľka kampaň → leady → zákazky → fakturované → zaplatené → marža.</li>
+</ul>
+<h3 id="krok-14-meta-capi-p22-a-upravy-konverzii-p26">Krok 14 — Meta CAPI (P2.2) a úpravy konverzií (P2.6)</h3>
+<ul>
+<li>Worker podľa vzoru <code>google_ads_conversion_worker.php</code>, spoločná fronta <code>conversion_events</code> filtrovaná podľa <code>platform</code>; retraction pri <code>invoices.status='Credited'</code>.</li>
+</ul>
+<hr />
+<h2 id="co-z-benchmarku-vedome-neberieme">Čo z benchmarku vedome neberieme</h2>
+<ul>
+<li>Stovky mestských stránok. Tri mestá s vlastným obsahom, ďalšie podľa dát.</li>
+<li>Pohoda API. Fakturácia je Billdu; my vedieme len knihu.</li>
+<li>B2B scraping s Playwrightom. Legálne posúdenie predtým, dáta len z verejných registrov.</li>
+<li>AI pri cene, termíne a stave. Deterministické pravidlá, AI len pri texte.</li>
+<li>Ich čísla ako ciele.</li>
+</ul>
+<h2 id="otvorene-rozhodnutia-pre-pouzivatela">Otvorené rozhodnutia pre používateľa</h2>
+<ol>
+<li>Billdu: potvrdiť, že plán náhrady v PDF sa <strong>pozastavuje</strong> a API vedie len účtovnú knihu.</li>
+<li>Kto zapisuje faktúru do portálu po zákazke (technik alebo kancelária) a do kedy.</li>
+<li>Hodnota konverzie: netto bez DPH (odporúčané) alebo brutto.</li>
+<li>Meta: číslo WhatsApp Business a či bude spoločné s whispAir (ovplyvňuje <code>referral</code> aj šablóny).</li>
+<li>Ktorým mestom sa začína (opakuje sa zo <code>STATUS.md</code>).</li>
+</ol>
+<footer>FilthyFilter by whispAir · technický review · 7. 9. 2026</footer>
+</div>
+</main>
+</div>
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('nav.toc a'));
+  var heads=links.map(function(a){return document.getElementById(decodeURIComponent(a.getAttribute('href').slice(1)));});
+  function mark(){
+    var y=window.scrollY+40,i,idx=0;
+    for(i=0;i<heads.length;i++){ if(heads[i]&&heads[i].offsetTop<=y) idx=i; }
+    links.forEach(function(a,j){a.classList.toggle('active',j===idx);});
+  }
+  window.addEventListener('scroll',mark,{passive:true}); mark();
+})();
+</script>
+</body>
+</html>

@@ -839,6 +839,74 @@ summary:focus-visible,
 .inquiry__form button[disabled] { opacity: 0.55; cursor: progress; }
 
 /* =========================================================================
+   SERVICE AREA TICKER
+   A single running line of the towns we drive to, in the same mono lettering as
+   the hero coordinates, so it reads as a transmission rather than as a marketing
+   banner. The three bases are copper and the towns around them are muted, which
+   shows the shape of the area at a glance instead of one flat list of names.
+
+   The track holds the list twice and travels exactly half its width, so the loop
+   has no seam. The second copy is aria-hidden, or a screen reader would read
+   every town twice.
+
+   No JavaScript: the names are in the HTML, which is also what makes them worth
+   anything to a search engine.
+   ========================================================================= */
+.sectors {
+  position: relative;
+  overflow: hidden;
+  margin-top: 22px;
+  padding: 11px 0;
+  border-top: 1px solid var(--bronze-dim);
+  border-bottom: 1px solid var(--bronze-dim);
+  /* Fades both ends so names slide in and out instead of being chopped off. */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.sectors__track {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  animation: sectors-run 64s linear infinite;
+  will-change: transform;
+}
+.sectors__seq { display: flex; align-items: center; }
+.sectors__seq > span {
+  padding: 0 15px;
+  white-space: nowrap;
+  font: 0.72rem var(--f-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.sectors__seq > .sectors__city {
+  color: var(--gold);
+  border-left: 2px solid var(--copper);
+  margin-left: 12px;
+}
+/* Hovering stops it, so a name someone is trying to read stops running away. */
+.sectors:hover .sectors__track,
+.sectors:focus-within .sectors__track { animation-play-state: paused; }
+
+@media (prefers-reduced-motion: reduce) {
+  /* Motion off: the same names, wrapped and standing still. Nothing is lost. */
+  .sectors { -webkit-mask-image: none; mask-image: none; }
+  .sectors__track {
+    animation: none;
+    width: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .sectors__seq { flex-wrap: wrap; justify-content: center; row-gap: 6px; }
+  .sectors__seq[aria-hidden="true"] { display: none; }
+}
+
+@keyframes sectors-run {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* =========================================================================
    TRACKING CONSENT
    Sits above the sticky phone bar, because a choice the visitor cannot reach
    is not a choice. Both answers are styled as real buttons of the same size:

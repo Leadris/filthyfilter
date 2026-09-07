@@ -21,8 +21,21 @@ nebol úplný.
 | Meta (Facebook a Instagram) | **nezačaté**, zadanie zapísané v `MARKETING_PLAN.md` kap. 11 |
 | Produkčný web | **stará verzia**, formulár pripravuje správu, neposiela lead do API; bez merania |
 | Ikony | hotové na stagingu; produkcia má ešte starú baktériu |
+| Technický review celého funnelu | hotový, `SYSTEM_REVIEW.md`; web verzia neverejne na `dev.filthyfilter.sk/system-review/` |
 
 ## Čo je hotové
+
+**Technický review funnelu (7. 9. večer).** `SYSTEM_REVIEW.md` porovnáva
+`whispair-api` a web s modelom klik → lead → ponuka → termín → zákazka →
+faktúra → recenzia → ďalšia objednávka: čo existuje (s tabuľkami a súbormi),
+čo je čiastočné, čo chýba, návrh domény, Google Ads pre vývojára, priority
+P0 až P3 a inkrementálny plán. Hlavný nález: konverzný okruh existuje, ale
+zákazka nemá cenu a faktúra v API neexistuje, takže do Google ide udalosť bez
+hodnoty. Web verzia je nasadená neverejne (noindex, bez odkazov, bez hesla)
+na `https://dev.filthyfilter.sk/system-review/`; zdroj
+`interne/system-review/index.html`. Nič z návrhu nie je implementované.
+Rozhodnutia pre používateľa sú na konci dokumentu (Billdu, hodnota konverzie,
+číslo WhatsApp Business, prvé mesto).
 
 **Súkromie, ceny a optimalizácia (7. 9., nasadené na dev).**
 SK/EN informácie podľa čl. 13 GDPR s ADAMSON s. r. o.; odkazy pri všetkých troch

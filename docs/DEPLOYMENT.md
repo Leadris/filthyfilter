@@ -67,6 +67,27 @@ shipping it here would add a file that can only ever do nothing or go wrong.
 
 ### Last staging deploy
 
+- Date: 2026-09-07, internal system review page, commit `d99fc05`.
+- SSH port: 22597, confirmed by the user after the deploy. Host key as pinned
+  in the previous record.
+- Deployed on its own, not as a staging package: `interne/system-review/index.html`
+  extracted into the staging root as `system-review/`, a new directory, so no
+  backup was taken and nothing existing was overwritten. It stays on staging
+  across future package deploys because the package extracts over the root
+  without wiping it; nothing in `build_dev.py` or the release tar lists it, so
+  it can never reach production by accident.
+- The page is rendered from `docs/SYSTEM_REVIEW.md` by `tmp/build_system_review.py`
+  (uncommitted, like the other tmp deploy scripts). It carries its own
+  `noindex, nofollow, noarchive` meta; the staging `robots.txt` disallows
+  everything anyway. Unlisted, not password protected.
+- Verified: `https://dev.filthyfilter.sk/system-review/` answers 200, 76 154 bytes,
+  SHA-256 `213e4cab…1440` identical to the repository file.
+- Uploaded package: `/home/jg046600/tmp/ff-dev-system-review-20260907.tar.gz`.
+- Production untouched; its homepage SHA-256 checked before and after
+  (`/home/jg046600/tmp/ff-prod-before-system-review-20260907.sha256`, OK).
+
+### Previous staging deploy
+
 - Date: 2026-09-07, placeholder catalog images, the attribution fix on the privacy
   notice and the five published service packages behind the price feed.
 - SSH port: 22597. **The host ed25519 key changed.** The pinned

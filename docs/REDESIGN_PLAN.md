@@ -32,6 +32,10 @@ Zachovať dnešný humor a vizuál FilthyFilter, výrazne zlepšiť predstavenie
 
 ## Vizuál a nová štruktúra
 
+Pre jednotlivé realizácie v `/hall/` platí doplnená šablóna
+[HALL_OF_FILTH_CASE_GUIDE.md](HALL_OF_FILTH_CASE_GUIDE.md), aktualizovaná 7. 9.
+podľa Donuterie. Obsahuje pravidlá obálky, rozloženia a prepojení bez duplicity.
+
 Zachovať čierne pozadie, meď/zlato, Oswald/Inter/Share Tech Mono, technické rámiky, FFFF a animované pozadie. Nezavádzať svetlý redizajn. Čitateľnosť riešiť kontrastom a rozostupmi. Zachovať reduced-motion a GPU rozpočty. Hudba zostane voliteľná cez malé tlačidlo; automatickú plávajúcu zvukovú výzvu odstrániť.
 
 Navigácia: **Služby · Realizácie · Postup · FFFF · Pre firmy · Otázky · Kontakt**. Zachovať existujúce zmysluplné kotvy (`diensten`, `hall`, `werkwijze`, `ffff`, `contact`), doplniť kotvy `pre-firmy`, `faq` a `service-area`. Mobil: kompaktné tlačidlá Zavolať/Nacenenie bez zakrytia obsahu.

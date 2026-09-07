@@ -23,9 +23,14 @@ nebol úplný.
 
 ## Čo je hotové
 
+**Pravidlá realizácií (7. 9.).** `HALL_OF_FILTH_CASE_GUIDE.md` doplnený podľa
+Donuterie: rozloženie, poradie obsahu, obálka s 50 % priehľadnosťou bez zoomu,
+prepojenia bez duplicity, SK/EN a publikačný checklist. Je to spoločná šablóna
+jednotlivých spisov; `POSTER_PILOT.md` eviduje pôvod konkrétnej ilustrácie.
+
 **Pilot posteru (7. 9., na stagingu).** Na pokyn používateľa pripravená prvá
 verzia s minimom duplicity: jedna ilustračná obálka v úvode spisu La Donuteria
-nahrádza veľkú pečať FFFF. Obálka má na následný pokyn používateľa 70 % priehľadnosť (opacity .3),
+nahrádza veľkú pečať FFFF. Obálka má na následný pokyn používateľa 50 % priehľadnosť (opacity .5),
 bez odkazu, zoomu a jeho označenia; popis zostáva plne čitateľný.
 Úvod má odkazy na autentické pred/po a na formulár čistenia. Homepage ponecháva
 skutočné pred/po a kratšiu upútavku; landing pages poster neopakujú.

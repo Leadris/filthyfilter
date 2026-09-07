@@ -530,10 +530,8 @@ img { max-width: 100%; display: block; }
 .case-hero--poster .case-title { font-size: clamp(3rem, 6.5vw, 6rem); overflow-wrap: anywhere; }
 .case-hero__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
 .case-poster { width: 100%; max-width: 370px; margin: 0 0 0 auto; }
-.case-poster__link { position: relative; display: block; border: 1px solid var(--bronze); box-shadow: 0 18px 48px rgba(0,0,0,.45); }
-.case-poster__link img { display: block; width: 100%; height: auto; }
-.case-poster__link:focus-visible { outline: 3px solid var(--gold); outline-offset: 5px; }
-.case-poster__zoom { position: absolute; right: 10px; top: 10px; background: var(--bg); color: var(--gold); border: 1px solid var(--bronze); padding: 4px 10px; font-size: 1.2rem; }
+.case-poster__art { opacity: .6; display: block; border: 1px solid var(--bronze); box-shadow: 0 18px 48px rgba(0,0,0,.45); }
+.case-poster__art img { display: block; width: 100%; height: auto; }
 .case-poster figcaption { color: var(--muted); font-size: .875rem; line-height: 1.5; margin-top: 10px; }
 #before-after { scroll-margin-top: 100px; }
 @media (max-width: 800px) {

@@ -66,6 +66,15 @@ shipping it here would add a file that can only ever do nothing or go wrong.
 
 ### Last staging deploy
 
+- Date: 2026-09-07, poster transparency follow-up.
+- Case HTML and CSS only: opacity .6 (40% transparent), no zoom link or icon,
+  caption shortened in SK/EN, CSS version case-poster-2.
+- HTTPS verified: updated markup, exact CSS bytes and staging noindex.
+- Rollback: `/home/jg046600/tmp/ff-dev-before-poster-opacity.tar.gz`.
+- Production unchanged.
+
+### Previous staging deploy
+
 - Date: 2026-09-07, poster pilot, commit `ee3433d`, SSH port 22418.
 - Updated homepage, case HTML, shared CSS and new case-poster.png only.
 - Staging noindex metadata applied to both uploaded HTML files.

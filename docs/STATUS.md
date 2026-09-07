@@ -25,7 +25,8 @@ nebol úplný.
 
 **Pilot posteru (7. 9., na stagingu).** Na pokyn používateľa pripravená prvá
 verzia s minimom duplicity: jedna ilustračná obálka v úvode spisu La Donuteria
-nahrádza veľkú pečať FFFF. Klik otvorí celý obrázok, popis ju označuje ako ilustráciu.
+nahrádza veľkú pečať FFFF. Obálka má na následný pokyn používateľa 40 % priehľadnosť (opacity .6),
+bez odkazu, zoomu a jeho označenia; popis zostáva plne čitateľný.
 Úvod má odkazy na autentické pred/po a na formulár čistenia. Homepage ponecháva
 skutočné pred/po a kratšiu upútavku; landing pages poster neopakujú.
 Nové mestské stránky ani archívna stránka nevznikli.

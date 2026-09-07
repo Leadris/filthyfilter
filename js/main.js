@@ -121,12 +121,26 @@
      fallen out of step, but only in the local preview.
 
      The currency sits on the side the language puts it: 79 € and €79.
+
+     `code` points at the service package in the portal that owns this figure.
+     That table (service_packages) already carries price_amount, currency,
+     public_name, package_code and an is_published flag, and whispAir's
+     installation items use it under the WA- prefix. The intention is that the
+     portal becomes the source and this table is fed from it; keeping the code
+     here means that day is a lookup rather than a rewrite.
+
+     Two things have to be settled first, and neither is code:
+       - none of the FF- packages exist yet, and the WA- ones carry no price,
+       - price_amount says nothing about VAT. The site prints these figures as
+         including it. Publishing a net amount as gross would understate every
+         price by the VAT rate, so the meaning of that column has to be pinned
+         down before anything reads it.
      ======================================================================= */
   var PRICES = {
-    "p-nastenna":    { sk: "79 €",  en: "€79" },
-    "p-kazetova":    { sk: "129 €", en: "€129" },
-    "p-udrzba":      { sk: "49 €",  en: "€49" },
-    "p-diagnostika": { sk: "49 €",  en: "€49" }
+    "p-nastenna":    { code: "FF-CIST-NASTENNA", sk: "79 €",  en: "€79" },
+    "p-kazetova":    { code: "FF-CIST-KAZETOVA", sk: "129 €", en: "€129" },
+    "p-udrzba":      { code: "FF-UDRZBA",        sk: "49 €",  en: "€49" },
+    "p-diagnostika": { code: "FF-DIAGNOSTIKA",   sk: "49 €",  en: "€49" }
   };
 
   var PRICE_TOKEN = /\{\{(p-[a-z]+)\}\}/g;

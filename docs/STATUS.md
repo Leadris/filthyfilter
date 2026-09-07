@@ -97,6 +97,29 @@ upraviť tabuľku; zálohu je dobré zosúladiť tiež a **lokálny náhľad na 
 v konzole** hláškou `[ceny]`. Tá istá kontrola nahlási aj sumu napísanú do textu mimo
 značky. V produkcii nebeží.
 
+**Ceny sa neskôr majú ťahať z portálu.** Mechanizmus na to existuje a je naň stavaný:
+tabuľka `service_packages` vo `whispair-api` má `price_amount`, `currency`, `public_name`,
+`package_code` a príznak `is_published`. Montážne položky whispAir ju už používajú pod
+prefixom `WA-`. Tabuľka `PRICES` v `js/main.js` preto pri každej sume nesie aj `code`,
+teda kód balíka, ktorý tú sumu vlastní, aby neskoršie napojenie bolo vyhľadanie a nie
+prepis.
+
+Chýbajú tri veci a dve z nich nie sú kód:
+
+1. **Balíky `FF-` neexistujú.** Treba ich v portáli založiť s kódmi
+   `FF-CIST-NASTENNA`, `FF-CIST-KAZETOVA`, `FF-UDRZBA`, `FF-DIAGNOSTIKA`, vyplniť cenu
+   a zaškrtnúť zverejnenie. Desať existujúcich `WA-` balíkov má cenu prázdnu a zverejnenie
+   vypnuté.
+2. **`price_amount` nehovorí nič o DPH.** Web tie sumy uvádza ako sumy s DPH. Ak by sa
+   ťahala suma bez DPH a zobrazila ako s DPH, každá cena na webe by bola o sadzbu DPH
+   nižšia, než je pravda. Význam toho stĺpca treba ustáliť skôr, než z neho čokoľvek číta.
+3. **Verejná routa neexistuje.** Všetky routy na balíky vyžadujú prihlásenie. Web by
+   potreboval čítanie, ktoré vracia len zverejnené balíky a z nich len verejné meno, kód,
+   sumu a menu. Žiadne náklady ani marže.
+
+Až to bude, web má ceny naďalej vykresliť okamžite z vlastnej tabuľky a údaj z API použiť
+ako doplnenie, nie ako podmienku. Inak by výpadok API znamenal stránku bez cien.
+
 **Dopytový formulár je stále na troch miestach.** Rovnaká značka je v úvodnej stránke
 a v oboch reklamných. Zmena poľa znamená tri úpravy a nič na nesúlad neupozorní. Ceny
 sa vyriešiť dali, formulár nie: je to veľký blok značiek a vkladať ho skriptom by

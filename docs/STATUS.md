@@ -87,14 +87,20 @@ na hlavnú doménu. Staging beží na `dev.filthyfilter.sk` so zákazom indexova
 
 ## Známy dlh
 
-**Ceny sú na dvoch miestach.** Zdrojom pravdy je tabuľka v `js/inquiry.js`; text v HTML
-je len záloha pre prípad, že skript nezbehne. Pri zmene ceny stačí upraviť skript, ale
-zálohu v HTML treba prepísať tiež, inak návštevník bez JavaScriptu uvidí starú sumu.
-Skript na to v lokálnom náhľade upozorní v konzole.
+**Ceny majú jeden zdroj pravdy.** Tabuľka `PRICES` v `js/main.js`. Prekladané texty
+píšu značku `{{p-nastenna}}` a prepínač jazyka za ňu dosadí sumu. Predtým boli tie štyri
+sumy vypísané 77-krát na troch stránkach v dvoch jazykoch.
 
-**Dopytový formulár je jeden.** Vkladá ho `js/inquiry.js` do prvku
-`<div data-inquiry-form>`. Bez JavaScriptu formulár nie je, čo je poctivejšie než dnešný
-stav, kde sa zobrazoval a odoslať sa nedal; priame kontakty vedľa fungujú ďalej.
+Literálna suma zostáva medzi značkami ako záloha pre okamih, kým sa nenačíta skript.
+Prepíše sa hneď, takže návštevník vidí vždy hodnotu z tabuľky. Pri zmene ceny teda stačí
+upraviť tabuľku; zálohu je dobré zosúladiť tiež a **lokálny náhľad na to upozorní
+v konzole** hláškou `[ceny]`. Tá istá kontrola nahlási aj sumu napísanú do textu mimo
+značky. V produkcii nebeží.
+
+**Dopytový formulár je stále na troch miestach.** Rovnaká značka je v úvodnej stránke
+a v oboch reklamných. Zmena poľa znamená tri úpravy a nič na nesúlad neupozorní. Ceny
+sa vyriešiť dali, formulár nie: je to veľký blok značiek a vkladať ho skriptom by
+znamenalo, že bez JavaScriptu formulár úplne zmizne. Zatiaľ ostáva ako známy dlh.
 
 ## Denník rozhodnutí
 

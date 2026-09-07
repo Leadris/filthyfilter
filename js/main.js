@@ -106,6 +106,73 @@
   // Services that make sense to count. Diagnostics and "not sure" do not.
   var COUNTABLE = { nastenna: 1, kazetova: 1, udrzba: 1, firmy: 1 };
 
+  /* =======================================================================
+     PRICES — the one place a figure is written down.
+
+     Before this existed the same four amounts were typed out 77 times across
+     three pages, in two languages, in prose and in the price chips. Changing
+     one meant finding all of them, and missing one meant the site quietly
+     contradicted itself.
+
+     Translated text now writes {{p-nastenna}} and applyLang() substitutes the
+     amount for the current language. The literal figure still sits in the HTML
+     between the tags as a fallback for the moment before scripts run; it is
+     overwritten immediately and checkPriceDrift() below reports any that have
+     fallen out of step, but only in the local preview.
+
+     The currency sits on the side the language puts it: 79 € and €79.
+     ======================================================================= */
+  var PRICES = {
+    "p-nastenna":    { sk: "79 €",  en: "€79" },
+    "p-kazetova":    { sk: "129 €", en: "€129" },
+    "p-udrzba":      { sk: "49 €",  en: "€49" },
+    "p-diagnostika": { sk: "49 €",  en: "€49" }
+  };
+
+  var PRICE_TOKEN = /\{\{(p-[a-z]+)\}\}/g;
+
+  function withPrices(text, lang) {
+    if (text.indexOf("{{") === -1) return text;
+    return text.replace(PRICE_TOKEN, function (whole, key) {
+      var price = PRICES[key];
+      return price ? (price[lang] || price.sk) : whole;
+    });
+  }
+
+  /* Local preview only, and only on the very first pass, because after that the
+     text has been overwritten from the table and would always agree with itself.
+
+     It compares against the Slovak value on purpose: the literal figure between
+     the tags is always the Slovak fallback, whatever language the visitor last
+     chose. Two things are worth a warning while editing: a fallback that has
+     fallen behind the table, and a figure typed straight into the copy instead
+     of using a token. Neither is worth a word to a visitor, so this never runs
+     in production. */
+  var priceDriftChecked = false;
+
+  function checkPriceDrift(nodes) {
+    var host = location.hostname;
+    if (priceDriftChecked) return;
+    priceDriftChecked = true;
+    if (host !== "127.0.0.1" && host !== "localhost") return;
+
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      if (el.getAttribute("data-attr-target")) continue;
+      var raw = el.getAttribute("data-sk");
+      if (raw === null) continue;
+
+      if (raw.indexOf("{{") !== -1) {
+        var expected = withPrices(raw, "sk");
+        if (el.textContent.trim() !== expected.trim()) {
+          console.warn("[ceny] záložný text v HTML nesedí s tabuľkou:", el.textContent.trim(), "->", expected.trim());
+        }
+      } else if (/\d+\s*€|€\s*\d+/.test(raw)) {
+        console.warn("[ceny] suma napísaná mimo tabuľky, použi značku:", raw.slice(0, 90));
+      }
+    }
+  }
+
   /* Build the message from whatever the visitor actually filled in. Empty fields
      are left out rather than sent as blank lines, so a two-line enquiry stays a
      two-line enquiry.
@@ -212,12 +279,12 @@
 
   var META = {
     en: {
-      title: "AC cleaning and service — Bratislava, Trnava, Nitra | FilthyFilter by whispAir",
-      desc: "AC cleaning, maintenance and servicing for homes and businesses. Bratislava, Trnava, Nitra and 20 km around them. Price based on the scope of work."
+      title: "FilthyFilter by whispAir — AC cleaning and service, on the record",
+      desc: "The AC decontamination division. Photographs before and after, the FFFF scale, and a price agreed before we start. Bratislava, Trnava, Nitra and 20 km around them."
     },
     sk: {
-      title: "Čistenie a servis klimatizácií — Bratislava, Trnava, Nitra | FilthyFilter by whispAir",
-      desc: "Čistenie, údržba a servis klimatizácií pre domácnosti a firmy. Bratislava, Trnava, Nitra a okolie do 20 km. FilthyFilter by whispAir — cena podľa rozsahu."
+      title: "FilthyFilter by whispAir — čistenie a servis klimatizácií so záznamom",
+      desc: "Divízia dekontaminácie klímy. Fotografie pred zásahom a po ňom, škála FFFF a cena dohodnutá vopred. Bratislava, Trnava, Nitra a okolie do 20 km."
     }
   };
 
@@ -228,10 +295,12 @@
 
     // swap text content
     var nodes = document.querySelectorAll("[data-en][data-sk]");
+    checkPriceDrift(nodes);
     for (var i = 0; i < nodes.length; i++) {
       var el = nodes[i];
       var val = el.getAttribute("data-" + lang);
       if (val === null) continue;
+      val = withPrices(val, lang);
       // attribute-targeted swaps: data-attr-target="aria-label" etc.
       var attrTarget = el.getAttribute("data-attr-target");
       if (attrTarget) {

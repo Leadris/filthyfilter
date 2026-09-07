@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Servis a oprava klimatizácie — Bratislava, Trnava, Nitra | diagnostika 49 €</title>
+  <meta name="description" content="Klimatizácia nechladí, tečie alebo hučí? Diagnostika 49 € s DPH a pri objednaní opravy sa odpočíta. Bratislava, Trnava, Nitra a okolie do 20 km.">
+  <link rel="canonical" href="https://filthyfilter.sk/servis-klimatizacie/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Servis a oprava klimatizácie — Bratislava, Trnava, Nitra">
+  <meta property="og:description" content="Nechladí, tečie, hučí alebo hlási chybu? Diagnostika 49 € s DPH, pri objednaní opravy sa odpočíta.">
+  <meta property="og:url" content="https://filthyfilter.sk/servis-klimatizacie/">
+  <meta property="og:locale" content="sk_SK">
+  <meta property="og:image" content="https://filthyfilter.sk/assets/hall/trnava-la-donuteria/before-after.jpg">
+  <link rel="icon" href="../favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
+  <meta name="theme-color" content="#0a0706">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Share+Tech+Mono&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/styles.css?v=sectors-1">
+  <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
+</head>
+<body data-ff-page="ff-servis">
+
+<canvas id="spore-field" aria-hidden="true"></canvas>
+
+<!-- ============================ NAV ============================ -->
+<header class="nav">
+  <div class="nav__inner">
+    <a class="brand" href="../" aria-label="FilthyFilter">
+      <img class="brand__mark" src="../assets/brand-mark.png" alt="" width="192" height="192">
+      <span class="brand__txt">
+        <b>FILTHYFILTER</b>
+        <small>by whispAir</small>
+      </span>
+    </a>
+
+    <nav class="nav__links" aria-label="Menu">
+      <a href="../#diensten"  data-en="Services"     data-sk="Služby">Služby</a>
+      <a href="../#hall"      data-en="Case files"   data-sk="Realizácie">Realizácie</a>
+      <a href="../#werkwijze" data-en="Process"      data-sk="Postup">Postup</a>
+      <a href="../#ffff"      data-en="FFFF&trade;"    data-sk="FFFF&trade;">FFFF&trade;</a>
+      <a href="../#pre-firmy" data-en="For business" data-sk="Pre firmy">Pre firmy</a>
+      <a href="#faq"       data-en="FAQ"          data-sk="Otázky">Otázky</a>
+      <a href="#contact"   data-en="Contact"      data-sk="Kontakt">Kontakt</a>
+    </nav>
+
+    <div class="langswitch" role="group" aria-label="Jazyk / Language">
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      <button type="button" data-lang="sk" class="active" aria-pressed="true">SK</button>
+    </div>
+
+    <button class="nav__toggle" aria-label="Menu" data-attr-target="aria-label" data-en="Menu" data-sk="Menu">☰</button>
+  </div>
+</header>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero" id="top">
+  <div class="hero__place" aria-hidden="true" style="background-image:url('../assets/hero-airco.jpg')"></div>
+  <div class="wrap">
+    <div class="hero__rings" aria-hidden="true"></div>
+    <div class="hero__coords" aria-hidden="true">SENEC · SK — SECTOR AIRCO</div>
+
+    <div class="hero__inner">
+      <span class="tag" data-en="AC SERVICE AND REPAIR · BRATISLAVA · TRNAVA · NITRA" data-sk="SERVIS A OPRAVY · BRATISLAVA · TRNAVA · NITRA">SERVIS A OPRAVY · BRATISLAVA · TRNAVA · NITRA</span>
+      <h1 class="hero__title" data-en="Not cooling, leaking or making a noise?" data-sk="Nechladí, tečie alebo hučí?">Nechladí, tečie alebo hučí?</h1>
+      <p class="hero__sub" data-en="FilthyFilter by whispAir — AC decontamination division" data-sk="FilthyFilter by whispAir — divízia dekontaminácie klímy">FilthyFilter by whispAir — divízia dekontaminácie klímy</p>
+      <p class="hero__tagline"
+         data-en="We come, find the cause and tell you what the repair costs before we do it. Diagnostics is &euro;49 including VAT, and it comes off the bill if you order the repair. Bratislava, Trnava, Nitra and 20 km around them."
+         data-sk="Prídeme, nájdeme príčinu a cenu opravy poviete skôr, než ju spravíme. Diagnostika stojí 49 &euro; s DPH a pri objednaní opravy sa z ceny odpočíta. Bratislava, Trnava, Nitra a okolie do 20 km.">Prídeme, nájdeme príčinu a cenu opravy poviete skôr, než ju spravíme. Diagnostika stojí 49 &euro; s DPH a pri objednaní opravy sa z ceny odpočíta. Bratislava, Trnava, Nitra a okolie do 20 km.</p>
+
+      <div class="cta-row">
+        <a class="btn btn--primary" href="#contact"
+           data-en="Describe the problem" data-sk="Opísať problém">Opísať problém</a>
+        <a class="btn btn--ghost" data-contact="phone" href="tel:+421902279094"
+           data-en="Call instead" data-sk="Radšej zavolať">Radšej zavolať</a>
+      </div>
+
+      <ul class="hero__facts">
+        <li><b data-en="Diagnostics" data-sk="Diagnostika">Diagnostika</b><span data-en="&euro;49 incl. VAT" data-sk="49 &euro; s DPH">49 &euro; s DPH</span></li>
+        <li><b data-en="If you order the repair" data-sk="Pri objednaní opravy">Pri objednaní opravy</b><span data-en="deducted from the bill" data-sk="odpočítame ju z ceny">odpočítame ju z ceny</span></li>
+        <li><b data-en="The repair itself" data-sk="Samotná oprava">Samotná oprava</b><span data-en="quoted after diagnosis" data-sk="nacenená po diagnostike">nacenená po diagnostike</span></li>
+        <li><b data-en="Service area" data-sk="Pôsobnosť">Pôsobnosť</b><span data-en="Bratislava, Trnava, Nitra + 20 km" data-sk="Bratislava, Trnava, Nitra + 20 km">Bratislava, Trnava, Nitra + 20 km</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SYMPTOMS ============================ -->
+<section class="section" id="priznaky">
+  <div class="wrap reveal">
+    <div class="section__head">
+      <span class="tag" data-en="SYMPTOMS" data-sk="PRÍZNAKY">PRÍZNAKY</span>
+      <h2 class="section__title" data-en="What it usually turns out to be" data-sk="Čím to väčšinou býva">Čím to väčšinou býva</h2>
+      <p class="lead lead--muted" style="margin-top:8px"
+         data-en="These are the usual suspects, not a diagnosis. The point of coming out is to find which one it is on your unit rather than guessing from a description."
+         data-sk="Toto sú obvyklí podozriví, nie diagnóza. Zmysel výjazdu je zistiť, ktorý z nich to je na vašej jednotke, nie hádať z opisu.">Toto sú obvyklí podozriví, nie diagnóza. Zmysel výjazdu je zistiť, ktorý z nich to je na vašej jednotke, nie hádať z opisu.</p>
+    </div>
+
+    <div class="svc-grid">
+
+      <article class="panel svc">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <h3 data-en="It runs but does not cool" data-sk="Beží, ale nechladí">Beží, ale nechladí</h3>
+        <p class="svc__lead"
+           data-en="A clogged exchanger, a fouled outdoor unit, too little refrigerant or a fault in the circuit. The four cost very different amounts, which is exactly why nobody should quote this over the phone."
+           data-sk="Zanesený výmenník, zašpinená vonkajšia jednotka, málo chladiva alebo porucha v okruhu. Tie štyri stoja veľmi rôzne, a práve preto to nikto nemá naceňovať po telefóne.">Zanesený výmenník, zašpinená vonkajšia jednotka, málo chladiva alebo porucha v okruhu. Tie štyri stoja veľmi rôzne, a práve preto to nikto nemá naceňovať po telefóne.</p>
+      </article>
+
+      <article class="panel svc">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <h3 data-en="Water dripping into the room" data-sk="Kvapká do miestnosti">Kvapká do miestnosti</h3>
+        <p class="svc__lead"
+           data-en="Usually the condensate drain: blocked, badly fallen or full of what grows in it. Sometimes it is a frozen exchanger, which is a different problem wearing the same coat."
+           data-sk="Väčšinou odvod kondenzátu: upchatý, zle spádovaný alebo plný toho, čo v ňom rastie. Niekedy je to zamrznutý výmenník, čo je iný problém v tom istom kabáte.">Väčšinou odvod kondenzátu: upchatý, zle spádovaný alebo plný toho, čo v ňom rastie. Niekedy je to zamrznutý výmenník, čo je iný problém v tom istom kabáte.</p>
+      </article>
+
+      <article class="panel svc">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <h3 data-en="Noise or vibration" data-sk="Hučí alebo vibruje">Hučí alebo vibruje</h3>
+        <p class="svc__lead"
+           data-en="A fan barrel packed with dirt is unbalanced and tells you so. If cleaning does not quiet it, the bearing or the mounting is next on the list."
+           data-sk="Ventilátor zanesený špinou je nevyvážený a dá to najavo. Ak ho čistenie neutíši, na rade je uloženie alebo ložisko.">Ventilátor zanesený špinou je nevyvážený a dá to najavo. Ak ho čistenie neutíši, na rade je uloženie alebo ložisko.</p>
+      </article>
+
+      <article class="panel svc">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <h3 data-en="It smells" data-sk="Smrdí">Smrdí</h3>
+        <p class="svc__lead"
+           data-en="This one is usually dirt rather than a fault, and then a cleaning fixes it and a repair would not. If that is what we find, we say so and you pay for the cleaning, not for a repair."
+           data-sk="Toto býva špina, nie porucha. Vtedy to vyrieši čistenie a oprava nie. Ak nájdeme toto, povieme to a zaplatíte čistenie, nie opravu.">Toto býva špina, nie porucha. Vtedy to vyrieši čistenie a oprava nie. Ak nájdeme toto, povieme to a zaplatíte čistenie, nie opravu.</p>
+      </article>
+
+      <article class="panel svc">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <h3 data-en="An error code on the display" data-sk="Chybový kód na displeji">Chybový kód na displeji</h3>
+        <p class="svc__lead"
+           data-en="The code narrows it down before anyone drives anywhere. Photograph the display and send it with the brand and model; it is the cheapest thing you can do for your own repair."
+           data-sk="Kód zúži hľadanie ešte pred výjazdom. Odfoťte displej a pošlite ho aj so značkou a modelom. Je to najlacnejšia vec, akú pre svoju opravu spravíte.">Kód zúži hľadanie ešte pred výjazdom. Odfoťte displej a pošlite ho aj so značkou a modelom. Je to najlacnejšia vec, akú pre svoju opravu spravíte.</p>
+      </article>
+
+      <article class="panel svc">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <h3 data-en="It does not start at all" data-sk="Vôbec sa nezapne">Vôbec sa nezapne</h3>
+        <p class="svc__lead"
+           data-en="Before you call: check the breaker and put fresh batteries in the remote. It is not a joke; it is the most common reason for a call-out that finds nothing wrong, and you would still pay for it."
+           data-sk="Skôr než zavoláte: skontrolujte istič a dajte do ovládača nové batérie. Nie je to vtip. Je to najčastejší dôvod výjazdu, ktorý nič nenájde, a zaplatili by ste ho.">Skôr než zavoláte: skontrolujte istič a dajte do ovládača nové batérie. Nie je to vtip. Je to najčastejší dôvod výjazdu, ktorý nič nenájde, a zaplatili by ste ho.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PRICE ============================ -->
+<section class="section" id="cena">
+  <div class="wrap reveal">
+    <div class="section__head">
+      <span class="tag" data-en="PRICE" data-sk="CENA">CENA</span>
+      <h2 class="section__title" data-en="What you pay, and when you know it" data-sk="Čo platíte a kedy to viete">Čo platíte a kedy to viete</h2>
+    </div>
+
+    <div class="panel">
+      <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      <div class="svc__foot" style="margin-bottom:20px">
+        <span class="svc__price" data-en="Diagnostics &euro;49 incl. VAT" data-sk="Diagnostika 49 &euro; s DPH">Diagnostika 49 &euro; s DPH</span>
+        <a class="btn btn--primary" data-inquiry="diagnostika" href="#contact" data-en="Describe the problem" data-sk="Opísať problém">Opísať problém</a>
+      </div>
+      <ul class="svc__scope">
+        <li data-en="&euro;49 including VAT covers the visit and finding the cause." data-sk="49 &euro; s DPH pokrýva výjazd a nájdenie príčiny.">49 &euro; s DPH pokrýva výjazd a nájdenie príčiny.</li>
+        <li data-en="Order the repair and that &euro;49 comes off the bill. You do not pay twice for the same visit." data-sk="Ak si objednáte opravu, tých 49 &euro; sa z ceny odpočíta. Za jeden výjazd neplatíte dvakrát.">Ak si objednáte opravu, tých 49 &euro; sa z ceny odpočíta. Za jeden výjazd neplatíte dvakrát.</li>
+        <li data-en="The repair and any parts are quoted after the diagnosis, never before it." data-sk="Oprava a materiál sa nacenia po diagnostike, nikdy pred ňou.">Oprava a materiál sa nacenia po diagnostike, nikdy pred ňou.</li>
+        <li data-en="If the cause turns out to be dirt, we offer a cleaning from &euro;79 instead and say so plainly." data-sk="Ak je príčinou špina, namiesto opravy ponúkneme čistenie od 79 &euro; a povieme to na rovinu.">Ak je príčinou špina, namiesto opravy ponúkneme čistenie od 79 &euro; a povieme to na rovinu.</li>
+        <li data-en="You approve the price before we carry on. Nothing is repaired on the assumption that you would have agreed." data-sk="Cenu odsúhlasíte skôr, než budeme pokračovať. Nič sa neopravuje s tým, že by ste súhlasili.">Cenu odsúhlasíte skôr, než budeme pokračovať. Nič sa neopravuje s tým, že by ste súhlasili.</li>
+      </ul>
+      <p class="lead lead--muted" style="margin-top:16px"
+         data-en="If the unit is past the point where repairing it makes sense, we will tell you that too. It is the least profitable sentence we say and the one that saves you the most."
+         data-sk="Ak je jednotka za hranicou, kde má oprava zmysel, povieme aj to. Je to naša najmenej výnosná veta a zároveň tá, ktorá vám ušetrí najviac.">Ak je jednotka za hranicou, kde má oprava zmysel, povieme aj to. Je to naša najmenej výnosná veta a zároveň tá, ktorá vám ušetrí najviac.</p>
+      <p class="lead lead--muted" style="margin-top:6px">
+        <span data-en="New units and installation are handled by our parent brand:" data-sk="Predaj novej jednotky a montáž rieši naša materská značka:">Predaj novej jednotky a montáž rieši naša materská značka:</span>
+        <a href="https://whispair.sk/?utm_source=filthyfilter&amp;utm_medium=referral&amp;utm_campaign=servis-lp" target="_blank" rel="noopener">whispAir</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PROCESS ============================ -->
+<section class="section" id="postup">
+  <div class="wrap reveal">
+    <div class="section__head">
+      <span class="tag" data-en="HOW IT GOES" data-sk="AKO TO PREBIEHA">AKO TO PREBIEHA</span>
+      <h2 class="section__title" data-en="From your message to a working unit" data-sk="Od vašej správy po funkčnú jednotku">Od vašej správy po funkčnú jednotku</h2>
+    </div>
+
+    <div class="svc-grid">
+      <article class="panel svc">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <h3 data-en="1. Describe it" data-sk="1. Opíšete to">1. Opíšete to</h3>
+        <p class="svc__lead" data-en="What it does, since when, the brand and model, and a photo of the display if there is a code. A short video of the noise beats any description of it."
+           data-sk="Čo robí, odkedy, značka a model, a fotka displeja, ak svieti kód. Krátke video zvuku porazí akýkoľvek jeho opis.">Čo robí, odkedy, značka a model, a fotka displeja, ak svieti kód. Krátke video zvuku porazí akýkoľvek jeho opis.</p>
+      </article>
+      <article class="panel svc">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <h3 data-en="2. We agree a date" data-sk="2. Dohodneme termín">2. Dohodneme termín</h3>
+        <p class="svc__lead" data-en="By arrangement. We do not promise you tomorrow morning to win the job and then not turn up."
+           data-sk="Po dohode. Nesľubujeme zajtra ráno len preto, aby sme zákazku získali, a potom neprídeme.">Po dohode. Nesľubujeme zajtra ráno len preto, aby sme zákazku získali, a potom neprídeme.</p>
+      </article>
+      <article class="panel svc">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <h3 data-en="3. Diagnosis on site" data-sk="3. Diagnostika na mieste">3. Diagnostika na mieste</h3>
+        <p class="svc__lead" data-en="We find the cause and tell you what fixing it costs. That is the moment you decide, not after the work is done."
+           data-sk="Nájdeme príčinu a povieme, čo stojí jej odstránenie. To je chvíľa, kedy sa rozhodujete vy, nie až po práci.">Nájdeme príčinu a povieme, čo stojí jej odstránenie. To je chvíľa, kedy sa rozhodujete vy, nie až po práci.</p>
+      </article>
+      <article class="panel svc">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <h3 data-en="4. Repair, or an honest no" data-sk="4. Oprava, alebo úprimné nie">4. Oprava, alebo úprimné nie</h3>
+        <p class="svc__lead" data-en="Either we fix it and the diagnostic fee comes off, or we explain why it is not worth it and what your options are."
+           data-sk="Buď to opravíme a poplatok za diagnostiku sa odpočíta, alebo vysvetlíme, prečo sa to neoplatí a aké máte možnosti.">Buď to opravíme a poplatok za diagnostiku sa odpočíta, alebo vysvetlíme, prečo sa to neoplatí a aké máte možnosti.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ FAQ ============================ -->
+<section class="section" id="faq">
+  <div class="wrap reveal">
+    <div class="section__head">
+      <span class="tag" data-en="QUESTIONS" data-sk="OTÁZKY">OTÁZKY</span>
+      <h2 class="section__title" data-en="What people ask when it stops working" data-sk="Na čo sa ľudia pýtajú, keď to prestane fungovať">Na čo sa ľudia pýtajú, keď to prestane fungovať</h2>
+    </div>
+
+    <div class="panel faq">
+      <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+
+      <details name="faq">
+        <summary data-en="Can you come today?" data-sk="Viete prísť dnes?">Viete prísť dnes?</summary>
+        <p data-en="Dates are by arrangement and we do not guarantee an urgent slot. Write anyway: if something opens up nearby, you will be the one we call."
+           data-sk="Termíny sú po dohode a urgentný výjazd negarantujeme. Napíšte aj tak. Ak sa niečo uvoľní v okolí, zavoláme práve vám.">Termíny sú po dohode a urgentný výjazd negarantujeme. Napíšte aj tak. Ak sa niečo uvoľní v okolí, zavoláme práve vám.</p>
+      </details>
+
+      <details name="faq">
+        <summary data-en="How much will the repair cost?" data-sk="Koľko bude stáť oprava?">Koľko bude stáť oprava?</summary>
+        <p data-en="Nobody can answer that honestly before seeing the unit, which is the whole reason the diagnostic fee exists. What we can promise is that you hear the figure before the work, not on the invoice."
+           data-sk="Na to sa pred obhliadkou nedá odpovedať poctivo, a presne preto existuje poplatok za diagnostiku. Sľúbiť vieme to, že sumu poviete pred prácou, nie až na faktúre.">Na to sa pred obhliadkou nedá odpovedať poctivo, a presne preto existuje poplatok za diagnostiku. Sľúbiť vieme to, že sumu poviete pred prácou, nie až na faktúre.</p>
+      </details>
+
+      <details name="faq">
+        <summary data-en="What if it cannot be repaired?" data-sk="Čo ak sa to nedá opraviť?">Čo ak sa to nedá opraviť?</summary>
+        <p data-en="Then you pay the &euro;49 for finding that out and nothing more. We will say what your options are, and if a new unit is one of them, that is handled by whispAir rather than by us."
+           data-sk="Potom zaplatíte 49 &euro; za to, že to viete, a nič viac. Povieme, aké máte možnosti, a ak je jednou z nich nová jednotka, rieši ju whispAir, nie my.">Potom zaplatíte 49 &euro; za to, že to viete, a nič viac. Povieme, aké máte možnosti, a ak je jednou z nich nová jednotka, rieši ju whispAir, nie my.</p>
+      </details>
+
+      <details name="faq">
+        <summary data-en="Do you service every brand?" data-sk="Servisujete každú značku?">Servisujete každú značku?</summary>
+        <p data-en="Send the brand and model and we will tell you before we set a date. It is a worse answer to arrive and find we cannot help than to say it in a message."
+           data-sk="Pošlite značku a model a povieme vám to ešte pred dohodnutím termínu. Je horšia odpoveď prísť a zistiť, že nepomôžeme, než to napísať v správe.">Pošlite značku a model a povieme vám to ešte pred dohodnutím termínu. Je horšia odpoveď prísť a zistiť, že nepomôžeme, než to napísať v správe.</p>
+      </details>
+
+      <details name="faq">
+        <summary data-en="Can you just top up the refrigerant?" data-sk="Neviete len doplniť chladivo?">Neviete len doplniť chladivo?</summary>
+        <p data-en="A sealed circuit does not run out. If it is low, something is letting it out, and topping it up without finding that is money poured into a leak. We look for the cause first and tell you what the work involves."
+           data-sk="Tesný okruh sa nemíňa. Ak je chladiva málo, niekde uniká, a doplniť ho bez nájdenia príčiny sú peniaze naliate do netesnosti. Najprv hľadáme príčinu a povieme, čo zásah obnáša.">Tesný okruh sa nemíňa. Ak je chladiva málo, niekde uniká, a doplniť ho bez nájdenia príčiny sú peniaze naliate do netesnosti. Najprv hľadáme príčinu a povieme, čo zásah obnáša.</p>
+      </details>
+
+      <details name="faq">
+        <summary data-en="What should I send before you come?" data-sk="Čo mám poslať vopred?">Čo mám poslať vopred?</summary>
+        <p data-en="Brand and model from the sticker, a photo of the display if a code is showing, and a few seconds of video if it is the noise that bothers you. Every one of those shortens the visit."
+           data-sk="Značku a model zo štítka, fotku displeja, ak svieti kód, a pár sekúnd videa, ak vás trápi zvuk. Každá z tých vecí skracuje výjazd.">Značku a model zo štítka, fotku displeja, ak svieti kód, a pár sekúnd videa, ak vás trápi zvuk. Každá z tých vecí skracuje výjazd.</p>
+      </details>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SERVICE AREA ============================ -->
+<section class="section" id="service-area">
+  <div class="wrap reveal">
+    <div class="section__head">
+      <span class="tag" data-en="SERVICE AREA" data-sk="OBLASŤ VÝJAZDU">OBLASŤ VÝJAZDU</span>
+      <h2 class="section__title" data-en="Bratislava, Trnava, Nitra and 20 km around them" data-sk="Bratislava, Trnava, Nitra a okolie do 20 km">Bratislava, Trnava, Nitra a okolie do 20 km</h2>
+    </div>
+
+    <div class="panel">
+      <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      <p class="lead"
+         data-en="FilthyFilter by whispAir provides AC cleaning, maintenance and servicing for homes and businesses. Send your town or postcode; we confirm availability and travel costs based on the address. Travel is agreed with you — we do not pretend it is automatically free."
+         data-sk="FilthyFilter by whispAir zabezpečuje čistenie, údržbu a servis klimatizácií pre domácnosti a firmy. Pošlite obec alebo PSČ; dostupnosť a cenu dopravy potvrdíme podľa konkrétnej adresy. Dopravu dohodneme — netvárime sa, že je automaticky zadarmo.">FilthyFilter by whispAir zabezpečuje čistenie, údržbu a servis klimatizácií pre domácnosti a firmy. Pošlite obec alebo PSČ; dostupnosť a cenu dopravy potvrdíme podľa konkrétnej adresy. Dopravu dohodneme — netvárime sa, že je automaticky zadarmo.</p>
+
+      <p class="tag tag--muted" style="margin:26px 0 0" data-en="TOWNS WE DRIVE TO" data-sk="OBCE, KAM VYCHÁDZAME">OBCE, KAM VYCHÁDZAME</p>
+      <div class="sectors">
+        <div class="sectors__track">
+          <div class="sectors__seq"><span class="sectors__city">Bratislava</span><span>Senec</span><span>Pezinok</span><span>Svätý Jur</span><span>Ivanka pri Dunaji</span><span>Bernolákovo</span><span>Chorvátsky Grob</span><span>Malinovo</span><span>Most pri Bratislave</span><span>Rovinka</span><span>Dunajská Lužná</span><span>Stupava</span><span>Šamorín</span><span>Miloslavov</span><span class="sectors__city">Trnava</span><span>Zeleneč</span><span>Cífer</span><span>Voderady</span><span>Križovany nad Dudváhom</span><span>Špačince</span><span>Zavar</span><span>Biely Kostol</span><span>Bohdanovce nad Trnavou</span><span>Hlohovec</span><span>Leopoldov</span><span>Sereď</span><span>Vlčkovce</span><span>Smolenice</span><span class="sectors__city">Nitra</span><span>Lužianky</span><span>Ivanka pri Nitre</span><span>Nitrianske Hrnčiarovce</span><span>Cabaj-Čápor</span><span>Mojmírovce</span><span>Golianovo</span><span>Výčapy-Opatovce</span><span>Zbehy</span><span>Vráble</span><span>Branč</span><span>Jelenec</span><span>Močenok</span></div>
+          <div class="sectors__seq" aria-hidden="true"><span class="sectors__city">Bratislava</span><span>Senec</span><span>Pezinok</span><span>Svätý Jur</span><span>Ivanka pri Dunaji</span><span>Bernolákovo</span><span>Chorvátsky Grob</span><span>Malinovo</span><span>Most pri Bratislave</span><span>Rovinka</span><span>Dunajská Lužná</span><span>Stupava</span><span>Šamorín</span><span>Miloslavov</span><span class="sectors__city">Trnava</span><span>Zeleneč</span><span>Cífer</span><span>Voderady</span><span>Križovany nad Dudváhom</span><span>Špačince</span><span>Zavar</span><span>Biely Kostol</span><span>Bohdanovce nad Trnavou</span><span>Hlohovec</span><span>Leopoldov</span><span>Sereď</span><span>Vlčkovce</span><span>Smolenice</span><span class="sectors__city">Nitra</span><span>Lužianky</span><span>Ivanka pri Nitre</span><span>Nitrianske Hrnčiarovce</span><span>Cabaj-Čápor</span><span>Mojmírovce</span><span>Golianovo</span><span>Výčapy-Opatovce</span><span>Zbehy</span><span>Vráble</span><span>Branč</span><span>Jelenec</span><span>Močenok</span></div>
+        </div>
+      </div>
+      <p class="lead lead--muted" style="margin-top:14px" data-en="Not an exhaustive list. If your town is not on it, ask anyway: what decides it is the address, not the label." data-sk="Nie je to úplný zoznam. Ak tam vaša obec nie je, napíšte aj tak. Rozhoduje adresa, nie zoznam.">Nie je to úplný zoznam. Ak tam vaša obec nie je, napíšte aj tak. Rozhoduje adresa, nie zoznam.</p>
+      <a class="btn btn--primary" href="#contact" style="margin-top:20px" data-en="Ask about a visit" data-sk="Dohodnúť výjazd">Dohodnúť výjazd</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CONTACT ============================ -->
+<section class="section" id="contact">
+  <div class="wrap reveal">
+    <div class="section__head">
+      <span class="tag" data-en="GET IN TOUCH" data-sk="OZVITE SA">OZVITE SA</span>
+      <h2 class="section__title" data-en="Put together your enquiry" data-sk="Zostavte si dopyt">Zostavte si dopyt</h2>
+      <p class="lead lead--muted" style="margin-top:8px"
+         data-en="Fill it in and send it; the enquiry reaches us and we get back to you. If you would rather write on WhatsApp or call, those buttons work as well, and photos of the open unit are easiest to attach there."
+         data-sk="Vyplňte a odošlite; dopyt príde k nám a my sa vám ozveme. Ak radšej píšete cez WhatsApp alebo voláte, tie tlačidlá fungujú tiež a fotku otvorenej jednotky priložíte najjednoduchšie práve tam.">Vyplňte a odošlite; dopyt príde k nám a my sa vám ozveme. Ak radšej píšete cez WhatsApp alebo voláte, tie tlačidlá fungujú tiež a fotku otvorenej jednotky priložíte najjednoduchšie práve tam.</p>
+    </div>
+
+    <div class="contact">
+
+      <!-- ---------- the builder ---------- -->
+      <div class="panel inquiry">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+
+        <noscript>
+          <p class="inquiry__noscript"
+             data-en="This builder needs JavaScript. Without it, use the direct contacts beside it — they work on their own."
+             data-sk="Zostavovač dopytu potrebuje JavaScript. Bez neho použite priame kontakty vedľa, tie fungujú samostatne.">Zostavovač dopytu potrebuje JavaScript. Bez neho použite priame kontakty vedľa, tie fungujú samostatne.</p>
+        </noscript>
+
+        <form class="inquiry__form" id="inquiry-form" novalidate>
+
+          <div class="field">
+            <label for="inq-service" data-en="Service" data-sk="Služba">Služba</label>
+            <select id="inq-service" name="service" required aria-required="true" aria-describedby="inq-service-err">
+              <option value="" data-en="Choose a service" data-sk="Vyberte službu">Vyberte službu</option>
+              <option value="nastenna" data-en="Wall unit" data-sk="Nástenná jednotka">Nástenná jednotka</option>
+              <option value="kazetova" data-en="Cassette unit" data-sk="Kazetová jednotka">Kazetová jednotka</option>
+              <option value="udrzba" data-en="Preventive maintenance" data-sk="Preventívna údržba">Preventívna údržba</option>
+              <option value="diagnostika" data-en="Diagnostics and service" data-sk="Diagnostika a servis">Diagnostika a servis</option>
+              <option value="firmy" data-en="Business service" data-sk="Firemný servis">Firemný servis</option>
+              <option value="obhliadka" data-en="Not sure, I need advice" data-sk="Neviem, potrebujem poradiť">Neviem, potrebujem poradiť</option>
+            </select>
+            <p class="field__err" id="inq-service-err" role="alert" hidden
+               data-en="Pick a service, or the last option if you are not sure."
+               data-sk="Vyberte službu, alebo poslednú možnosť, ak neviete.">Vyberte službu, alebo poslednú možnosť, ak neviete.</p>
+          </div>
+
+          <div class="field">
+            <label for="inq-place" data-en="Town or postcode" data-sk="Obec alebo PSČ">Obec alebo PSČ</label>
+            <input type="text" id="inq-place" name="place" required aria-required="true" autocomplete="address-level2"
+                   aria-describedby="inq-place-err"
+                   data-attr-target="placeholder" data-en="e.g. Senec" data-sk="napr. Senec" placeholder="napr. Senec">
+            <p class="field__err" id="inq-place-err" role="alert" hidden
+               data-en="We need the town to confirm availability and travel."
+               data-sk="Obec potrebujeme, aby sme potvrdili dostupnosť a dopravu.">Obec potrebujeme, aby sme potvrdili dostupnosť a dopravu.</p>
+          </div>
+
+          <div class="field" id="inq-units-field">
+            <label for="inq-units" data-en="Number of units" data-sk="Počet jednotiek">Počet jednotiek</label>
+            <div class="field__row">
+              <input type="number" id="inq-units" name="units" min="1" step="1" inputmode="numeric"
+                     aria-describedby="inq-units-err" placeholder="1">
+              <label class="check" for="inq-units-unknown">
+                <input type="checkbox" id="inq-units-unknown" name="unitsUnknown">
+                <span data-en="I don’t know" data-sk="Neviem">Neviem</span>
+              </label>
+            </div>
+            <p class="field__err" id="inq-units-err" role="alert" hidden
+               data-en="Give a whole number of units, or tick “I don’t know”."
+               data-sk="Zadajte celý počet jednotiek, alebo zaškrtnite „Neviem“.">Zadajte celý počet jednotiek, alebo zaškrtnite „Neviem“.</p>
+          </div>
+
+          <div class="field">
+            <label for="inq-name" data-en="Name" data-sk="Meno">Meno</label>
+            <input type="text" id="inq-name" name="name" required aria-required="true" autocomplete="name"
+                   aria-describedby="inq-name-err">
+            <p class="field__err" id="inq-name-err" role="alert" hidden
+               data-en="Tell us who to address the reply to."
+               data-sk="Napíšte, komu máme odpovedať.">Napíšte, komu máme odpovedať.</p>
+          </div>
+
+          <div class="field">
+            <label for="inq-phone" data-en="Phone" data-sk="Telefón">Telefón</label>
+            <input type="tel" id="inq-phone" name="phone" autocomplete="tel"
+                   aria-describedby="inq-contact-err"
+                   data-attr-target="placeholder" data-en="e.g. 0902 279 094" data-sk="napr. 0902 279 094" placeholder="napr. 0902 279 094">
+          </div>
+
+          <div class="field">
+            <label for="inq-email-addr" data-en="E-mail" data-sk="E-mail">E-mail</label>
+            <input type="email" id="inq-email-addr" name="email" autocomplete="email"
+                   aria-describedby="inq-contact-err"
+                   data-attr-target="placeholder" data-en="e.g. jana@example.sk" data-sk="napr. jana@example.sk" placeholder="napr. jana@example.sk">
+            <p class="field__err" id="inq-contact-err" role="alert" hidden
+               data-en="Leave a phone number or an e-mail, otherwise we have no way to answer."
+               data-sk="Nechajte telefón alebo e-mail, inak vám nemáme ako odpovedať.">Nechajte telefón alebo e-mail, inak vám nemáme ako odpovedať.</p>
+          </div>
+
+          <!-- Spam trap. A person never sees this; a bot fills every field it
+               finds. The API drops the submission when it arrives filled. -->
+          <div class="inquiry__trap" aria-hidden="true">
+            <label for="inq-company">Company</label>
+            <input type="text" id="inq-company" name="company" tabindex="-1" autocomplete="off">
+          </div>
+
+          <div class="field">
+            <label for="inq-problem" data-en="What is bothering you (optional)" data-sk="Čo vás trápi (nepovinné)">Čo vás trápi (nepovinné)</label>
+            <textarea id="inq-problem" name="problem" rows="3"
+                      data-attr-target="placeholder"
+                      data-en="Smell, dripping, noise, weak cooling, when it was last cleaned…"
+                      data-sk="Zápach, kvapkanie, hlučnosť, slabé chladenie, kedy sa naposledy čistila…"
+                      placeholder="Zápach, kvapkanie, hlučnosť, slabé chladenie, kedy sa naposledy čistila…"></textarea>
+          </div>
+
+          <div class="field">
+            <label for="inq-date" data-en="Preferred date (optional)" data-sk="Preferovaný termín (nepovinné)">Preferovaný termín (nepovinné)</label>
+            <input type="text" id="inq-date" name="date"
+                   data-attr-target="placeholder"
+                   data-en="e.g. next week, mornings" data-sk="napr. budúci týždeň, doobeda" placeholder="napr. budúci týždeň, doobeda">
+          </div>
+
+          <div class="field">
+            <label for="inq-preview" data-en="Your enquiry at a glance" data-sk="Zhrnutie dopytu">Zhrnutie dopytu</label>
+            <textarea id="inq-preview" class="inquiry__preview" rows="7" readonly></textarea>
+          </div>
+
+          <div class="inquiry__actions">
+            <button type="submit" class="btn btn--primary" id="inq-send"
+                    data-en="Send the enquiry" data-sk="Odoslať dopyt">Odoslať dopyt</button>
+            <button type="button" class="btn btn--wa" id="inq-whatsapp"
+                    data-en="Continue on WhatsApp" data-sk="Pokračovať cez WhatsApp">Pokračovať cez WhatsApp</button>
+            <button type="button" class="btn btn--ghost" id="inq-email"
+                    data-en="Prepare an e-mail" data-sk="Pripraviť e-mail">Pripraviť e-mail</button>
+            <button type="button" class="btn btn--ghost" id="inq-copy"
+                    data-en="Copy the text" data-sk="Kopírovať text">Kopírovať text</button>
+            <a class="btn btn--ghost" data-contact="phone" href="tel:+421902279094"
+               data-en="Call instead" data-sk="Radšej zavolať">Radšej zavolať</a>
+          </div>
+
+          <p class="inquiry__status" id="inq-status" role="status"></p>
+        </form>
+      </div>
+
+      <!-- ---------- direct contacts, working without JavaScript ---------- -->
+      <div class="panel contact__big">
+        <span class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <h3 data-en="Or just reach us" data-sk="Alebo sa nám rovno ozvite">Alebo sa nám rovno ozvite</h3>
+        <p class="lead lead--muted"
+           data-en="A photo of the open unit is worth more than three paragraphs of description."
+           data-sk="Fotka otvorenej jednotky má väčšiu cenu než tri odseky opisu.">Fotka otvorenej jednotky má väčšiu cenu než tri odseky opisu.</p>
+
+        <ul class="contact__methods">
+          <li>
+            <span class="ci" aria-hidden="true"><svg viewBox="0 0 26 26"><path d="M6 4h4l2 5-3 2a12 12 0 0 0 6 6l2-3 5 2v4a2 2 0 0 1-2 2A18 18 0 0 1 4 6 2 2 0 0 1 6 4z"/></svg></span>
+            <span><a data-contact="phone" href="tel:+421902279094">+421 902 279 094</a><small data-en="Phone / WhatsApp" data-sk="Telefón / WhatsApp">Telefón / WhatsApp</small></span>
+          </li>
+          <li>
+            <span class="ci" aria-hidden="true"><svg viewBox="0 0 26 26"><rect x="3" y="5" width="20" height="16" rx="2"/><path d="M3 7l10 7 10-7"/></svg></span>
+            <span><a data-contact="email" href="mailto:info@filthyfilter.sk">info@filthyfilter.sk</a><small data-en="E-mail" data-sk="E-mail">E-mail</small></span>
+          </li>
+          <li>
+            <span class="ci" aria-hidden="true"><svg viewBox="0 0 26 26"><path d="M13 3a10 10 0 0 0-8.5 15.2L3 23l4.9-1.5A10 10 0 1 0 13 3z"/></svg></span>
+            <span><span data-en="Bratislava, Trnava, Nitra and 20 km around them" data-sk="Bratislava, Trnava, Nitra a okolie do 20 km">Bratislava, Trnava, Nitra a okolie do 20 km</span><small data-en="Region" data-sk="Región">Región</small></span>
+          </li>
+          <li>
+            <span class="ci" aria-hidden="true"><svg viewBox="0 0 26 26"><circle cx="13" cy="13" r="10"/><path d="M13 7v6l4 2"/></svg></span>
+            <span><span data-en="By appointment" data-sk="Termíny po dohode">Termíny po dohode</span><small data-en="Appointments" data-sk="Termíny">Termíny</small></span>
+          </li>
+        </ul>
+
+        <div class="contact__cta">
+          <a class="btn btn--wa" data-contact="whatsapp" href="https://wa.me/421902279094" target="_blank" rel="noopener"
+             data-en="Write on WhatsApp" data-sk="Napísať na WhatsApp">Napísať na WhatsApp</a>
+          <a class="btn btn--primary" data-contact="phone" href="tel:+421902279094"
+             data-en="Call now" data-sk="Zavolať hneď">Zavolať hneď</a>
+        </div>
+
+        <p class="ffff-note"
+           data-en="// You send the photos from your own app. This page stores nothing and sends nothing on its own."
+           data-sk="// Fotky posielate zo svojej aplikácie. Táto stránka nič neukladá ani sama nikam neodosiela.">// Fotky posielate zo svojej aplikácie. Táto stránka nič neukladá ani sama nikam neodosiela.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ MOBILE CTA BAR ============================ -->
+<div class="mobile-cta">
+  <a class="btn btn--ghost" data-contact="phone" href="tel:+421902279094" data-en="Call" data-sk="Zavolať">Zavolať</a>
+  <a class="btn btn--primary" href="#contact" data-en="Get a quote" data-sk="Nacenenie">Nacenenie</a>
+</div>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="citylinks" style="margin-bottom:16px">
+      <a href="#service-area" data-en="Bratislava · Trnava · Nitra · 20 km around" data-sk="Bratislava · Trnava · Nitra · a okolie do 20 km">Bratislava · Trnava · Nitra · a okolie do 20 km</a>
+    </div>
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <img class="footer__mark" src="../assets/brand-mark.png" alt="" width="192" height="192">
+        <p>© <span id="year">2026</span> FilthyFilter by whispAir — <span data-en="AC decontamination division" data-sk="Divízia dekontaminácie klímy">Divízia dekontaminácie klímy</span></p>
+      </div>
+      <p class="joke" data-en="No fungi were harmed — only evicted." data-sk="Žiadne huby neboli týrané — len vysťahované.">Žiadne huby neboli týrané — len vysťahované.</p>
+      <p><a href="https://whispair.sk/" target="_blank" rel="noopener">whispAir</a></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Per-page title and description for the language switch, read by applyLang().
+  window.FF_META = {
+    sk: {
+      title: "Servis a oprava klimatizácie — Bratislava, Trnava, Nitra | diagnostika 49 €",
+      desc: "Klimatizácia nechladí, tečie alebo hučí? Diagnostika 49 € s DPH a pri objednaní opravy sa odpočíta. Bratislava, Trnava, Nitra a okolie do 20 km."
+    },
+    en: {
+      title: "AC service and repair — Bratislava, Trnava, Nitra | diagnostics €49",
+      desc: "Not cooling, leaking or noisy? Diagnostics is €49 including VAT and comes off the bill if you order the repair. Bratislava, Trnava, Nitra and 20 km around them."
+    }
+  };
+</script>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+<script src="../js/consent.js"></script>
+<script src="../js/attribution.js"></script>
+<script src="../js/background.js"></script>
+<script src="../js/main.js?v=magnifier-1"></script>
+</body>
+</html>

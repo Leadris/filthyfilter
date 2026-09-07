@@ -66,6 +66,14 @@ shipping it here would add a file that can only ever do nothing or go wrong.
 
 ### Last staging deploy
 
+- Date: 2026-09-07, poster adjusted to 25% transparency (opacity .75).
+- Case HTML cache version case-poster-3 and CSS only; zoom remains removed.
+- HTTPS verified: current CSS bytes, noindex and no zoom link.
+- Rollback: `/home/jg046600/tmp/ff-dev-before-poster-25.tar.gz`.
+- Production unchanged.
+
+### Previous staging deploy
+
 - Date: 2026-09-07, poster transparency follow-up.
 - Case HTML and CSS only: opacity .6 (40% transparent), no zoom link or icon,
   caption shortened in SK/EN, CSS version case-poster-2.

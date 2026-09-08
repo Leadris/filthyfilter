@@ -1,6 +1,6 @@
 # FilthyFilter — stav projektu
 
-**Aktualizované 8. 9. 2026, 21:30 UTC.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
+**Aktualizované 8. 9. 2026, 22:15 UTC.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
 a čo otvorené. Rozhodnutia a ich dôvody zostávajú v `REDESIGN_PLAN.md` a
 `MARKETING_PLAN.md`; postup nasadenia v `DEPLOYMENT.md`. Ak sa niektorý z nich rozchádza
 s týmto súborom, platí tento a treba ho tam opraviť.
@@ -18,7 +18,7 @@ nebol úplný.
 | Okruh tržieb späť do Google Ads | kód hotový, na dev nasadený, **nie na produkcii** |
 | Reklamné stránky | dve, na stagingu |
 | Google Ads | používateľ dokončí nastavenie neskôr; kampaň teraz nespúšťame. Plán prvého kanála Meta zostáva samostatne. |
-| Meta (Facebook a Instagram) | **nezačaté**, zadanie zapísané v `MARKETING_PLAN.md` kap. 11 |
+| Meta (Facebook a Instagram) | meranie zo servera hotové a na dev (Conversions API); pixel a reklamný materiál **nezačaté**, zadanie v `MARKETING_PLAN.md` kap. 11 |
 | Produkčný web | **od 8. 9. večer** zhodný s dev vrátane WhatsApp tlačidla v mobilnej lište |
 | Ikony | hotové na stagingu aj na produkcii; stará baktéria je preč |
 | Technický review celého funnelu | hotový, `SYSTEM_REVIEW.md`; web verzia neverejne na `dev.filthyfilter.sk/system-review/` |
@@ -211,6 +211,49 @@ sa bajtovo zhodujú s návrhom, robots.txt zakazuje indexovanie. Produkcia nezme
 Poster má responzívne WebP exporty 370/740/1110 px (28 114 / 104 964 / 212 176 B).
 HTML používa srcset, pôvodné PNG 2 552 512 B zostáva zdrojom. Opacity .5 sa nemení.
 Zdroj a zadanie: `docs/POSTER_PILOT.md`.
+
+**Konverzie odchádzajú aj do Meta (8. 9., na dev).** Krok 8 plánu životného
+cyklu, položka T5. Identifikátory z Meta sa zbierali od fázy 1, ale neodchádzali
+nikam: `fbclid` z webu aj `ctwa_clid` z reklamy s prechodom do WhatsAppu ležali
+v `conversion_events` a nikto ich nečítal. `cron/meta_conversions_worker.php` je
+zrkadlom existujúceho Google workera — tá istá fronta, tie isté stavy
+`upload_status`, tie isté ohraničené opakovania, len iný cieľ. Berie výhradne
+riadky s `platform='meta'`, takže oba workery môžu bežať v ľubovoľnom poradí
+a Google riadkov sa nedotkne.
+
+Dve cesty sa **neposielajú rovnako**. Klik z webu ide ako `action_source`
+`website` a `fbclid` cestuje ako hodnota cookie `fbc`, lebo Meta pole pre holý
+`fbclid` nemá. Klik do WhatsAppu ide ako `business_messaging` s
+`messaging_channel: whatsapp` a `ctwa_clid` v `user_data`. Bez oboch tých polí
+Meta udalosť prevezme a nepriradí ju k ničomu.
+
+**Telefón sa hašuje nanovo.** Uložený `hashed_phone` je SHA-256 z čísla v tvare
+E.164 aj s plusom, čo je pravidlo Google. Meta hašuje samotné číslice, takže ten
+istý telefón má u oboch iný haš. Poslať uložený by neznamenalo chybu, len tichú
+nulovú zhodu, preto worker číta surové číslo zákazníka a hašuje ho podľa pravidla
+Meta. E-mail tento problém nemá, tam sa obe pravidlá zhodujú a uložený haš stačí.
+
+Popri tom sa opravila diera, ktorá by frontu držala navždy prázdnu: oba dopyty
+na atribúciu vyberali len tri Google stĺpce, takže každá konverzia sa zapísala
+ako `platform='google'` aj vtedy, keď lead prišiel z Meta.
+
+Prístupy sú **samostatné** (`META_CAPI_DATASET_ID`, `META_CAPI_ACCESS_TOKEN`).
+Katalógový `META_CATALOG_*` sa použiť nedá: katalóg a dataset sú iné objekty
+a token na správu katalógu udalosti zapísať nevie. Bez nich worker ticho nič
+nerobí. Meta odmieta udalosť staršiu než sedem dní, preto musí bežať aspoň denne;
+riadok, ktorý sa pretiahol, sa z fronty vyradí sám, inak by zhodil celú dávku.
+
+Overené na dev syntetickým riadkom, ktorý po sebe upratal. `--dry-run` postavil
+očakávané telo požiadavky pre klik do WhatsAppu vrátane hodnoty 249,50 EUR;
+nenastavené prístupy skončili ako `not_configured`; beh proti neexistujúcemu
+datasetu zapísal vlastnú hlášku Meta do `upload_error` a zvýšil počet pokusov,
+pričom riadok správne zostal `Logged`. Do živého datasetu Meta neodišlo nič.
+Každý beh je v `cron_run_logs`. 400 testov API prešlo, `phpstan` aj kontrola
+štýlu sú čisté.
+
+**Zostáva k tomu:** používateľ musí založiť dataset v Events Manageri a vydať
+systémový token. Až s nimi sa dá prejsť posledný krok, teda prepnutie riadku na
+`Uploaded` po skutočnom prevzatí udalosti.
 
 **Štruktúrovaný dopyt a Meta identifikátor (8. 9., na dev).** Fáza 1 plánu
 životného cyklu. Formulár sa už roky pýtal na službu, obec, počet jednotiek,

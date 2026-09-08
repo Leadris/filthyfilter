@@ -57,7 +57,7 @@ hotových zákaziek bez dokladu s odpočtom do pätnástich dní.
 
 ## Meta a WhatsApp
 
-### T5 — Worker pre Meta Conversions API
+### T5 — Worker pre Meta Conversions API — **hotové 8. 9. 2026, na dev**
 **Vlastník:** ja · **Repozitár:** `whispair-api` · **Závisí od:** nič
 
 Identifikátory z Meta sa už zbierajú a ukladajú, ale neodchádzajú nikam.
@@ -66,6 +66,11 @@ riadky s `platform='meta'`. Rovnaká fronta, rovnaké `upload_status`, iný cie�
 
 **Hotové, keď:** udalosť s `fbclid` alebo `ctwa_clid` prejde na Meta v testovacom
 režime a `upload_status` sa prepne.
+
+Worker, čisté funkcie v `endpoints/_meta_conversions_helpers.php` a ich testy sú
+hotové a overené na dev syntetickým riadkom. Popis v `STATUS.md`. Posledný krok,
+teda skutočné prevzatie udalosti a prepnutie na `Uploaded`, čaká na dataset
+a systémový token z Events Managera — to je nový bod **T20**.
 
 ### T6 — Rozhodnutie o personalizovaných reklamách
 **Vlastník:** ty · **Blokuje:** T7
@@ -215,12 +220,25 @@ a odpovedá sa ručne. Na ručné vybavovanie stačí, na objem nie. Determinist
 stavový automat služba → jednotky → PSČ → cena → termín, s prepnutím na človeka
 kedykoľvek.
 
+### T20 — Dataset a token pre Meta Conversions API
+**Vlastník:** ty · **Blokuje:** posledný krok T5
+
+Worker z T5 je hotový a na dev, ale bez prístupov ticho nič nerobí. V Events
+Manageri treba založiť (alebo vybrať) dataset a vydať systémový token
+s oprávnením `ads_management` naň. Do `.env` idú ako `META_CAPI_DATASET_ID`
+a `META_CAPI_ACCESS_TOKEN`; katalógové `META_CATALOG_*` sa použiť nedajú, je to
+iný objekt aj iné oprávnenie. Pri reklame s prechodom do WhatsAppu sa hodí aj
+`META_CAPI_PAGE_ID`, teda stránka za WhatsApp číslom.
+
+**Hotové, keď:** prvý beh s `META_CAPI_TEST_EVENT_CODE` ukáže udalosť v Test
+Events a riadok sa prepne na `Uploaded`.
+
 ---
 
 ## Poradie, ktoré odporúčam
 
 1. **T1 až T3** naraz, sú tvoje a odblokujú všetko okolo Google.
 2. **T4**, lebo bez portálu je fáza 2 nepoužiteľná.
-3. **T5** (T8 hotové), tá zostáva na otvorenie Meta kampane.
+3. **T20**, aby sa dopísal posledný krok T5 a otvorila sa Meta kampaň.
 4. **T12**, kým je zákazníkov málo a duplicity sa ešte dajú čistiť.
 5. Zvyšok podľa toho, čo sa uvoľní.

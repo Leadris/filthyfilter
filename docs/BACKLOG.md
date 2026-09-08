@@ -42,8 +42,8 @@ Zapnúť Data Manager API v Google Cloud projekte `whispair-hvac` a pridať
 
 **Hotové, keď:** worker prejde jedno volanie s `validateOnly` bez chyby oprávnení.
 
-### T4 — Obrazovky v portáli pre peniaze
-**Vlastník:** ja · **Repozitár:** `whispAirPortal` · **Blokuje:** reálne používanie fázy 2
+### T4 — Obrazovky v portáli pre peniaze — **hotové 8. 9. 2026**
+**Vlastník:** ja · **Repozitár:** `whispAirPortal`
 
 API na ocenenie zákazky, návrh dokladu, vystavenie a označenie úhrady existuje
 a je otestované, ale kancelária nemá kam klikať. Treba štyri veci: ocenenie
@@ -52,6 +52,12 @@ hotových zákaziek bez dokladu s odpočtom do pätnástich dní.
 
 **Hotové, keď:** manažér vie v portáli oceniť zákazku, vystaviť doklad, označiť
 úhradu a vidí zoznam zákaziek po termíne na vystavenie.
+
+Splnené: ocenenie zákazky riadkami so súčtami, návrh dokladu s ručným zápisom
+čísla a dátumov, zápis úhrady s priebežným súčtom a stavom, a samostatný prehľad
+**Fakturácia** s pätnásťdňovou lehotou. Portálový commit `ac3c935` je na dev aj
+na produkcii. Neskoršia revízia našla tri chyby v zobrazení; sú opravené a čakajú
+na nasadenie. Podrobne v `STATUS.md`.
 
 ---
 

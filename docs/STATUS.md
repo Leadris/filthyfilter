@@ -314,6 +314,18 @@ produkčnej DB a fakturačná routa na produkcii vracia bez prihlásenia očaká
 `portal.whispair.sk` prešli. Autentifikovaný produkčný zápis sa zámerne neskúšal;
 celý tok zápisu a úhrad je overený na dev podľa odseku vyššie.
 
+**Revízia portálových obrazoviek (8. 9., opravené, zatiaľ nenasadené).** Kontrola
+nasadeného T4 našla tri chyby v zobrazení. Dátum vystavenia a splatnosti
+prechádzal formátovačom časových značiek, takže doklad z 8. 9. sa v portáli
+ukazoval ako „08. 09. 2026 02:00" a v pásme za UTC by ukázal predchádzajúci deň.
+Odznak lehoty písal „Zostáva 1 dní", lebo mal jediný tvar množného čísla;
+slovenčina ich má pri dňoch tri. Výber balíka sťahoval celý katalóg pri každom
+stlačení klávesy, lebo posielal parametre, ktoré tá routa nikdy nečítala.
+
+Opravené portálovým commitom `9f1f248`. Potvrdzovacie okno pri vystavení navyše
+hovorí, že číslo dokladu sa už nedá zmeniť — API na opravu ani zrušenie dokladu
+routu nemá, takže preklep sa v portáli neopraví. Nasadenie čaká.
+
 **Meta reklamy cez WhatsApp a ochrana troch formulárov (8. 9., na dev).**
 Dokončenie fázy 1. Meta posiela pri reklame s prechodom do WhatsAppu vo webhooku
 objekt `referral` s identifikátorom kliku, číslom reklamy a cieľovou adresou.

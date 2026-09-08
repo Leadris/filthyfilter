@@ -22,7 +22,7 @@ nebol úplný.
 | Produkčný web | **stará verzia**, formulár pripravuje správu, neposiela lead do API; bez merania |
 | Ikony | hotové na stagingu; produkcia má ešte starú baktériu |
 | Technický review celého funnelu | hotový, `SYSTEM_REVIEW.md`; web verzia neverejne na `dev.filthyfilter.sk/system-review/` |
-| Sledovanie životného cyklu zákazky | plán v `LIFECYCLE_IMPLEMENTATION.md`; **fáza 1 celá hotová a na dev**, fázy 2 až 4 otvorené |
+| Sledovanie životného cyklu zákazky | plán v `LIFECYCLE_IMPLEMENTATION.md`; **fázy 1 a 2 hotové a na dev**, fáza 3 čaká na Billdu Premium |
 
 ## Čo je hotové
 
@@ -107,6 +107,35 @@ nesie značku, kód balíka, počet jednotiek, obec aj termín, a atribúcia má
 `platform=meta`. Starší lead spred zmeny sa načíta s prázdnymi hodnotami, takže
 zmena je spätne kompatibilná. 363 testov API a 8 prehliadačových prešlo.
 Podrobnosti: `LIFECYCLE_IMPLEMENTATION.md` kapitola 6.
+
+**Peniaze na zákazke a účtovná kniha (8. 9., na dev).** Fáza 2. Zákazka doteraz
+nemala nikde cenu, takže `job_completed` odchádzal do Google ako fakt bez hodnoty
+a na otázku „koľko eur priniesla kampaň" sa z dát odpovedať nedalo.
+
+Pribudli ocenené riadky zákazky, súčty na zákazke, a kniha `invoices`,
+`invoice_payments` a `job_costs`. **Nie je to druhý fakturačný systém.** Doklady
+vystavuje Billdu; kniha eviduje, čo bolo vystavené a čo zaplatené. Kým Billdu
+nemá API, kancelária prepíše číslo dokladu a označí úhradu, čo stĺpec
+`issue_mode` zaznamenáva pri každom doklade zvlášť.
+
+Konverziu s hodnotou nesie nová udalosť `invoice_paid` a odchádza až po úhrade,
+v **netto** sume, s identifikátormi kliku prenesenými z leadu. `job_completed`
+zostáva míľnikom bez hodnoty.
+
+Sadzba DPH aj obe splatnosti sú v `app_settings`, teda meniteľné v portáli, ale
+na doklade sa zmrazí tá, ktorá platila pri vystavení. Prepočítanie starého
+dokladu by prepísalo históriu a prestal by sedieť s priznaním.
+
+Všetky routy sú od role manažér vyššie. Faktúru potvrdzuje kancelária, nie
+technik, takže právo visí na role, nie na priradení k zákazke.
+
+Zvlášť je zoznam hotových zákaziek bez dokladu s odpočtom do pätnástich dní,
+ktoré na vystavenie dáva zákon o DPH.
+
+Overené na dev celou cestou: ocenenie dvoch riadkov, návrh, vystavenie, čiastočná
+úhrada bez konverzie, doplatok s konverziou 307 € netto a prenesným `gclid`,
+a ďalšia platba, ktorá druhú konverziu nevytvorila. Skúšobné dáta po sebe
+upratané. 381 testov API prešlo.
 
 **Meta reklamy cez WhatsApp a ochrana troch formulárov (8. 9., na dev).**
 Dokončenie fázy 1. Meta posiela pri reklame s prechodom do WhatsAppu vo webhooku

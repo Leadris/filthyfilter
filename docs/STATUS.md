@@ -22,7 +22,7 @@ nebol úplný.
 | Produkčný web | **stará verzia**, formulár pripravuje správu, neposiela lead do API; bez merania |
 | Ikony | hotové na stagingu; produkcia má ešte starú baktériu |
 | Technický review celého funnelu | hotový, `SYSTEM_REVIEW.md`; web verzia neverejne na `dev.filthyfilter.sk/system-review/` |
-| Sledovanie životného cyklu zákazky | plán v `LIFECYCLE_IMPLEMENTATION.md`; **fáza 1 hotová a na dev**, fázy 2 až 4 otvorené |
+| Sledovanie životného cyklu zákazky | plán v `LIFECYCLE_IMPLEMENTATION.md`; **fáza 1 celá hotová a na dev**, fázy 2 až 4 otvorené |
 
 ## Čo je hotové
 
@@ -107,6 +107,30 @@ nesie značku, kód balíka, počet jednotiek, obec aj termín, a atribúcia má
 `platform=meta`. Starší lead spred zmeny sa načíta s prázdnymi hodnotami, takže
 zmena je spätne kompatibilná. 363 testov API a 8 prehliadačových prešlo.
 Podrobnosti: `LIFECYCLE_IMPLEMENTATION.md` kapitola 6.
+
+**Meta reklamy cez WhatsApp a ochrana troch formulárov (8. 9., na dev).**
+Dokončenie fázy 1. Meta posiela pri reklame s prechodom do WhatsAppu vo webhooku
+objekt `referral` s identifikátorom kliku, číslom reklamy a cieľovou adresou.
+Doteraz sa zahadzoval, takže prvý platený kanál sa dal spočítať v správach, ale
+nie priradiť ku konkrétnej reklame. Teraz sa z neho zakladá atribučný riadok.
+
+Značka sa **číta, nehádže**. Číslo aj schránka sú spoločné pre obe značky, takže
+odhad by zaradil predaj jednotky do kampane na čistenie. Dva signály v poradí
+dôvery: cieľová adresa reklamy, potom text správy, lebo web si svoje WhatsApp
+správy skladá s prvým riadkom, ktorý pomenúva stránku. Správa, ktorá spomína obe
+značky, zostane prázdna a rozhodne človek.
+
+Nič sa medzitým nestratilo: `whatsapp_messages.raw_payload` drží celé telo
+webhooku, takže `tools/backfill_whatsapp_referrals.php` staré riadky dopočíta.
+Na dev zatiaľ žiadna taká správa nie je, skript je pripravený na prvú kampaň.
+
+Formulár existuje na troch stránkach ako tri kópie a jeden `js/main.js` ich
+obsluhuje podľa `id`. Pribudol statický test `tests/forms.test.cjs`, ktorý zlyhá,
+keď sa polia, ich typy alebo ponuka služieb na stránkach rozídu. Overený tým, že
+sa na jednej stránke zmenil typ poľa: test spadol a pomenoval obe stránky.
+
+Overené: 369 testov API a 11 prehliadačových a statických prešlo. Celá cesta
+príchodu správy vyskúšaná na dev syntetickou správou, ktorá po sebe upratala.
 
 **Prehliadačové testy sa dajú spustiť (7. 9. večer).** Súbor
 `tests/browser.test.cjs` vyžadoval Playwright, ale nič tú závislosť nedeklarovalo,

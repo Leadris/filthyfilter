@@ -70,6 +70,24 @@ shipping it here would add a file that can only ever do nothing or go wrong.
 
 ### Last staging deploy
 
+- Date: 2026-09-08, second half of phase 1: click-to-WhatsApp attribution.
+- SSH port: 22261, host key as pinned.
+- API only (`api-dev`, branch `feature/service-package-vat`, commits `06ed3ff`
+  and `0df23e2`): migration `20260908120000` (meta_ad_id), the WhatsApp helpers
+  and `tools/backfill_whatsapp_referrals.php`. The website was not redeployed;
+  nothing on it changed.
+- Note for the next deploy: `scripts/` is not on the server. Server-run PHP
+  one-offs belong in `tools/`, which is.
+- Verified on dev by pushing one synthetic click-to-WhatsApp message through the
+  real inbound path: the captured row got `business_brand=filthyfilter` and the
+  attribution row got `platform=meta`, the click id, the ad id and `wa-ctwa`.
+  The probe deleted exactly what it created and left nothing behind.
+- Backfill dry run reports no messages with a referral, which is expected: no
+  Meta campaign has run yet.
+- Production untouched.
+
+### Previous staging deploy
+
 - Date: 2026-09-08, phase 1 of the lifecycle plan: the enquiry travels as
   fields, and the Meta click identifier is captured.
 - SSH port: 22261. Host key as pinned; rebound with the documented script,

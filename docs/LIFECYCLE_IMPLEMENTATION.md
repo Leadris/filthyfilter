@@ -16,18 +16,25 @@ končí pri dokončení zákazky a ide po nej udalosť bez hodnoty.
 | Rozhodnutie | Voľba | Dôsledok pre implementáciu |
 | --- | --- | --- |
 | Fakturačný nástroj | **Billdu zostáva**, napojí sa cez API | Plán úplnej náhrady Billdu v `plan_nahrady_billdu_whispair.pdf` (18. 7. 2026) sa tým **pozastavuje**. API vedie účtovnú knihu, nie fakturáciu. |
+| Prístup k Billdu API | **zatiaľ nie je** (8. 9. 2026) | Práca sa delí na dve fázy: kniha s ručným zápisom ide hneď, napojenie na Billdu sa zapne, keď budú kľúče. Pozri kapitolu 6. |
 | Účet v Billdu | **Jedna firma pre obe značky** | Jeden `apiKey`, jeden číselný rad. Značka sa nesie na zákazke a v popise položky, nie v účte. |
 | Hodnota konverzie | **Netto bez DPH** | Do Google aj Meta ide základ dane. ROAS porovnáva tržbu s nákladom rovnakej povahy. |
-| Kedy sa hodnota posiela | **Až po úhrade** | Peniaze nesie nová udalosť `invoice_paid`. `job_completed` zostáva míľnikom bez hodnoty. Pozri riziko 10.2. |
-| Vystavenie faktúry | **Návrh, človek potvrdí** | Systém pripraví položky a sumy, portál ich ukáže, tlačidlo vytvorí doklad v Billdu. |
-| WhatsApp číslo | **Spoločné pre obe značky** | Jedno WABA číslo. Značka sa musí odvodiť, nie predpokladať. Pozri krok 2.4. |
+| Kedy sa hodnota posiela | **Až po úhrade** | Peniaze nesie nová udalosť `invoice_paid`. `job_completed` zostáva míľnikom bez hodnoty. Pozri riziko v kapitole 7. |
+| Vystavenie faktúry | **Návrh, človek potvrdí** | Systém pripraví položky a sumy, portál ich ukáže, tlačidlo vytvorí doklad. |
+| WhatsApp číslo | **Spoločné pre obe značky** | Jedno WABA číslo. Značka sa musí odvodiť, nie predpokladať. Pozri krok 2. |
+| Sadzba DPH | **jednotná pre všetky služby, ale nastaviteľná v portáli** | Sadzba je v `app_settings`, nie v kóde. Na faktúre sa uloží tá, ktorá platila pri vystavení. |
+| Splatnosť | **podľa segmentu**, pozri kapitolu 3 | Domácnosť platí na mieste, firma má lehotu. Predvolené hodnoty sú nastaviteľné. |
+| Kto potvrdzuje faktúru | **kancelária** | Technik ju nevystaví. Právo na vystavenie sa viaže na rolu, nie na priradenie k zákazke. |
 
 ---
 
 ## 2. Billdu API: čo naozaj vie
 
 Overené 8. 9. 2026 proti oficiálnej špecifikácii
-(`github.com/billduapp/api_documentation`, `apiary.apib`).
+(`github.com/billduapp/api_documentation`, `apiary.apib`). **Prístupové údaje
+zatiaľ nemáme**, takže nižšie uvedené je overené z dokumentácie, nie proti
+živému účtu. Prvé volanie treba spraviť proti skutočnému účtu skôr, než sa na
+odpoveď spoľahne kód.
 
 - **Základ:** `https://api.billdu.com`.
 - **Autentifikácia:** `apiKey` v query, k tomu `signature` a `timestamp`.
@@ -56,9 +63,66 @@ Data Manager, Meta a WhatsApp Cloud API. Ďalšia composer závislosť neznámej
 
 ---
 
-## 3. Čo sa mení na webe (`filthyfilter`)
+## 3. Splatnosť, DPH a e-faktúra
 
-### 3.1 Štruktúrovaný dopyt
+### Sadzba DPH
+
+Sadzba je jednotná pre všetky služby, ale **nesmie byť v kóde**. Uloží sa do
+`app_settings` pod `invoicing.vat_rate` a portál ju vie zmeniť. Na faktúre aj na
+riadkoch zákazky sa uloží tá sadzba, ktorá platila v okamihu vystavenia, nie
+odkaz na nastavenie. Inak by zmena sadzby prepísala históriu a staré doklady by
+prestali sedieť s priznaním.
+
+ADAMSON s. r. o. je platiteľ DPH (`IČ DPH SK2022960159`), takže netto a brutto
+sú rôzne sumy a rozlíšenie je nutné.
+
+### Splatnosť
+
+Zákon nestanovuje jednu lehotu pre všetkých. Rozhoduje segment:
+
+| Segment | Návrh | Odôvodnenie |
+| --- | --- | --- |
+| Domácnosť (B2C) | **splatnosť v deň vystavenia**, úhrada na mieste kartou, hotovosťou alebo okamžitým prevodom | Pri jednorazovej službe v domácnosti je bežné zaplatiť po dokončení. Žiadny zákon lehotu nevyžaduje. Peniaze prídu skôr a konverzia s hodnotou odíde takmer hneď, čo je pri voľbe „až po úhrade" dôležité. |
+| Firma (B2B) | **14 dní**, nastaviteľné | Kratšie než zákonná predvoľba, stále bežné a pre firemného odberateľa prijateľné. |
+
+Zákonné mantinely pre B2B, ak sa nedohodne inak: predvolená splatnosť je
+**30 dní** od doručenia faktúry (§ 340a Obchodného zákonníka), dohodou sa dá
+predĺžiť **najviac na 60 dní**, dlhšie len výnimočne a nie hrubo nevýhodne pre
+veriteľa (§ 340b). Štrnásť dní je teda bezpečne v medziach.
+
+Obe hodnoty idú do `app_settings` (`invoicing.due_days_b2c`,
+`invoicing.due_days_b2b`) a na faktúre sa uloží konkrétny dátum, nie počet dní.
+
+### Lehota na vystavenie
+
+Platiteľ DPH musí faktúru vyhotoviť **do 15 dní** odo dňa dodania služby
+(§ 73 zákona o DPH). Keďže faktúru potvrdzuje kancelária a nie technik, medzi
+dokončením zákazky a vystavením vzniká priestor na omeškanie.
+
+Preto: portál musí mať zoznam zákaziek v stave `Done` **bez faktúry**, zoradený
+podľa veku, a upozorniť, keď sa niektorá blíži k pätnástemu dňu. Je to lacná
+poistka proti pokute a zároveň to chráni meranie, lebo nevystavená faktúra
+znamená aj chýbajúcu konverziu.
+
+### E-faktúra od 1. 1. 2027
+
+Od 1. januára 2027 budú tuzemskí platitelia DPH musieť pri dodaní tuzemskej
+zdaniteľnej osobe vystavovať faktúry v štruktúrovanom formáte XML podľa
+EN 16931 (Peppol BIS). Dobrovoľná fáza beží už v roku 2026.
+
+Pre tento plán je to argument navyše za to, že **Billdu zostáva**. Povinnosť sa
+týka toho, kto doklad vystavuje; keby sme si fakturáciu postavili sami, museli
+by sme do januára 2027 implementovať Peppol. Takto je to problém dodávateľa
+fakturačného nástroja. Overiť treba jediné: či Billdu Peppol včas podporí. Ak
+nie, mení sa nástroj, nie náš systém, lebo kniha je od neho oddelená.
+
+Faktúr pre domácnosti sa povinnosť netýka, tie zostávajú bežné.
+
+---
+
+## 4. Čo sa mení na webe (`filthyfilter`)
+
+### 4.1 Štruktúrovaný dopyt
 
 Formulár dnes skladá službu, počet jednotiek, termín a expres do textu
 (`buildMessage` v `js/main.js`) a API z toho parsuje iba kontakt. Cena, booking
@@ -71,7 +135,7 @@ Do tela požiadavky pribudnú polia popri `message`, ktorý zostáva:
 Formulár potrebuje dve nové viditeľné polia: **PSČ** a **počet jednotiek**.
 Zvyšok sa dá odvodiť z už existujúcich polí.
 
-### 3.2 `fbclid` a Meta
+### 4.2 `fbclid` a Meta
 
 `js/attribution.js` zachytáva iba tri Google identifikátory. Meta kampaň je
 prvý platený kanál, takže bez `fbclid` je nemerateľná. Pridáva sa do rovnakého
@@ -81,7 +145,7 @@ Meta Pixel v `js/consent.js` je samostatná položka a **čaká na rozhodnutie
 o personalizovaných reklamách** (`STATUS.md`). Bez pixelu sa dá merať cez
 Conversions API zo servera, čo je aj tak spoľahlivejšie.
 
-### 3.3 WhatsApp odkazy nesú značku a atribúciu
+### 4.3 WhatsApp odkazy nesú značku a atribúciu
 
 Odkazy dnes vedú na `https://wa.me/421902279094` bez textu. Pri spoločnom čísle
 sa z prichádzajúcej správy nedá povedať, ktorej značky sa týka.
@@ -91,7 +155,7 @@ napríklad `?text=FF%20…%20[ref:<token>]`. Token sa vygeneruje na webe, ulož�
 sa s atribúciou cez existujúci `POST /api/v1/leads` mechanizmus alebo cez novú
 odľahčenú cestu, a API ho z textu prvej správy prečíta.
 
-### 3.4 Test proti rozídeniu formulárov
+### 4.4 Test proti rozídeniu formulárov
 
 Formulár je na troch stránkach ako tri kópie. Pri štruktúrovaných poliach to
 bude bolieť tretíkrát. Do `tests/` pribudne test, ktorý porovná mená polí,
@@ -100,7 +164,7 @@ nesúlade. Pravidlo „bez buildu" zostáva.
 
 ---
 
-## 4. Čo sa mení v API (`whispair-api`)
+## 5. Čo sa mení v API (`whispair-api`)
 
 Poradie je zámerné: každý krok je samostatne nasaditeľný, aditívny a spätne
 kompatibilný.
@@ -172,10 +236,31 @@ Kód:
     Idempotentné: druhé volanie na už vystavenú zákazku vráti existujúci doklad.
   - `send(invoiceId)` — voliteľné odoslanie e-mailom cez Billdu.
 - Routy: `GET /api/v1/jobs/{id}/invoice-draft`, `POST /api/v1/jobs/{id}/invoice`,
-  `POST /api/v1/invoices/{id}/send`, `GET /api/v1/invoices` (manažér a vyššie).
+  `POST /api/v1/invoices/{id}/send`, `GET /api/v1/invoices`.
 
 Klient v Billdu sa páruje cez `clients.billdu_client_id` (nový stĺpec); ak
 neexistuje, `InvoicingService` ho najprv založí cez `POST /clients`.
+
+**Kto smie vystaviť.** Faktúru potvrdzuje kancelária, takže právo sa viaže na
+rolu (manažér a vyššie), nie na priradenie k zákazke. Technik s rolou
+`technician` alebo `senior_technician` vidí návrh, ale tlačidlo nemá. Existujúci
+middleware `RequireManager` na to stačí.
+
+**Nastavenia z portálu.** Sadzba DPH a obe predvolené splatnosti sa čítajú
+z `app_settings` (`invoicing.vat_rate`, `invoicing.due_days_b2c`,
+`invoicing.due_days_b2b`). Na doklade sa uloží výsledná sadzba a konkrétny
+dátum splatnosti, nie odkaz na nastavenie.
+
+**Fáza A bez Billdu.** Kým nie sú kľúče, `InvoicingService` beží v režime
+`manual`: faktúru vytvorí v knihe, `billdu_document_id` nechá `NULL`
+a kancelária doplní číslo dokladu a dátumy z Billdu ručne. Úhrada sa v tomto
+režime označí v portáli. Všetko ostatné, vrátane konverzie `invoice_paid`,
+funguje rovnako.
+
+**Fáza B s Billdu.** Po doplnení `BILLDU_API_KEY` a `BILLDU_API_SECRET` sa režim
+prepne na `billdu`: doklad vzniká cez API a úhrady zisťuje worker. Prepínač je
+konfigurácia, nie iná vetva kódu, a už zapísané faktúry z fázy A zostávajú
+platné.
 
 ### Krok 5 — Zisťovanie úhrad
 
@@ -232,20 +317,33 @@ nespravia, každý zásah do atribúcie je dvojitý.
 
 ---
 
-## 5. Poradie nasadenia
+## 6. Poradie nasadenia
 
-Kroky 1 a 2 sú front lievika a dajú sa nasadiť hneď; bez nich sa dáta strácajú
-každý deň. Kroky 3 až 6 sú jeden celok: samostatne nasadené nedávajú zmysel,
-lebo peniaze bez faktúry a faktúra bez úhrady neuzavrú okruh. Krok 7 sa dá
-spraviť kedykoľvek, ale čím neskôr, tým viac duplicít treba čistiť ručne.
-Kroky 8 a 9 sú upratovanie, ktoré nič neblokuje.
+Prístup k Billdu API zatiaľ nie je, takže sa nečaká. Rozdelenie na fázy je
+navrhnuté tak, aby chýbajúce kľúče neblokovali nič okrem posledného kroku.
+
+**Fáza 1, front lievika (hneď).** Kroky 1 a 2 plus webové zmeny. Nezávisia od
+Billdu ani od peňazí a bez nich sa každý deň strácajú dáta, ktoré sa spätne
+nedopočítajú. Výnimkou je `ctwa_clid`, ten sa dá dopočítať z uložených tiel
+webhooku.
+
+**Fáza 2, peniaze a kniha (hneď po fáze 1).** Kroky 3 až 6 v režime `manual`.
+Zákazka dostane cenu, kniha dostane faktúru, kancelária označí úhradu a
+konverzia `invoice_paid` odíde s netto hodnotou. **Celý okruh sa uzavrie aj bez
+Billdu**, len s ručným zápisom čísla dokladu a úhrady.
+
+**Fáza 3, napojenie Billdu (keď budú kľúče).** `BillduClient`, prepnutie režimu
+na `billdu` a worker na úhrady. Nahrádza ručné kroky z fázy 2, nemení schému.
+
+**Fáza 4, upratovanie.** Kroky 7 až 9. Krok 7 čím neskôr, tým viac duplicitných
+zákazníkov treba čistiť ručne, takže ho netreba odkladať zbytočne.
 
 Všetko ide najprv na `api-dev` a `dev.filthyfilter.sk` podľa `ENVIRONMENTS.md`
 a `DEPLOYMENT.md`. Produkčné nasadenie je samostatná etapa.
 
 ---
 
-## 6. Riziká a to, čo si treba ustrážiť
+## 7. Riziká a to, čo si treba ustrážiť
 
 1. **Okno kliku v Google Ads.** Offline konverzia sa dá nahrať len ak je klik
    mladší než približne 90 dní. Pri voľbe „až po úhrade" je reťaz klik → lead →
@@ -278,9 +376,21 @@ a `DEPLOYMENT.md`. Produkčné nasadenie je samostatná etapa.
 7. **Tajomstvá.** `BILLDU_API_SECRET` je heslo k fakturácii. Patrí do `.env` na
    serveri, nikdy do repozitára a nikdy do logu. Podpis sa loguje, telo nie.
 
+8. **Fáza 2 stojí na disciplíne kancelárie.** Kým Billdu nie je napojené,
+   konverzia odíde len vtedy, keď niekto úhradu v portáli označí. Neoznačená
+   faktúra znamená kampaň bez tržby v dátach. Zoznam nezaplatených faktúr
+   v portáli je preto súčasť fázy 2, nie neskoršia ozdoba.
+
+9. **Lehota pätnástich dní na vystavenie.** Medzi dokončením zákazky a
+   potvrdením faktúry kanceláriou je priestor na omeškanie, ktoré je porušením
+   zákona o DPH. Upozornenie v portáli je povinná časť, nie voliteľná.
+
+10. **E-faktúra 2027.** Overiť u Billdu, či Peppol podporí včas. Ak nie, mení sa
+    fakturačný nástroj; kniha ostáva, lebo je od neho oddelená.
+
 ---
 
-## 7. Čo tento plán vedome nerieši
+## 8. Čo tento plán vedome nerieši
 
 - Náhradu Billdu. PDF plán je pozastavený.
 - Cenový engine pre čistenie (`ServiceQuoteEngine`), booking a recenzie. Sú
@@ -291,13 +401,14 @@ a `DEPLOYMENT.md`. Produkčné nasadenie je samostatná etapa.
 
 ---
 
-## 8. Čo ešte potrebujem vedieť
+## 9. Čo zostáva otvorené
 
-1. **Je pre účet Billdu dostupné API v aktuálnom pláne?** Kľúč a tajomstvo sú
-   pod Settings → API a vidí ich iba vlastník. Ak tam sekcia nie je, celý
-   krok 4 padá a faktúra sa zapisuje ručne.
-2. **Sadzba DPH a číselný rad.** Ktorý rad má FilthyFilter používať a či je
-   sadzba jednotná pre všetky služby.
-3. **Splatnosť.** Koľko dní má byť predvolená `maturity_date`.
-4. **Kto v portáli faktúru potvrdzuje** a či to má robiť technik z terénu alebo
-   kancelária.
+1. **Prístup k Billdu API.** Bez neho beží fáza 2 v ručnom režime. Fáza 3 čaká
+   na `apiKey` a `apiSecret` zo Settings → API; vidí ich iba vlastník účtu.
+   Zároveň treba overiť, či ich plán API vôbec obsahuje.
+2. **Číselný rad.** Pri jednom účte pre obe značky treba povedať, či má
+   FilthyFilter vlastný rad alebo sa fakturuje do spoločného.
+3. **Personalizované reklamy.** Rozhodnutie stále visí a blokuje Meta Pixel na
+   webe (`STATUS.md`). Meranie cez Conversions API na ňom nezávisí.
+4. **Mapa kampaní pre `referral.source_id`.** Vznikne až so spustením prvej
+   Meta kampane. Do tej doby sa značka určuje z tokenu v texte správy.

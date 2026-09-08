@@ -1,6 +1,6 @@
 # FilthyFilter — stav projektu
 
-**Aktualizované 8. 9. 2026, 18:00 UTC.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
+**Aktualizované 8. 9. 2026, 19:30 UTC.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
 a čo otvorené. Rozhodnutia a ich dôvody zostávajú v `REDESIGN_PLAN.md` a
 `MARKETING_PLAN.md`; postup nasadenia v `DEPLOYMENT.md`. Ak sa niektorý z nich rozchádza
 s týmto súborom, platí tento a treba ho tam opraviť.
@@ -25,6 +25,26 @@ nebol úplný.
 | Sledovanie životného cyklu zákazky | plán v `LIFECYCLE_IMPLEMENTATION.md`; **fázy 1 a 2 hotové a na dev**, fáza 3 čaká na Billdu Premium |
 
 ## Čo je hotové
+
+**Tlačidlo „Opísať problém“ viedlo na WhatsApp namiesto formulára (8. 9., na dev).**
+Na stránke servisu bolo napísané ako odkaz na `#contact`, ale `js/main.js` mu
+`href` po načítaní prepísal na WhatsApp. Malo totiž navyše `data-inquiry` a
+funkcia `updateInquiryLinks` prepisovala všetko s tým atribútom. Bolo to jediné
+z jedenástich tlačidiel na `#contact`, ktoré ten atribút malo, takže išlo
+o pozostatok, nie o zámer. Na stránke sa to nedalo vidieť: tlačidlo vyzeralo
+rovnako ako ostatné a odviedlo návštevníka preč z formulára.
+
+Opravené na oboch stranách. Zbytočný atribút je preč a funkcia po novom prepisuje
+len odkaz, ktorý sám pomenuje svoj kanál cez `data-contact`. Samotné
+`data-inquiry` už na prepis nestačí, takže tá istá chyba sa nemôže vrátiť
+nepozorovane.
+
+Pribudli dva testy, sada má teraz 13. Statický kontroluje, že lišta na všetkých
+troch stránkach drží tri kanály a že WhatsApp odkaz nesie riadok so stránkou aj
+v statickom `href`. Prehliadačový kontroluje opačné pravidlo: žiadny odkaz bez
+`data-contact` sa nesmie stať WhatsApp odkazom a text v lište musí sedieť
+v oboch jazykoch. Oba overené tým, že sa chyba dočasne vrátila do kódu: spadli
+a pomenovali stránku.
 
 **WhatsApp v plávajúcej lište na mobile (8. 9., na dev).** Lišta mala dve
 tlačidlá, „Zavolať“ a „Nacenenie“, takže kanál, do ktorého plánovaná Meta kampaň
@@ -53,8 +73,8 @@ Najužšia šírka, pri ktorej sa lišta ešte zmestí, je 251 px v slovenčine;
 zvuku sú dorovnané na skutočnú výšku lišty, ktorá bola predtým o dva pixely
 vyššia než rezerva pod ňou.
 
-Overené: 11 testov (`npm test`) prešlo, lišta odmeraná a odfotená na 320, 360,
-390 a 414 px v oboch jazykoch, bez zalomenia a bez orezania textu.
+Overené: celá sada testov prešla, lišta odmeraná a odfotená na 320, 360, 390
+a 414 px v oboch jazykoch, bez zalomenia a bez orezania textu.
 
 **Produkcia bola pol dňa na `noindex` (8. 9., opravené).** Pri nasadení písma sa do
 produkčného koreňa rozbalil **staging** balík. Staging sa od produkcie líši práve

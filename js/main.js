@@ -322,13 +322,16 @@
     var L = FIELDS[lang] || FIELDS.sk;
     var links = document.querySelectorAll('a[data-inquiry], a[data-contact="whatsapp"]');
     for (var i = 0; i < links.length; i++) {
+      // Only a link that names its channel is ours to rewrite. Without this a
+      // stray data-inquiry on an in-page anchor is enough to turn a button
+      // that says "go to the form" into a WhatsApp link, and nothing about
+      // the markup would say so.
+      var kind = links[i].getAttribute("data-contact");
+      if (kind !== "whatsapp" && kind !== "email") continue;
       var key = links[i].getAttribute("data-inquiry");
       if (key && !SERVICES[key]) continue;
       var body = key ? buildTemplate(key, lang) : L.origin;
-      links[i].setAttribute("href",
-        links[i].getAttribute("data-contact") === "email"
-          ? mailLink(body, lang)
-          : waLink(body));
+      links[i].setAttribute("href", kind === "email" ? mailLink(body, lang) : waLink(body));
     }
   }
 

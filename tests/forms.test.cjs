@@ -96,3 +96,36 @@ test('every field the enquiry sends is present on all three pages', () => {
     }
   }
 });
+
+// The floating bar is the whole mobile contact surface, and WhatsApp is where
+// the Meta click-to-WhatsApp campaign lands. Losing the button on one page, or
+// losing the origin line out of its href, is silent: the bar still looks right
+// and the API just stops being able to tell whose lead it is.
+test('the mobile bar offers the same three channels on all three pages', () => {
+  for (const page of PAGES) {
+    const html = fs.readFileSync(path.join(root, page), 'utf8');
+    const bar = html.match(/<div class="mobile-cta">[\s\S]*?<\/div>/);
+    assert.ok(bar, `${page}: no mobile bar found`);
+    const links = bar[0].match(/<a\b[^>]*>/g) || [];
+    assert.equal(links.length, 3, `${page}: the bar should hold three buttons`);
+
+    const phone = links.filter((a) => attr(a, 'data-contact') === 'phone');
+    const wa = links.filter((a) => attr(a, 'data-contact') === 'whatsapp');
+    const form = links.filter((a) => attr(a, 'href') === '#contact');
+    assert.equal(phone.length, 1, `${page}: the bar lost its phone button`);
+    assert.equal(form.length, 1, `${page}: the bar lost its link to the form`);
+    assert.equal(wa.length, 1, `${page}: the bar lost its WhatsApp button`);
+
+    // js/main.js rewrites this href per language; the static one is what a
+    // visitor without JS gets, so it has to say the same thing.
+    assert.match(
+      attr(wa[0], 'href'),
+      /wa\.me\/\d+\?text=[^"]*filthyfilter\.sk/,
+      `${page}: the WhatsApp button must open with the line naming the site, ` +
+        'or whispair-api cannot tell the enquiry from a unit sale.'
+    );
+    for (const link of links) {
+      assert.ok(attr(link, 'data-sk') && attr(link, 'data-en'), `${page}: a bar button is not translated`);
+    }
+  }
+});

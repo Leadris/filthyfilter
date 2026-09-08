@@ -181,3 +181,25 @@ test('Every public page: working privacy links, responsive layout, SK/EN and loc
     }
   }
 });
+
+test('Only links that name their channel become WhatsApp links; the bar carries the origin line',async t=>{
+  const {page}=await setup(t,undefined,{viewport:{width:360,height:760}});
+  for(const route of ['/','/cistenie-klimatizacie/','/servis-klimatizacie/']){
+    await page.goto(base+route);
+    if(await page.locator('[data-consent="reject"]').count())await page.click('[data-consent="reject"]');
+    // js/main.js rewrites contact links after load. A link that does not say
+    // which channel it is must be left alone: a stray data-inquiry on an
+    // in-page anchor once turned "go to the form" into a WhatsApp link, and
+    // nothing on the page said so.
+    const stolen=await page.$$eval('a[href*="wa.me"]',els=>els.filter(el=>el.getAttribute('data-contact')!=='whatsapp').map(el=>el.textContent.trim()));
+    assert.deepEqual(stolen,[],route+': a link with no data-contact was rewritten to WhatsApp');
+    // The bar is the mobile contact surface and the campaign's landing spot.
+    const bar=page.locator('.mobile-cta a[data-contact="whatsapp"]');
+    assert.equal(await bar.count(),1,route+': the bar has no WhatsApp button');
+    for(const [lang,line] of [['sk','Dopyt z filthyfilter.sk'],['en','Enquiry from filthyfilter.sk']]){
+      await page.click('[data-lang="'+lang+'"]');
+      // whispair-api reads the brand out of this line; the number is shared.
+      assert.equal(decodeURIComponent(new URL(await bar.getAttribute('href')).searchParams.get('text')||''),line,route+' in '+lang);
+    }
+  }
+});

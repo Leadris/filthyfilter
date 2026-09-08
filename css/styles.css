@@ -1072,19 +1072,33 @@ summary:focus-visible,
   .nav__inner { gap: 8px; padding-left: 14px; padding-right: 14px; }
 }
 
-/* Compact call/quote bar on phones. Body gets bottom padding so it never
-   covers content, and the sound toggle moves up to clear it. */
+/* Compact call/WhatsApp/quote bar on phones. Body gets bottom padding so it
+   never covers content, and the sound toggle moves up to clear it. */
 @media (max-width: 720px) {
+  /* Three destinations share this bar: the phone, WhatsApp and the form.
+     WhatsApp is here because it is where the Meta click-to-WhatsApp campaign
+     lands, so it needs a permanent button rather than one buried in the
+     contact panel.
+
+     The type is smaller and tighter than a normal button on purpose. At 320px
+     the three labels are the whole width of the phone, and the moment one of
+     them wraps the bar grows a second line and eats the content behind it, so
+     they are held on one line and given room to sit on. */
   .mobile-cta {
-    display: flex; gap: 8px; position: fixed; z-index: 950;
+    display: flex; gap: 6px; position: fixed; z-index: 950;
     left: 0; right: 0; bottom: 0;
-    padding: 9px 12px calc(9px + env(safe-area-inset-bottom));
+    padding: 9px 8px calc(9px + env(safe-area-inset-bottom));
     background: rgba(10,7,6,.94); backdrop-filter: blur(8px);
     border-top: 1px solid var(--bronze-dim);
   }
-  .mobile-cta .btn { flex: 1; text-align: center; padding: 12px 10px; }
-  body { padding-bottom: 68px; }
-  .sound-toggle { bottom: 74px; }
+  .mobile-cta .btn {
+    flex: 1 1 0; min-width: 0; justify-content: center;
+    padding: 12px 8px; white-space: nowrap;
+    font-size: 0.72rem; letter-spacing: 0.07em;
+  }
+  /* Has to clear the bar, or the last line of the footer sits under it. */
+  body { padding-bottom: 66px; }
+  .sound-toggle { bottom: 72px; }
 }
 
 /* =========================================================================

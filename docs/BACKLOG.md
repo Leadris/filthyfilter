@@ -85,7 +85,7 @@ a možnosť optimalizácie na udalosti na stránke.
 
 **Hotové, keď:** pixel sa nenačíta pred súhlasom a po súhlase posiela `PageView`.
 
-### T8 — Tlačidlo WhatsApp v mobilnej lište
+### T8 — Tlačidlo WhatsApp v mobilnej lište — **hotové 8. 9. 2026**
 **Vlastník:** ja · **Repozitár:** `filthyfilter` · **Závisí od:** nič
 
 Plávajúca lišta na mobile má len „Zavolať" a „Nacenenie". Hlavný kanál plánovanej
@@ -94,6 +94,11 @@ z `tests/forms.test.cjs`.
 
 **Hotové, keď:** lišta má tri tlačidlá na všetkých troch stránkach a odkaz nesie
 predvyplnený text so značkou.
+
+Splnené: tretie tlačidlo je na všetkých troch stránkach, nesie
+`data-contact="whatsapp"` a predvyplnený riadok „Dopyt z filthyfilter.sk“
+(v angličtine „Enquiry from filthyfilter.sk“), z ktorého si API číta značku.
+Podrobne v `STATUS.md`.
 
 ### T9 — Schválenie šablón správ v Meta
 **Vlastník:** ty · **Blokuje:** žiadosti o recenziu a retenciu
@@ -216,6 +221,6 @@ kedykoľvek.
 
 1. **T1 až T3** naraz, sú tvoje a odblokujú všetko okolo Google.
 2. **T4**, lebo bez portálu je fáza 2 nepoužiteľná.
-3. **T5** a **T8**, tie otvárajú Meta kampaň.
+3. **T5** (T8 hotové), tá zostáva na otvorenie Meta kampane.
 4. **T12**, kým je zákazníkov málo a duplicity sa ešte dajú čistiť.
 5. Zvyšok podľa toho, čo sa uvoľní.

@@ -311,12 +311,20 @@
 
   // Rewrite every service CTA so the visitor's messaging app opens with the
   // right service already named. Nothing is stored or sent by the page itself.
+  //
+  // The plain WhatsApp buttons — the floating mobile bar and the contact panel
+  // — name no service, but they still open with the origin line rather than an
+  // empty box. The number is shared with whispAir and the API reads the brand
+  // out of the message text, so a WhatsApp lead that names nothing cannot be
+  // told from a unit sale. Rebuilt on every language change, because the
+  // visitor may switch after the page has loaded.
   function updateInquiryLinks(lang) {
-    var links = document.querySelectorAll("a[data-inquiry]");
+    var L = FIELDS[lang] || FIELDS.sk;
+    var links = document.querySelectorAll('a[data-inquiry], a[data-contact="whatsapp"]');
     for (var i = 0; i < links.length; i++) {
       var key = links[i].getAttribute("data-inquiry");
-      if (!SERVICES[key]) continue;
-      var body = buildTemplate(key, lang);
+      if (key && !SERVICES[key]) continue;
+      var body = key ? buildTemplate(key, lang) : L.origin;
       links[i].setAttribute("href",
         links[i].getAttribute("data-contact") === "email"
           ? mailLink(body, lang)

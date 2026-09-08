@@ -1,6 +1,6 @@
 # FilthyFilter — stav projektu
 
-**Aktualizované 8. 9. 2026, 14:30 UTC.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
+**Aktualizované 8. 9. 2026, 18:00 UTC.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
 a čo otvorené. Rozhodnutia a ich dôvody zostávajú v `REDESIGN_PLAN.md` a
 `MARKETING_PLAN.md`; postup nasadenia v `DEPLOYMENT.md`. Ak sa niektorý z nich rozchádza
 s týmto súborom, platí tento a treba ho tam opraviť.
@@ -25,6 +25,36 @@ nebol úplný.
 | Sledovanie životného cyklu zákazky | plán v `LIFECYCLE_IMPLEMENTATION.md`; **fázy 1 a 2 hotové a na dev**, fáza 3 čaká na Billdu Premium |
 
 ## Čo je hotové
+
+**WhatsApp v plávajúcej lište na mobile (8. 9., na dev).** Lišta mala dve
+tlačidlá, „Zavolať“ a „Nacenenie“, takže kanál, do ktorého plánovaná Meta kampaň
+prechádza, nemal na telefóne trvalé tlačidlo. Teraz má tri, na všetkých troch
+stránkach. Tým padá prvý blokujúci bod kampane.
+
+Odkaz nesie predvyplnený text s prvým riadkom, ktorý pomenúva stránku: „Dopyt
+z filthyfilter.sk“, v angličtine „Enquiry from filthyfilter.sk“. Číslo je
+spoločné s whispAir a API si značku číta z textu správy
+(`whatsapp_business_brand` v `_whatsapp_helpers.php`), takže bez toho riadku by
+sa dopyt na čistenie nedal odlíšiť od predaja jednotky. Text sa prepisuje pri
+prepnutí jazyka a ten istý riadok je aj v statickom `href`, aby fungoval bez JS.
+
+Rovnaký riadok dostali aj ostatné WhatsApp tlačidlá bez služby, teda tie
+v kontaktnom paneli a pri výzve na vzorku. Doteraz otvárali prázdnu správu, na
+ktorej sa značka nedala prečítať.
+
+Meranie sa nemenilo: tlačidlo má `data-contact="whatsapp"` a existujúci
+poslucháč posiela `whatsapp_click` s `placement: "generic"`.
+
+Tri tlačidlá museli prestať zalamovať. Anglické „Get a quote“ z lišty urobilo dva
+riadky pri každej šírke a lišta začala zakrývať obsah, preto je v lište skrátené
+na „Quote“ (slovenské „Nacenenie“ zostáva) a písmo v nej je menšie a tesnejšie.
+Najužšia šírka, pri ktorej sa lišta ešte zmestí, je 251 px v slovenčine; na
+360 px teda zvyšuje viac ako 100 px. Spodné odsadenie `body` a výška tlačidla
+zvuku sú dorovnané na skutočnú výšku lišty, ktorá bola predtým o dva pixely
+vyššia než rezerva pod ňou.
+
+Overené: 11 testov (`npm test`) prešlo, lišta odmeraná a odfotená na 320, 360,
+390 a 414 px v oboch jazykoch, bez zalomenia a bez orezania textu.
 
 **Produkcia bola pol dňa na `noindex` (8. 9., opravené).** Pri nasadení písma sa do
 produkčného koreňa rozbalil **staging** balík. Staging sa od produkcie líši práve
@@ -263,11 +293,11 @@ zatiaľ bez ikon zámerne.
 Používateľ zadal ako prvý platený kanál Meta s prechodom do WhatsAppu, nie Google Ads.
 Podrobne v `MARKETING_PLAN.md` kapitola 11. Blokujúce je toto:
 
-1. **WhatsApp chýba v plávajúcej lište na mobile.** Všetky tri stránky majú
-   „Zavolať“ a „Nacenenie“. Hlavný kanál kampane teda nemá trvalé tlačidlo.
-2. **Meta Pixel neexistuje.** Musí ísť do `js/consent.js`, aby prešiel súhlasom,
+1. **Meta Pixel neexistuje.** Musí ísť do `js/consent.js`, aby prešiel súhlasom,
    nie vedľa neho.
-3. **Reklamný materiál je z jednej zákazky.** Kód to nevyrobí.
+2. **Reklamný materiál je z jednej zákazky.** Kód to nevyrobí.
+
+Bod „WhatsApp chýba v plávajúcej lište“ padol 8. 9., viď nižšie.
 
 Nebráni spusteniu, ale chýba: **žiadna stránka nemá `LocalBusiness` v JSON-LD**,
 čo je strata najmä pre mapový výsledok a prepojenie s profilom na Google.

@@ -60,6 +60,20 @@ test('No consent: no Google or ad storage; enquiry works and carries no click id
   await page.click('[data-consent="reject"]');await submit(page);
   assert.equal(leads.length,1);assert.equal(leads[0].landing_token,'ff-home');
   for(const key of ['gclid','landing_url','referrer','utm_campaign'])assert.equal(leads[0][key],undefined);
+  // The answers the visitor typed are the enquiry itself, not advertising data,
+  // so they travel with or without consent. Refusing measurement must not cost
+  // the office the service, the town or the unit count.
+  assert.equal(leads[0].business_brand,'filthyfilter');
+  assert.equal(leads[0].service_key,'nastenna');
+  assert.equal(leads[0].service_code,'FF-CIST-NASTENNA');
+  assert.equal(leads[0].place,'Senec');
+  assert.equal(leads[0].unit_count_unknown,true);
+  assert.equal(leads[0].unit_count,undefined,'an unknown count must not also send a number');
+  assert.equal(leads[0].express,false);
+  // The town is sent as address, and deliberately left out of the composed
+  // text, which omits contact details. The service is in both.
+  assert.equal(leads[0].address,'Senec');
+  assert.ok(leads[0].message.includes('nástennej jednotky'),'the composed text still names the service');
   assert.equal(google.length,0);
   assert.equal(await page.evaluate(()=>dataLayer.some(e=>e.event==='lead_submitted')),false);
 });
@@ -79,6 +93,23 @@ test('Consent captures allowed attribution; navigation retains first touch; with
   assert.equal(await page.evaluate(()=>sessionStorage.getItem('ff_attr_v2')),null);
   assert.equal((await context.cookies()).some(c=>c.name==='_ga'),false);
   const requests=google.length;await page.reload();assert.equal(google.length,requests);
+});
+
+test('A Meta click identifier is captured like a Google one and reaches the enquiry',async t=>{
+  const {page,leads}=await setup(t);
+  await page.goto(base+'/?fbclid=FB-TEST-1');await tick(page);
+  // Meta is the first paid channel, so fbclid has to survive consent, first
+  // touch and a page change exactly the way gclid already does.
+  assert.equal(await page.evaluate(()=>ffAttribution.isPaid()),false,'nothing is kept before consent');
+  await page.click('[data-consent="accept"]');await page.waitForFunction(()=>ffAttribution.isPaid());
+  assert.equal(await page.evaluate(()=>ffAttribution.get().fbclid),'FB-TEST-1');
+  await page.goto(base+'/servis-klimatizacie/?fbclid=FB-SECOND');
+  assert.equal(await page.evaluate(()=>ffAttribution.get().fbclid),'FB-TEST-1','first touch wins');
+  await submit(page);
+  assert.equal(leads[0].fbclid,'FB-TEST-1');
+  // The platform is decided by the API from the identifiers it was given; a
+  // page that could name it could mislabel a Google click as a Meta one.
+  assert.equal(leads[0].platform,undefined);
 });
 
 test('Expired and legacy consent do not authorise tracking; malformed query does not break page',async t=>{

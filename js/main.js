@@ -107,6 +107,16 @@
   // Services that make sense to count. Diagnostics and "not sure" do not.
   var COUNTABLE = { nastenna: 1, kazetova: 1, udrzba: 1, firmy: 1 };
 
+  /* The package code that owns the price of a chosen service, so an enquiry can
+     be joined to the catalog without matching on a label. PRICES below is the
+     one place those codes are written down, and the service keys line up with
+     its tokens. "firmy" and "obhliadka" have no single package by design: one
+     is quoted per site, the other is a visit to find out what is needed. */
+  function serviceCode(service) {
+    var price = PRICES["p-" + service];
+    return (price && price.code) || "";
+  }
+
   /* =======================================================================
      PRICES — the one place a figure is written down.
 
@@ -755,12 +765,23 @@
         phone: d.phone,
         email: d.email,
         address: d.place,
-        // The API stores one message body, so the composed text is what a
-        // technician reads. It already carries the service, the unit count and
-        // the preferred date in the visitor's own words.
+        // The composed text stays the message body a technician reads. It
+        // carries the same answers in the visitor's own words.
         message: text,
-        company: d.company // honeypot; a person leaves this empty
+        company: d.company, // honeypot; a person leaves this empty
+        // The same answers as fields. Prose cannot be priced, booked or
+        // counted by service; these can. The API stores them beside the text,
+        // and ignores any it does not know, so an older API is not broken by
+        // a newer page.
+        business_brand: "filthyfilter",
+        service_key: d.service,
+        service_code: serviceCode(d.service),
+        place: d.place,
+        preferred_time_text: d.date,
+        express: d.express
       };
+      if (d.unitsUnknown) payload.unit_count_unknown = true;
+      else if (d.units) payload.unit_count = d.units;
 
       for (var key in attribution) {
         if (Object.prototype.hasOwnProperty.call(attribution, key)) payload[key] = attribution[key];

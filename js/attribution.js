@@ -3,7 +3,10 @@
 (function () {
   "use strict";
   var KEY = "ff_attr_v2";
-  var PARAMS = { gclid: 512, gbraid: 512, wbraid: 512, utm_source: 256,
+  // fbclid is here for the same reason as the Google three: the first paid
+  // channel is Meta, and without it a Meta lead can be counted but not traced
+  // back to the ad that paid for it.
+  var PARAMS = { gclid: 512, gbraid: 512, wbraid: 512, fbclid: 512, utm_source: 256,
     utm_medium: 256, utm_campaign: 256, utm_term: 256, utm_content: 256 };
   var current = null;
   function allowed() { return !!(window.ffConsent && window.ffConsent.allowed()); }
@@ -58,7 +61,8 @@
       return out;
     },
     isPaid: function () {
-      return !!(allowed() && current && (current.gclid || current.gbraid || current.wbraid));
+      return !!(allowed() && current &&
+        (current.gclid || current.gbraid || current.wbraid || current.fbclid));
     }
   };
 })();

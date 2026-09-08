@@ -15,7 +15,7 @@ nebol úplný.
 | Web, obsah a ceny | hotové, na stagingu |
 | Meranie a súhlas | hotové, na stagingu, kontajner `GTM-57M8XLQJ` |
 | Cesta leadu do systému | hotová a overená end-to-end |
-| Okruh tržieb späť do Google Ads | kód hotový, na dev nasadený, **nie na produkcii** |
+| Okruh tržieb späť do Google Ads | kód, API aj portál nasadené na dev a produkcii; Google Ads nastavenie čaká na používateľa |
 | Reklamné stránky | dve, na stagingu |
 | Google Ads | používateľ dokončí nastavenie neskôr; kampaň teraz nespúšťame. Plán prvého kanála Meta zostáva samostatne. |
 | Meta (Facebook a Instagram) | meranie zo servera hotové a na dev (Conversions API); pixel a reklamný materiál **nezačaté**, zadanie v `MARKETING_PLAN.md` kap. 11 |
@@ -275,7 +275,7 @@ nesie značku, kód balíka, počet jednotiek, obec aj termín, a atribúcia má
 zmena je spätne kompatibilná. 363 testov API a 8 prehliadačových prešlo.
 Podrobnosti: `LIFECYCLE_IMPLEMENTATION.md` kapitola 6.
 
-**Peniaze na zákazke a účtovná kniha (8. 9., na dev).** Fáza 2. Zákazka doteraz
+**Peniaze na zákazke a účtovná kniha (8. 9., na dev aj produkcii).** Fáza 2. Zákazka doteraz
 nemala nikde cenu, takže `job_completed` odchádzal do Google ako fakt bez hodnoty
 a na otázku „koľko eur priniesla kampaň" sa z dát odpovedať nedalo.
 
@@ -303,6 +303,16 @@ Overené na dev celou cestou: ocenenie dvoch riadkov, návrh, vystavenie, čiast
 úhrada bez konverzie, doplatok s konverziou 307 € netto a prenesným `gclid`,
 a ďalšia platba, ktorá druhú konverziu nevytvorila. Skúšobné dáta po sebe
 upratané. 381 testov API prešlo.
+
+Produkčné nasadenie 8. 9. doplnilo do portálu detail ocenenia a úhrad aj samostatný
+prehľad **Fakturácia** s pätnásťdňovou lehotou. Portálový commit `ac3c935` bol
+nasadený najprv na dev a potom na produkciu; produkčný backup je
+`/home/jg046600/tmp/portal-live-bak-20260908-143532`. API bolo nasadené bežným
+balíkom, všetkých desať čakajúcich migrácií bolo aplikovaných po lokálnej zálohe
+produkčnej DB a fakturačná routa na produkcii vracia bez prihlásenia očakávané
+`401`. Verejný health, routing, 404 obálka, auth guard a CORS pre
+`portal.whispair.sk` prešli. Autentifikovaný produkčný zápis sa zámerne neskúšal;
+celý tok zápisu a úhrad je overený na dev podľa odseku vyššie.
 
 **Meta reklamy cez WhatsApp a ochrana troch formulárov (8. 9., na dev).**
 Dokončenie fázy 1. Meta posiela pri reklame s prechodom do WhatsAppu vo webhooku
@@ -433,19 +443,16 @@ sú v `PRIVACY_IMPLEMENTATION.md`.
 1. **Produkčný web je nasadený, ale neprešiel posúdením.** Ostrá doména beží od 8. 9.
    na novej zostave, lebo sa tam dostala pri nasadení písma, nie po schválení.
    Treba ju prejsť tak, ako sa mal prejsť staging: formulár, súhlas, ceny, odkazy.
-2. **Produkčné nasadenie API.** Zmeny sú na `main` a na `api-dev`, na produkcii nie.
-   Podľa `ENVIRONMENTS.md` idú produkčné zmeny bežným balíkovým nasadením, nie po
-   súboroch.
-3. **Vetva `wip/installation-slots`** vo `whispair-api` drží nedokončenú rezerváciu
+2. **Vetva `wip/installation-slots`** vo `whispair-api` drží nedokončenú rezerváciu
    montážnych termínov, presun domén z `cukivan.me` a úpravy WooCommerce. Nič z toho
    nebolo overené.
-4. **Angličtina nemá vlastnú URL.** Prepína sa iba v prehliadači, takže Google indexuje
+3. **Angličtina nemá vlastnú URL.** Prepína sa iba v prehliadači, takže Google indexuje
    výhradne slovenčinu. Ak má prinášať návštevnosť, potrebuje vlastnú cestu a `hreflang`.
-5. **Meranie telefonátov.** `phone_click` nie je hovor. Kým to tak zostane, telefonický
+4. **Meranie telefonátov.** `phone_click` nie je hovor. Kým to tak zostane, telefonický
    lead treba do systému zapísať ručne, inak z merania vypadne.
-6. **Prechod na whispAir sa nepriradí späť.** Odkaz nesie vlastné UTM, takže sa dá
+5. **Prechod na whispAir sa nepriradí späť.** Odkaz nesie vlastné UTM, takže sa dá
    spočítať, ale predaj klimatizácie sa ku kliku na FilthyFilter nespojí.
-7. **`trnava-dusk.png` má 1,39 MB** ako PNG za päťpixelovým rozostrením. Ako JPEG by mal
+6. **`trnava-dusk.png` má 1,39 MB** ako PNG za päťpixelovým rozostrením. Ako JPEG by mal
    približne 47 kB. Čaká na rozhodnutie, je to cudzí asset.
 
 ## Známy dlh
@@ -530,3 +537,4 @@ znamenalo, že bez JavaScriptu formulár úplne zmizne. Zatiaľ ostáva ako zná
 | 7. 9. | Dve reklamné stránky, bežiaci pruh obcí, oprava pôsobnosti na 20 km |
 | 7. 9. | Oprava atribúcie pri publikovaní zákazky, nasadená na `api-dev` |
 | 7. 9. | Zrušená holandská dokumentácia, vznikol tento súbor |
+| 8. 9. | Fakturácia a účtovná kniha nasadené do produkčného portálu a API; aplikovaných desať migrácií po zálohe DB |

@@ -31,7 +31,8 @@ nebol úplný.
 Všetky tagy, tlačidlá a navigačné linky majú o 5–30% viac letter-spacing. Zmeny
 sa dotkli `.tag`, `.section__title`, `.hero__title`, `.brand__txt b`, `.nav__links a`,
 `.btn` a `.rating-name__acr`. Statické testy prechádzajú; prehliadačové testy čakajú
-na Playwright setup.
+na Playwright setup. Staging balík `ff-dev-fonts-20260908.tar.gz` (24 MB, päť noindex
+stránok) je pripravený v `tmp/`, SSH port na server je momentálne nedostupný.
 
 **Technický review funnelu (7. 9. večer).** `SYSTEM_REVIEW.md` porovnáva
 `whispair-api` a web s modelom klik → lead → ponuka → termín → zákazka →

@@ -1,6 +1,6 @@
 # FilthyFilter — stav projektu
 
-**Aktualizované 8. 9. 2026, 20:30 UTC.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
+**Aktualizované 8. 9. 2026, 21:30 UTC.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
 a čo otvorené. Rozhodnutia a ich dôvody zostávajú v `REDESIGN_PLAN.md` a
 `MARKETING_PLAN.md`; postup nasadenia v `DEPLOYMENT.md`. Ak sa niektorý z nich rozchádza
 s týmto súborom, platí tento a treba ho tam opraviť.
@@ -19,12 +19,26 @@ nebol úplný.
 | Reklamné stránky | dve, na stagingu |
 | Google Ads | používateľ dokončí nastavenie neskôr; kampaň teraz nespúšťame. Plán prvého kanála Meta zostáva samostatne. |
 | Meta (Facebook a Instagram) | **nezačaté**, zadanie zapísané v `MARKETING_PLAN.md` kap. 11 |
-| Produkčný web | **od 8. 9. nová zostava**, zhodná s dev: formulár do API, atribúcia, súhlas, ceny |
+| Produkčný web | **od 8. 9. večer** zhodný s dev vrátane WhatsApp tlačidla v mobilnej lište |
 | Ikony | hotové na stagingu aj na produkcii; stará baktéria je preč |
 | Technický review celého funnelu | hotový, `SYSTEM_REVIEW.md`; web verzia neverejne na `dev.filthyfilter.sk/system-review/` |
 | Sledovanie životného cyklu zákazky | plán v `LIFECYCLE_IMPLEMENTATION.md`; **fázy 1 a 2 hotové a na dev**, fáza 3 čaká na Billdu Premium |
 
 ## Čo je hotové
+
+**Všetko z 8. 9. je na ostrej doméne (8. 9. večer).** `filthyfilter.sk` beží na
+commite `683bb20`, teda vrátane WhatsApp tlačidla v mobilnej lište, opravy
+zablúdeného `data-inquiry` a riadku so značkou v každej WhatsApp správe. Staging
+aj produkcia sú na tej istej zostave.
+
+Overené na živej doméne: päť stránok, `robots.txt` aj `sitemap.xml` odpovedá 200,
+`noindex` sa nevyskytuje ani raz, `robots.txt` má `Allow: /` a `www` presmeruje
+301 na holú doménu. Šesť súborov sedí s repozitárom bajt po bajte. Záloha pred
+zásahom je `/home/jg046600/tmp/ff-prod-before-whatsapp-20260908.tar.gz`.
+
+Produkčný root bol pred vydaním prezretý a obsahoval presne očakávanú zostavu,
+teda nič po incidente s `noindex` z toho istého dňa. Podrobnosti v
+`DEPLOYMENT.md`.
 
 **Značku pomenúva už každé WhatsApp tlačidlo (8. 9., na dev).** Tlačidlá
 s konkrétnou službou skladali správu cez `buildTemplate`, ktorý riadok so

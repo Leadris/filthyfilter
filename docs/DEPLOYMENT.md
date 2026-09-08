@@ -47,6 +47,36 @@ forgotten argument away from repeating that; two files are not.
 
 ### Last production deploy
 
+- Date: 2026-09-08, WhatsApp in the mobile bar, the stray `data-inquiry` fix and
+  the brand line in every WhatsApp message. Commit `683bb20`. SSH port 22530.
+- Package `ff-prod-whatsapp-20260908.tar.gz`, 25 493 825 bytes, five pages, zero
+  `noindex`, SHA-256 `4306e433…d7a0` identical local and remote.
+- Backup: `/home/jg046600/tmp/ff-prod-before-whatsapp-20260908.tar.gz`.
+- The root was inspected before the release and held exactly the expected
+  twenty entries: no `webhouse.html`, no `system-review`, no `noindex`, nothing
+  left over from the incident earlier that day.
+- Verified live: five pages plus `robots.txt` and `sitemap.xml` answer 200,
+  `noindex` appears zero times on all five served pages, `robots.txt` reads
+  `Allow: /` with the sitemap line, and `www.filthyfilter.sk` answers 301 to the
+  bare host, so the `.htaccess` rule is in effect.
+- Six files match the repository byte for byte: all three pages, `js/main.js`,
+  `css/styles.css` and `sitemap.xml`.
+- The bar shows three buttons in one row at 360px on all three pages, its
+  WhatsApp link opens with "Dopyt z filthyfilter.sk", and a service card opens
+  with the same first line. No link without `data-contact` was rewritten.
+- Built with `tmp/build_production_20260908c.py`, which replaces the old
+  `build_production.py` for the same reason the staging one was replaced: the
+  old file list named `android-chrome-*` icons this repo has never had, so the
+  four icons `site.webmanifest` references were skipped. The replacement takes
+  its paths as arguments and refuses to write the tar unless the package has
+  exactly five pages, zero `noindex`, a permissive `robots.txt` that names the
+  sitemap, both `sitemap.xml` and `.htaccess`, and none of `tests`, `docs`,
+  `interne`, `node_modules` or the repository's own Markdown. The same checks
+  run again on the server before extraction, in
+  `tmp/prod-deploy-20260908.sh`.
+
+### Previous production deploy
+
 - Date: 2026-09-08, viewport-dependent display face and the FAQ markup fix,
   commit `29c71c3`. SSH port 22790.
 - Package `ff-prod-fonts-20260908.tar.gz`, 25 102 478 bytes, five pages, zero

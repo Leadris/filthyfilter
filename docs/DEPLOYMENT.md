@@ -99,6 +99,40 @@ shipping it here would add a file that can only ever do nothing or go wrong.
 
 ### Last staging deploy
 
+- Date: 2026-09-08, WhatsApp in the mobile bar, the stray `data-inquiry` fix and
+  the brand line in every WhatsApp message. Commit `2f72f69`.
+- SSH port: 22530, supplied by the user. The pin sat on 22261, which was closed;
+  22790 accepted TCP but refused the SSH banner, so port reachability is not a
+  usable signal on this host. Rebound with the documented script, which verified
+  22530 presents the already-trusted key. The panel offers
+  `StrictHostKeyChecking=no`; it was not used.
+- Web only, no API release. Package `ff-dev-whatsapp-20260908.tar.gz`,
+  25 493 483 bytes, five pages, all five noindex, SHA-256 `c927ec30…6441`
+  identical local and remote.
+- Backup: `/home/jg046600/tmp/ff-dev-before-whatsapp-20260908.tar.gz`.
+- Verified live: five pages and `robots.txt` answer 200, `sitemap.xml` 404,
+  staging robots reads `Disallow: /`, and `js/main.js` and `css/styles.css`
+  match the repository byte for byte. The bar shows three buttons at 360px in
+  one row on all three pages, and its WhatsApp link opens with
+  "Dopyt z filthyfilter.sk".
+- Production untouched: homepage SHA-256
+  `00a0c877…3a68` before and after, `robots.txt` still `Allow: /`, no `noindex`
+  on the live homepage.
+- **The old `tmp/build_staging.py` shipped no icons.** Its file list named
+  `android-chrome-192x192.png` and friends, which this repo has never had, so
+  the four icons `site.webmanifest` actually references were silently skipped
+  and only survived on the server from an earlier upload. Replaced by
+  `tmp/build_staging_20260908c.py`, which takes the root, output and archive as
+  arguments, names the real icons, and refuses to write the tar unless every
+  page carries exactly one robots meta and `.htaccess`, `sitemap.xml`, `tests`,
+  `docs`, `interne` and `node_modules` are all absent.
+- Note for the next deploy: a remote command sent inline through Windows
+  PowerShell loses its quoting, and a bracket in an `echo` is enough to break
+  the remote shell. Send a script file and run it, as
+  `tmp/remote-deploy-dev-20260908.sh` does.
+
+### Previous staging deploy
+
 - Date: 2026-09-08, second half of phase 1: click-to-WhatsApp attribution.
 - SSH port: 22261, host key as pinned.
 - API only (`api-dev`, branch `feature/service-package-vat`, commits `06ed3ff`

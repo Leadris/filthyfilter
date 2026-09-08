@@ -19,21 +19,55 @@ nebol úplný.
 | Reklamné stránky | dve, na stagingu |
 | Google Ads | používateľ dokončí nastavenie neskôr; kampaň teraz nespúšťame. Plán prvého kanála Meta zostáva samostatne. |
 | Meta (Facebook a Instagram) | **nezačaté**, zadanie zapísané v `MARKETING_PLAN.md` kap. 11 |
-| Produkčný web | **stará verzia**, formulár pripravuje správu, neposiela lead do API; bez merania |
-| Ikony | hotové na stagingu; produkcia má ešte starú baktériu |
+| Produkčný web | **od 8. 9. nová zostava**, zhodná s dev: formulár do API, atribúcia, súhlas, ceny |
+| Ikony | hotové na stagingu aj na produkcii; stará baktéria je preč |
 | Technický review celého funnelu | hotový, `SYSTEM_REVIEW.md`; web verzia neverejne na `dev.filthyfilter.sk/system-review/` |
 | Sledovanie životného cyklu zákazky | plán v `LIFECYCLE_IMPLEMENTATION.md`; **fázy 1 a 2 hotové a na dev**, fáza 3 čaká na Billdu Premium |
 
 ## Čo je hotové
 
-**Čitateľnosť fontov (8. 9., nasadené).** Úzky Oswald font v nadpisoch a navigácii bol ťažko
-čitateľný. Nahradený za Inter s vyšším font-weight (700) a o 4–14% väčším font-size.
-Všetky tagy, tlačidlá a navigačné linky majú o 5–30% viac letter-spacing. Zmeny
-sa dotkli `.tag`, `.section__title`, `.hero__title`, `.brand__txt b`, `.nav__links a`,
-`.btn` a `.rating-name__acr`. Balík `ff-dev-fonts-20260908.tar.gz` (24 MB, päť noindex
-stránok) nasadený na dev.filthyfilter.sk (staging) a filthyfilter.sk (production).
-CSS súbor 59 KB, všetky tri porty dostupné (noindex meta na staging). Statické testy
-prechádzajú.
+**Produkcia bola pol dňa na `noindex` (8. 9., opravené).** Pri nasadení písma sa do
+produkčného koreňa rozbalil **staging** balík. Staging sa od produkcie líši práve
+v troch veciach a všetky tri sú tam schválne: `robots.txt` so `Disallow: /`,
+`noindex, nofollow` v každej stránke a vynechaný `sitemap.xml`. Na ostrej doméne
+to znamenalo, že web sám seba vyradil z indexu.
+
+Opravené v ten istý deň: nahraný pravý `robots.txt` a `sitemap.xml`, meta riadok
+zmazaný z piatich stránok, záloha pred zásahom je
+`/home/jg046600/tmp/ff-prod-before-noindex-fix-20260908.tar.gz`. Overené na živej
+doméne: päť stránok odpovedá 200, `noindex` sa nevyskytuje ani raz, `robots.txt`
+má `Allow: /` a odkaz na sitemap.
+
+Aby sa to nemohlo zopakovať, produkčný balík **nie je** `build_staging.py` s
+prepínačom. Je to samostatný `tmp/build_production.py`, ktorý transformáciu vôbec
+neobsahuje a na konci padne, ak v balíku nájde `noindex`. Dva súbory, nie jeden
+s vetvou.
+
+**Súvisiace:** ostrá doména tým pádom **už nebeží na starej verzii**. Rozhodnutie
+zo 7. 9., že produkcia ide neskôr, je prekonané — od 8. 9. je na
+`filthyfilter.sk` tá istá zostava ako na dev, teda s formulárom, atribúciou,
+súhlasom, cenami aj novými ikonami. Nebolo to samostatne odsúhlasené, stalo sa to
+pri nasadení písma.
+
+**Písmo podľa šírky obrazovky a jednotné FAQ (8. 9., na dev aj na produkcii).**
+Oswald je kondenzovaný. Na monitore to číta ako značka, na telefóne sa úzke
+vnútorné plochy zatvárajú a verzálkové nadpisy prestanú byť čitateľné. Do 1024 px
+sa preto `--f-display` prepína na Inter a menšie popisky dostanú väčší stupeň
+a prestrkanie; nad 1024 px zostáva pôvodný Oswald a pôvodné veľkosti.
+
+Prepis je na `:root`, nie po pravidlách, takže spis La Donuteria aj obe reklamné
+stránky idú za úvodnou stránkou a nemôžu sa rozísť. Pravidlá, ktoré kombinujú
+`--f-display` so 700, sú v tom bloku zrezané na 600: na serveri je Inter iba
+400/500/600 a prehliadač by tučné dopočítal sám.
+
+Obe reklamné stránky mali FAQ v jednom paneli a `<details>` bez triedy, takže sa
+vykresľovali s predvoleným trojuholníkom prehliadača namiesto akordeónu. Teraz
+používajú rovnaké značky ako úvodná stránka (`panel faq__item`, šesť položiek).
+
+Overené v prehliadači výpočtom `getComputedStyle`: pri 1440 px je Oswald na
+`.hero__title`, `.section__title`, `.faq__item summary` aj `.case-title`;
+pri 640 px je všade Inter. Živé CSS na `filthyfilter.sk` sa bajtovo zhoduje
+s repozitárom (SHA-256 `ac94c40f…e7cb`), päť stránok odpovedá 200.
 
 **Technický review funnelu (7. 9. večer).** `SYSTEM_REVIEW.md` porovnáva
 `whispair-api` a web s modelom klik → lead → ponuka → termín → zákazka →
@@ -272,8 +306,9 @@ sú v `PRIVACY_IMPLEMENTATION.md`.
 
 ## Čo čaká na vývoj
 
-1. **Produkčné nasadenie webu.** Ostrá doména stále beží na starej verzii bez formulára,
-   atribúcie aj súhlasu. Až po posúdení stagingu.
+1. **Produkčný web je nasadený, ale neprešiel posúdením.** Ostrá doména beží od 8. 9.
+   na novej zostave, lebo sa tam dostala pri nasadení písma, nie po schválení.
+   Treba ju prejsť tak, ako sa mal prejsť staging: formulár, súhlas, ceny, odkazy.
 2. **Produkčné nasadenie API.** Zmeny sú na `main` a na `api-dev`, na produkcii nie.
    Podľa `ENVIRONMENTS.md` idú produkčné zmeny bežným balíkovým nasadením, nie po
    súboroch.

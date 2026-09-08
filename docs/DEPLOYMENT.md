@@ -32,6 +32,35 @@ it is now dead. The user plans to link the two brands later, for example under
 The `_sub_whispair_sk` and `_sub_filthyfilter_sk` directories are only for
 subdomains and are not deployment targets for this site.
 
+## Two builds, not one build with a flag
+
+`tmp/build_staging.py` writes the staging package: `noindex` injected into every
+page, `robots.txt` replaced with a blanket disallow, `sitemap.xml` omitted.
+`tmp/build_production.py` writes the production package and contains none of
+that, plus the real `robots.txt`, `sitemap.xml` and `.htaccess`. It raises
+before writing the tar if `noindex` appears anywhere in the package.
+
+They are separate files on purpose. On 8 September 2026 the staging tar was
+extracted into the production root, which put `noindex` on all five live pages
+and `Disallow: /` in the live `robots.txt`. A single build with a flag is one
+forgotten argument away from repeating that; two files are not.
+
+### Last production deploy
+
+- Date: 2026-09-08, viewport-dependent display face and the FAQ markup fix,
+  commit `29c71c3`. SSH port 22790.
+- Package `ff-prod-fonts-20260908.tar.gz`, 25 102 478 bytes, five pages, zero
+  `noindex`. Backup: `/home/jg046600/tmp/ff-prod-before-fonts-20260908.tar.gz`.
+- Verified live: five pages plus `robots.txt` and `sitemap.xml` answer 200,
+  `noindex` absent from the served homepage, `robots.txt` reads `Allow: /`
+  with the sitemap line, and `css/styles.css` matches the repository byte for
+  byte (SHA-256 `ac94c40f…e7cb`).
+- Earlier the same day this root briefly held the staging package; see the
+  incident note in `STATUS.md`.
+- CSS is served with `ETag` and `Last-Modified` but no `Cache-Control`, so a
+  returning browser revalidates rather than serving the old stylesheet. The
+  `?v=` query string on the stylesheet link was therefore left alone.
+
 ## Staging — dev.filthyfilter.sk
 
 - Public URL: `https://dev.filthyfilter.sk/`

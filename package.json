@@ -4,7 +4,8 @@
   "private": true,
   "description": "Development-only tooling for the FilthyFilter site. The site itself is plain HTML, CSS and JS with no build step; nothing here is deployed.",
   "scripts": {
-    "test": "node --test tests/browser.test.cjs"
+    "test": "node --test tests/forms.test.cjs tests/browser.test.cjs",
+    "test:forms": "node --test tests/forms.test.cjs"
   },
   "devDependencies": {
     "playwright": "^1.63.0"

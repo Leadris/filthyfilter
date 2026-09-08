@@ -324,7 +324,12 @@ stlačení klávesy, lebo posielal parametre, ktoré tá routa nikdy nečítala.
 
 Opravené portálovým commitom `9f1f248`. Potvrdzovacie okno pri vystavení navyše
 hovorí, že číslo dokladu sa už nedá zmeniť — API na opravu ani zrušenie dokladu
-routu nemá, takže preklep sa v portáli neopraví. Nasadenie čaká.
+routu nemá, takže preklep sa v portáli neopraví.
+
+**Nasadené na dev 8. 9. večer.** `portal-dev.whispair.sk` vracia stránku aj
+zabalený `app.js` s fakturačným kódom, `api-dev` odpovedá na health a chránenú
+fakturačnú routu bez tokenu zamieta `401`. Na produkciu to zatiaľ nešlo; tá stále
+beží na `ac3c935`, teda s tromi chybami v zobrazení popísanými vyššie.
 
 **Meta reklamy cez WhatsApp a ochrana troch formulárov (8. 9., na dev).**
 Dokončenie fázy 1. Meta posiela pri reklame s prechodom do WhatsAppu vo webhooku

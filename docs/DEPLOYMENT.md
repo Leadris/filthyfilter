@@ -7,8 +7,10 @@
 - SSH user: `jg046600`
 - Remote document root: `/home/jg046600/www_root_filthyfilter_sk`
 - SSH identity: `%USERPROFILE%\.ssh\id_ed25519_whispair`
-- SSH port: `22597`, supplied by the user on 2026-09-07 and used for the privacy/price-feed release.
-  The port is temporary; reconfirm if it stops working.
+- SSH port: `22261`, supplied by the user on 2026-09-08. The window is temporary and the
+  port rotates on every activation; rebind with `whispair-api/scripts/update-webhouse-ssh-port.ps1`,
+  which verifies the new port presents the already-trusted key instead of bypassing the check.
+  Earlier ports used for releases: 22597 (2026-09-07), 22418, 22690.
 - Deploy changes to dev first; production is a separate release.
 
 `filthyfilter.sk` was registered on 5 September 2026 and is parked on the same

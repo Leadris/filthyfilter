@@ -22,6 +22,7 @@ nebol úplný.
 | Produkčný web | **stará verzia**, formulár pripravuje správu, neposiela lead do API; bez merania |
 | Ikony | hotové na stagingu; produkcia má ešte starú baktériu |
 | Technický review celého funnelu | hotový, `SYSTEM_REVIEW.md`; web verzia neverejne na `dev.filthyfilter.sk/system-review/` |
+| Sledovanie životného cyklu zákazky | plán hotový, `LIFECYCLE_IMPLEMENTATION.md`; **nič z neho nie je implementované** |
 
 ## Čo je hotové
 

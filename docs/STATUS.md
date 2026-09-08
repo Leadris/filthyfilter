@@ -1,6 +1,6 @@
 # FilthyFilter — stav projektu
 
-**Aktualizované 8. 9. 2026.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
+**Aktualizované 8. 9. 2026, 14:30 UTC.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
 a čo otvorené. Rozhodnutia a ich dôvody zostávajú v `REDESIGN_PLAN.md` a
 `MARKETING_PLAN.md`; postup nasadenia v `DEPLOYMENT.md`. Ak sa niektorý z nich rozchádza
 s týmto súborom, platí tento a treba ho tam opraviť.
@@ -26,13 +26,14 @@ nebol úplný.
 
 ## Čo je hotové
 
-**Čitateľnosť fontov (8. 9.).** Úzky Oswald font v nadpisoch a navigácii bol ťažko
+**Čitateľnosť fontov (8. 9., nasadené).** Úzky Oswald font v nadpisoch a navigácii bol ťažko
 čitateľný. Nahradený za Inter s vyšším font-weight (700) a o 4–14% väčším font-size.
 Všetky tagy, tlačidlá a navigačné linky majú o 5–30% viac letter-spacing. Zmeny
 sa dotkli `.tag`, `.section__title`, `.hero__title`, `.brand__txt b`, `.nav__links a`,
-`.btn` a `.rating-name__acr`. Statické testy prechádzajú; prehliadačové testy čakajú
-na Playwright setup. Staging balík `ff-dev-fonts-20260908.tar.gz` (24 MB, päť noindex
-stránok) je pripravený v `tmp/`, SSH port na server je momentálne nedostupný.
+`.btn` a `.rating-name__acr`. Balík `ff-dev-fonts-20260908.tar.gz` (24 MB, päť noindex
+stránok) nasadený na dev.filthyfilter.sk (staging) a filthyfilter.sk (production).
+CSS súbor 59 KB, všetky tri porty dostupné (noindex meta na staging). Statické testy
+prechádzajú.
 
 **Technický review funnelu (7. 9. večer).** `SYSTEM_REVIEW.md` porovnáva
 `whispair-api` a web s modelom klik → lead → ponuka → termín → zákazka →

@@ -200,6 +200,16 @@ test('Only links that name their channel become WhatsApp links; the bar carries 
       await page.click('[data-lang="'+lang+'"]');
       // whispair-api reads the brand out of this line; the number is shared.
       assert.equal(decodeURIComponent(new URL(await bar.getAttribute('href')).searchParams.get('text')||''),line,route+' in '+lang);
+      // Every WhatsApp button, not just the bar. A service card composes a
+      // longer message, but it has to open with the same line or the enquiry
+      // arrives with no way to tell which brand it belongs to.
+      const texts=await page.$$eval('a[data-contact="whatsapp"]',els=>els.map(el=>{
+        const t=new URL(el.getAttribute('href')).searchParams.get('text')||'';
+        return {label:el.textContent.trim(),first:t.split('\n')[0]};
+      }));
+      assert.ok(texts.length>=1,route+': no WhatsApp buttons found');
+      const wrong=texts.filter(x=>x.first!==line);
+      assert.deepEqual(wrong,[],route+' in '+lang+': these WhatsApp buttons do not open with the origin line');
     }
   }
 });

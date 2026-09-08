@@ -127,5 +127,17 @@ test('the mobile bar offers the same three channels on all three pages', () => {
     for (const link of links) {
       assert.ok(attr(link, 'data-sk') && attr(link, 'data-en'), `${page}: a bar button is not translated`);
     }
+
+    // The same goes for every other WhatsApp button on the page. Without JS
+    // a bare number opens an empty message, which the API cannot attribute.
+    const all = (html.match(/<a\b[^>]*data-contact="whatsapp"[^>]*>/g) || []);
+    assert.ok(all.length, `${page}: no WhatsApp buttons at all`);
+    for (const link of all) {
+      assert.match(
+        attr(link, 'href'),
+        /wa\.me\/\d+\?text=[^"]*filthyfilter\.sk/,
+        `${page}: a WhatsApp button falls back to a bare number: ${attr(link, 'data-sk')}`
+      );
+    }
   }
 });

@@ -287,10 +287,16 @@
 
   // A blank template for the service cards, so the visitor lands in their app
   // with the prompts already written out.
+  //
+  // Same first line as buildMessage, and for the same reason: the number is
+  // shared with whispAir and the API reads the brand out of the message text.
+  // An ad click is told apart by its destination URL, but a visitor who finds
+  // the site on their own and taps a service card has nothing else to go on.
   function buildTemplate(service, lang) {
     var L = FIELDS[lang] || FIELDS.sk;
     var name = (SERVICES[service] && SERVICES[service][lang]) || "";
     return [
+      L.origin,
       L.intro + " " + name + ".",
       L.place + ": ",
       L.units + ": ",

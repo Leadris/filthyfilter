@@ -1,6 +1,6 @@
 # FilthyFilter — stav projektu
 
-**Aktualizované 8. 9. 2026, 19:30 UTC.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
+**Aktualizované 8. 9. 2026, 20:30 UTC.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
 a čo otvorené. Rozhodnutia a ich dôvody zostávajú v `REDESIGN_PLAN.md` a
 `MARKETING_PLAN.md`; postup nasadenia v `DEPLOYMENT.md`. Ak sa niektorý z nich rozchádza
 s týmto súborom, platí tento a treba ho tam opraviť.
@@ -25,6 +25,23 @@ nebol úplný.
 | Sledovanie životného cyklu zákazky | plán v `LIFECYCLE_IMPLEMENTATION.md`; **fázy 1 a 2 hotové a na dev**, fáza 3 čaká na Billdu Premium |
 
 ## Čo je hotové
+
+**Značku pomenúva už každé WhatsApp tlačidlo (8. 9., na dev).** Tlačidlá
+s konkrétnou službou skladali správu cez `buildTemplate`, ktorý riadok so
+značkou neobsahoval. Dopyt cez „Hĺbkové čistenie nástennej jednotky“ teda
+dorazil bez `filthyfilter.sk` v texte a `whatsapp_business_brand` si z neho
+značku prečítať nevedel. Pri reklame to nevadilo, tam značku určí cieľová
+adresa; mimo reklamy, teda pri návštevníkovi, ktorý si stránku našiel sám,
+áno. Šablóna má po novom rovnaký prvý riadok ako `buildMessage`, takže
+všetkých sedem tlačidiel so službou posiela značku ďalej.
+
+Rovnaký riadok dostali aj ich statické `href`, ktoré doteraz obsahovali holé
+číslo. Bez JS otvárali prázdnu správu.
+
+Oba testy sú rozšírené na všetky WhatsApp tlačidlá, nielen na lištu. Statický
+neprijme tlačidlo, ktoré padá na holé číslo, prehliadačový kontroluje prvý
+riadok každej správy v oboch jazykoch. Overené odobratím riadku zo šablóny:
+test spadol a vymenoval všetkých sedem tlačidiel.
 
 **Tlačidlo „Opísať problém“ viedlo na WhatsApp namiesto formulára (8. 9., na dev).**
 Na stránke servisu bolo napísané ako odkaz na `#contact`, ale `js/main.js` mu

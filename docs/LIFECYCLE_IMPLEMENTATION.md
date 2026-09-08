@@ -31,10 +31,19 @@ končí pri dokončení zákazky a ide po nej udalosť bez hodnoty.
 ## 2. Billdu API: čo naozaj vie
 
 Overené 8. 9. 2026 proti oficiálnej špecifikácii
-(`github.com/billduapp/api_documentation`, `apiary.apib`). **Prístupové údaje
-zatiaľ nemáme**, takže nižšie uvedené je overené z dokumentácie, nie proti
-živému účtu. Prvé volanie treba spraviť proti skutočnému účtu skôr, než sa na
-odpoveď spoľahne kód.
+(`github.com/billduapp/api_documentation`, `apiary.apib`) a potom aj proti
+živému účtu.
+
+**Blokujúce zistenie z 8. 9. 2026 večer: účet API nemá.** Kľúč aj tajomstvo boli
+doplnené a podpis je správny, ale každé volanie vracia:
+
+```json
+{"error":403,"message":"API not available for your subscription level. Please upgrade to Premium."}
+```
+
+Že ide o predplatné a nie o podpis, je istota: chybná signatúra by vrátila inú
+odpoveď, a všetky tri varianty podpisu skončili rovnako. Kým sa účet nepovýši na
+Premium, fáza 3 sa spraviť nedá. Fáza 2 v ručnom režime tým dotknutá nie je.
 
 - **Základ:** `https://api.billdu.com`.
 - **Autentifikácia:** `apiKey` v query, k tomu `signature` a `timestamp`.
@@ -403,11 +412,13 @@ a `DEPLOYMENT.md`. Produkčné nasadenie je samostatná etapa.
 
 ## 9. Čo zostáva otvorené
 
-1. **Prístup k Billdu API.** Bez neho beží fáza 2 v ručnom režime. Fáza 3 čaká
-   na `apiKey` a `apiSecret` zo Settings → API; vidí ich iba vlastník účtu.
-   Zároveň treba overiť, či ich plán API vôbec obsahuje.
-2. **Číselný rad.** Pri jednom účte pre obe značky treba povedať, či má
-   FilthyFilter vlastný rad alebo sa fakturuje do spoločného.
+1. **Predplatné Billdu Premium.** Kľúče sú na dev doplnené a podpis funguje, ale
+   účet API nemá (403, viď kapitolu 2). Bez povýšenia sa fáza 3 nespraví.
+2. **Číselný rad.** Používateľ 8. 9. rozhodol, že FilthyFilter má mať **vlastný
+   rad oddelený od whispAir**. API pre neho nemá pole: `serial` prideľuje Billdu
+   podľa nastavenia firmy. Treba teda overiť v Billdu, či jedna firma zvládne
+   viac číselných radov. Ak nie, vlastný rad znamená druhú firmu v Billdu, čo
+   mení rozhodnutie „jedna firma pre obe značky" z kapitoly 1.
 3. **Personalizované reklamy.** Rozhodnutie stále visí a blokuje Meta Pixel na
    webe (`STATUS.md`). Meranie cez Conversions API na ňom nezávisí.
 4. **Mapa kampaní pre `referral.source_id`.** Vznikne až so spustením prvej

@@ -1,6 +1,6 @@
 # FilthyFilter — stav projektu
 
-**Aktualizované 7. 9. 2026.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
+**Aktualizované 8. 9. 2026.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
 a čo otvorené. Rozhodnutia a ich dôvody zostávajú v `REDESIGN_PLAN.md` a
 `MARKETING_PLAN.md`; postup nasadenia v `DEPLOYMENT.md`. Ak sa niektorý z nich rozchádza
 s týmto súborom, platí tento a treba ho tam opraviť.
@@ -25,6 +25,13 @@ nebol úplný.
 | Sledovanie životného cyklu zákazky | plán v `LIFECYCLE_IMPLEMENTATION.md`; **fázy 1 a 2 hotové a na dev**, fáza 3 čaká na Billdu Premium |
 
 ## Čo je hotové
+
+**Čitateľnosť fontov (8. 9.).** Úzky Oswald font v nadpisoch a navigácii bol ťažko
+čitateľný. Nahradený za Inter s vyšším font-weight (700) a o 4–14% väčším font-size.
+Všetky tagy, tlačidlá a navigačné linky majú o 5–30% viac letter-spacing. Zmeny
+sa dotkli `.tag`, `.section__title`, `.hero__title`, `.brand__txt b`, `.nav__links a`,
+`.btn` a `.rating-name__acr`. Statické testy prechádzajú; prehliadačové testy čakajú
+na Playwright setup.
 
 **Technický review funnelu (7. 9. večer).** `SYSTEM_REVIEW.md` porovnáva
 `whispair-api` a web s modelom klik → lead → ponuka → termín → zákazka →

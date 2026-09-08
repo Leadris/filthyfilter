@@ -22,7 +22,7 @@ nebol úplný.
 | Produkčný web | **stará verzia**, formulár pripravuje správu, neposiela lead do API; bez merania |
 | Ikony | hotové na stagingu; produkcia má ešte starú baktériu |
 | Technický review celého funnelu | hotový, `SYSTEM_REVIEW.md`; web verzia neverejne na `dev.filthyfilter.sk/system-review/` |
-| Sledovanie životného cyklu zákazky | plán hotový, `LIFECYCLE_IMPLEMENTATION.md`; **nič z neho nie je implementované** |
+| Sledovanie životného cyklu zákazky | plán v `LIFECYCLE_IMPLEMENTATION.md`; **fáza 1 hotová a na dev**, fázy 2 až 4 otvorené |
 
 ## Čo je hotové
 
@@ -87,6 +87,26 @@ sa bajtovo zhodujú s návrhom, robots.txt zakazuje indexovanie. Produkcia nezme
 Poster má responzívne WebP exporty 370/740/1110 px (28 114 / 104 964 / 212 176 B).
 HTML používa srcset, pôvodné PNG 2 552 512 B zostáva zdrojom. Opacity .5 sa nemení.
 Zdroj a zadanie: `docs/POSTER_PILOT.md`.
+
+**Štruktúrovaný dopyt a Meta identifikátor (8. 9., na dev).** Fáza 1 plánu
+životného cyklu. Formulár sa už roky pýtal na službu, obec, počet jednotiek,
+termín a expres, ale všetko splošťoval do jedného textu a API z neho parsovalo
+len kontakt. Tie isté odpovede teraz idú aj ako polia do `captured_messages.lead_details`;
+zložený text zostáva nezmenený, lebo ho číta technik. Pribudol stĺpec
+`business_brand`, ktorý hovorí, ktorej z našich značiek dopyt patrí. Zámerne to
+nie je `parsed_brand`, to je výrobca klimatizácie; WhatsApp číslo aj schránka sú
+spoločné, takže bez toho vyzerá čistenie a predaj jednotky rovnako.
+
+Atribúcia prestala byť len Google. `fbclid` a `ctwa_clid` majú vlastné stĺpce
+a `platform` sa **odvodzuje na serveri**, nikdy sa neberie z požiadavky, aby
+stránka nevedela označiť Google klik za Meta. Prvý platený kanál je Meta, takže
+bez `fbclid` by sa lead dal spočítať, ale nie priradiť k reklame.
+
+Overené skutočným testovacím dopytom cez `dev.filthyfilter.sk`: uložený riadok
+nesie značku, kód balíka, počet jednotiek, obec aj termín, a atribúcia má
+`platform=meta`. Starší lead spred zmeny sa načíta s prázdnymi hodnotami, takže
+zmena je spätne kompatibilná. 363 testov API a 8 prehliadačových prešlo.
+Podrobnosti: `LIFECYCLE_IMPLEMENTATION.md` kapitola 6.
 
 **Prehliadačové testy sa dajú spustiť (7. 9. večer).** Súbor
 `tests/browser.test.cjs` vyžadoval Playwright, ale nič tú závislosť nedeklarovalo,

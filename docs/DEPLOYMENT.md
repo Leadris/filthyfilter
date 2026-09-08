@@ -10,7 +10,8 @@
 - SSH port: `22261`, supplied by the user on 2026-09-08. The window is temporary and the
   port rotates on every activation; rebind with `whispair-api/scripts/update-webhouse-ssh-port.ps1`,
   which verifies the new port presents the already-trusted key instead of bypassing the check.
-  Earlier ports used for releases: 22597 (2026-09-07), 22418, 22690.
+  Earlier ports used for releases: 22597 (2026-09-07), 22418, 22690.
+
 - Deploy changes to dev first; production is a separate release.
 
 `filthyfilter.sk` was registered on 5 September 2026 and is parked on the same
@@ -68,6 +69,29 @@ redirects the production `www` host, which never reaches this document root, so
 shipping it here would add a file that can only ever do nothing or go wrong.
 
 ### Last staging deploy
+
+- Date: 2026-09-08, phase 1 of the lifecycle plan: the enquiry travels as
+  fields, and the Meta click identifier is captured.
+- SSH port: 22261. Host key as pinned; rebound with the documented script,
+  which verified the port presents the already-trusted key.
+- API (`api-dev`, branch `feature/service-package-vat`, commit `7ec8daf`):
+  two migrations applied (`20260908100000` structured lead details,
+  `20260908110000` attribution platform identifiers) plus four changed files.
+  Neither migration is flagged destructive; both are additive and nullable.
+- Web: full staging package, five pages, noindex and robots unchanged.
+  `js/main.js` and `js/attribution.js` match the repository byte for byte.
+- End-to-end verified with one deliberate test enquiry through
+  `dev.filthyfilter.sk`: the stored row carries `business_brand=filthyfilter`,
+  `lead_details` with the service code, unit count, town and preferred timing,
+  and the attribution row carries `fbclid` with a derived `platform=meta`.
+  A lead from before the change still reads back with nulls, so the change is
+  backward compatible. Accepting consent in that test loaded the real GTM
+  container once.
+- Backup: `/home/jg046600/tmp/ff-dev-before-structured-lead-20260908.tar.gz`.
+- Uploaded package: `/home/jg046600/tmp/ff-dev-20260908-structured-lead.tar.gz`.
+- Production untouched; homepage SHA-256 unchanged before and after.
+
+### Previous staging deploy
 
 - Date: 2026-09-07, internal system review page, commit `d99fc05`.
 - SSH port: 22597, confirmed by the user after the deploy. Host key as pinned

@@ -15,9 +15,9 @@ nebol úplný.
 | Web, obsah a ceny | hotové, na stagingu |
 | Meranie a súhlas | hotové, na stagingu, kontajner `GTM-57M8XLQJ` |
 | Cesta leadu do systému | hotová a overená end-to-end |
-| Okruh tržieb späť do Google Ads | kód, API aj portál nasadené na dev a produkcii; Google Ads nastavenie čaká na používateľa |
+| Okruh tržieb späť do Google Ads | kód, API aj portál existujú; worker a 90-dňová expirácia sú na dev, Ads aktivácia čaká na vlastnú s. r. o. a je produkčnou bránou |
 | Reklamné stránky | dve, na stagingu |
-| Google Ads | používateľ dokončí nastavenie neskôr; kampaň teraz nespúšťame. Plán prvého kanála Meta zostáva samostatne. |
+| Google Ads | rozpracované a pozastavené do vzniku vlastnej s. r. o.; kampaň ani billing teraz nedokončujeme. Checklist: `GOOGLE_ADS_PRODUCTION_GATE.md`. |
 | Meta (Facebook a Instagram) | meranie zo servera hotové a na dev (Conversions API); pixel a reklamný materiál **nezačaté**, zadanie v `MARKETING_PLAN.md` kap. 11 |
 | Produkčný web | **od 8. 9. večer** zhodný s dev vrátane WhatsApp tlačidla v mobilnej lište |
 | Ikony | hotové na stagingu aj na produkcii; stará baktéria je preč |
@@ -90,10 +90,10 @@ Chýbajúca atribúcia sa zámerne neodhaduje: identifikátor môže byť stále
 preto udalosť zostane `Logged` a platí pre ňu existujúci limit pokusov. Sweep beží
 aj bez Google credentials, lebo poriadok vo fronte nie je sieťová operácia.
 
-Tým sa denný rozvrh stáva nosnou časťou riešenia, nie pohodlím. Vypnutý alebo
-neexistujúci cron už tržbu neodkladá, ale ju likviduje, a **Webcron pre tento
-worker na `api-dev` zatiaľ založený nie je**. Kým nebeží, expirácia je overená
-schopnosť, nie stráž.
+Tým sa denný rozvrh stáva nosnou časťou riešenia, nie pohodlím. Vypnutý cron už
+tržbu neodkladá, ale ju likviduje. **Webcron pre tento worker na `api-dev` už je
+založený**, no zobrazené nastavenie `* 1 * * *` znamená každú minútu počas
+jednej hodiny; treba ho opraviť na jeden denný beh, odporúčane `15 1 * * *`.
 
 Migrácia `20260909042547__conversion_click_window_expiry` rozširuje constraint
 `upload_status` o `Expired` a dáva mu stabilné meno. `conversion_events` zostáva
@@ -512,9 +512,11 @@ ADAMSON s. r. o., Topoľčianska 19, 851 05 Bratislava, IČO 45378843,
 IČ DPH SK2022960159. `PRIVACY_URL` v `js/consent.js` na ňu už ukazuje. Tým padá
 bod 1 zo zoznamu nižšie aj bod 7 z kapitoly 10 v `MARKETING_PLAN.md`.
 
-Používateľ odložil dokončenie Google Ads; nejde o chýbajúce identifikačné údaje
-prevádzkovateľa webu. Podrobnosti implementácie a úlohy pred offline exportom
-sú v `PRIVACY_IMPLEMENTATION.md`.
+Používateľ odložil dokončenie Google Ads do vzniku vlastnej s. r. o. Nejde o
+identitu dnešného prevádzkovateľa webu, ale o budúcu právnu a fakturačnú identitu
+inzerenta. Kampaň ani platobný profil sa preto teraz nedokončujú pod dočasnou
+identitou. Produkčná brána je v `GOOGLE_ADS_PRODUCTION_GATE.md`; ochrana údajov
+a úlohy pred offline exportom sú v `PRIVACY_IMPLEMENTATION.md`.
 
 ## Čo čaká na používateľa
 
@@ -526,16 +528,17 @@ sú v `PRIVACY_IMPLEMENTATION.md`.
 5. **Skúšobný e-mail na `info@filthyfilter.sk`.** Schránka existuje, doručenie nikto
    nepotvrdil.
 6. **Doplniť čistenie klimatizácií do profilu whispAir** na Google.
-7. **Dokončenie Google Ads** používateľom neskôr. Krajina,
-   mena a časové pásmo sú pri zakladaní natrvalo; nastaviť podľa firmy. Hneď na prvej
-   obrazovke prepnúť do režimu odborníka, inak účet skončí v režime Smart, kde nie sú
-   konverzné akcie ani kľúčové slová.
-8. **Štyri konverzné akcie** typu import z CRM so sledovaním konverzií z klikov, pre
-   `lead_qualified`, `job_created`, `job_completed`, `package_sold`. Ich identifikátory
-   idú do `GOOGLE_DM_ACTION_*` v `.env` API.
-9. **Zapnúť Data Manager API** v Google Cloud projekte `whispair-hvac` a pridať
-   `firebase-adminsdk-fbsvc@whispair-hvac.iam.gserviceaccount.com` ako používateľa
-   Google Ads účtu.
+7. **Po vzniku vlastnej s. r. o. dokončiť Google Ads/Manager účet.** Rozpracovaný
+   signup už ukázal obrazovku Manager účtu. Pre vlastné účty zvoliť „Manage my
+   accounts“; pred potvrdením overiť Slovensko, EUR a časové pásmo Bratislava/CET.
+   Kampaň ani platobný profil teraz nevytvárať pod dočasnou identitou.
+8. **Päť konverzných akcií** typu import z CRM so sledovaním konverzií z klikov:
+   `lead_qualified`, `job_created`, `job_completed`, `package_sold` a
+   `invoice_paid`. Ich identifikátory idú do príslušných `GOOGLE_DM_ACTION_*`.
+9. **Dokončiť Ads prístup servisného účtu.** Data Manager API a nový servisný
+   účet `whispair-data-manager@whispair-hvac.iam.gserviceaccount.com` už existujú;
+   po založení Ads účtu ho treba pridať ako Ads používateľa a overiť `validateOnly`.
+   Všetky podmienky sú v `GOOGLE_ADS_PRODUCTION_GATE.md`.
 
 ## Čo čaká na vývoj
 

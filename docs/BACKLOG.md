@@ -14,6 +14,10 @@ Hotové fázy 1 a 2 sú na dev. Tento zoznam je všetko ostatné.
 
 ## Blokujúce: bez toho meranie nedobehne do konca
 
+Google Ads položky T1 až T3 sú zámerne pozastavené do vzniku vlastnej s. r. o.
+Sú zároveň produkčnou bránou pre aktiváciu Google Ads workera a platenú kampaň;
+úplný postup a release rozhodnutie sú v `GOOGLE_ADS_PRODUCTION_GATE.md`.
+
 ### T1 — Konverzná akcia `invoice_paid` v Google Ads
 **Vlastník:** ty · **Blokuje:** T2, celý prínos fázy 2 · **Závisí od:** T3
 
@@ -36,9 +40,12 @@ typ ako T1, ale **bez hodnoty**: peniaze nesie iba `invoice_paid`.
 ### T3 — Data Manager API a servisný účet
 **Vlastník:** ty · **Blokuje:** T1, T2
 
-Zapnúť Data Manager API v Google Cloud projekte `whispair-hvac` a pridať
-`firebase-adminsdk-fbsvc@whispair-hvac.iam.gserviceaccount.com` ako používateľa
-účtu Google Ads.
+Cloud časť je hotová: Data Manager API je zapnuté v projekte `whispair-hvac`,
+servisný účet je
+`whispair-data-manager@whispair-hvac.iam.gserviceaccount.com` a jeho kľúč je
+bezpečne uložený na DEV serveri. Po vzniku vlastnej s. r. o. treba dokončiť
+správny Google Ads/Manager účet, pridať doň tento servisný účet a doplniť
+operating/login account ID. Google Cloud IAM rola sama prístup do Ads nedáva.
 
 **Hotové, keď:** worker prejde jedno volanie s `validateOnly` bez chyby oprávnení.
 

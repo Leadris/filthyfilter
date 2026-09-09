@@ -14,6 +14,21 @@
 
 - Deploy changes to dev first; production is a separate release.
 
+## Produkčná brána Google Ads
+
+Plánované ostré nasadenie marketingového funnelu, produkčný Google Ads worker
+a spustenie platenej kampane sú pozastavené do vzniku vlastnej s. r. o. Nestačí
+mať nasadený kód: musí existovať správny firemný Ads a platobný profil, Ads
+prístup servisného účtu, operating/login account ID, päť conversion action ID,
+úspešný `validateOnly` beh na DEV aj PROD a denný produkčný Webcron.
+
+Autoritatívny checklist je v `GOOGLE_ADS_PRODUCTION_GATE.md`. Každá release
+poznámka marketingového funnelu musí uviesť, či je táto brána **SPLNENÁ** alebo
+**NESPLNENÁ**. Pri nesplnenej bráne sa nesmie aktivovať produkčný Google Ads
+worker, prepnúť `GOOGLE_DM_VALIDATE_ONLY=0`, spustiť Google Ads kampaň ani release
+označiť ako kompletne produkčný. Urgentné bezpečnostné opravy a opravy chýb webu
+môžu ísť von, ak nemenia Google Ads konfiguráciu, Webcron ani kampaň.
+
 `filthyfilter.sk` was registered on 5 September 2026 and is parked on the same
 WebHouse account as the whispAir projects. Its own document root
 `www_root_filthyfilter_sk` was created by WebHouse and initially contained only
@@ -525,7 +540,9 @@ an archive may be sitting in the tree.
 Replace `<PORT>` with the active WebHouse SSH port and `<COMMIT>` with the
 deployed Git commit.
 
-1. Confirm the working tree, tests and pushed commit.
+1. Confirm the working tree, tests and pushed commit. Ak release obsahuje alebo
+   aktivuje Google Ads časť funnelu, najprv potvrdiť splnenie všetkých bodov v
+   `GOOGLE_ADS_PRODUCTION_GATE.md`; bez toho release zastaviť.
 2. Create a clean local archive:
 
    ```powershell

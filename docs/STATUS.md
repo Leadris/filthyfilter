@@ -104,6 +104,15 @@ skončil po prvom behu ako `Expired` s chybou „o 30 dní“ a súhrn obsahoval
 `expired=1`. Druhý beh hlásil `expired=0`, teda riadok už nevybral. Obe syntetické
 testovacie položky boli potom zmazané a kontrola ukázala `remaining=0`.
 
+**Oprava časomiery je na dev od 9. 9. popoludní (commit `01e1723`).** Prvá verzia
+merala okno k času úhrady, čo je iná otázka, než akú kladie Google. Overené presne
+na tom rozdiele: klik starý 95 dní a konverzia spred 10 dní, teda 85 dní po kliku.
+Pôvodná logika by ju označila za zdravú, nová ju označila za `Expired` s chybou
+„o 5 dní“ a `expired=1` v súhrne. Syntetické riadky sú zmazané, `remaining=0`,
+zostal jediný pôvodný riadok v stave `Logged`. Záloha pred nasadením je
+`/home/jg046600/tmp/api-dev-before-t13-uploadwindow-20260909.tar.gz`, kontrolné
+súčty troch nasadených súborov sa zhodujú s repozitárom.
+
 `php vendor/bin/phpunit`: 401 testov, 1172 assertions, všetko prešlo. PHPStan
 nenašiel chybu a PHP CS Fixer nad zdrojmi po vylúčení lokálneho chráneného
 `.secrets` adresára nenašiel rozdiel.

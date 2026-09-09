@@ -17,7 +17,7 @@ nebol úplný.
 | Cesta leadu do systému | hotová a overená end-to-end |
 | Okruh tržieb späť do Google Ads | kód, API aj portál existujú; worker a 90-dňová expirácia sú na dev, Ads aktivácia čaká na vlastnú s. r. o. a je produkčnou bránou |
 | Reklamné stránky | dve, na stagingu |
-| Google Ads | rozpracované a pozastavené do vzniku vlastnej s. r. o.; kampaň ani billing teraz nedokončujeme. Checklist: `GOOGLE_ADS_PRODUCTION_GATE.md`. |
+| Google Ads | Manager, servisný prístup, Draft podúčet a prvá offline akcia sú pripravené; aktivácia podúčtu, ďalšie štyri akcie, kampaň a billing čakajú na vlastnú s. r. o. Checklist: `GOOGLE_ADS_PRODUCTION_GATE.md`. |
 | Meta (Facebook a Instagram) | meranie zo servera hotové a na dev (Conversions API); pixel a reklamný materiál **nezačaté**, zadanie v `MARKETING_PLAN.md` kap. 11 |
 | Produkčný web | **od 8. 9. večer** zhodný s dev vrátane WhatsApp tlačidla v mobilnej lište |
 | Ikony | hotové na stagingu aj na produkcii; stará baktéria je preč |
@@ -518,6 +518,19 @@ inzerenta. Kampaň ani platobný profil sa preto teraz nedokončujú pod dočasn
 identitou. Produkčná brána je v `GOOGLE_ADS_PRODUCTION_GATE.md`; ochrana údajov
 a úlohy pred offline exportom sú v `PRIVACY_IMPLEMENTATION.md`.
 
+**Google Ads sa podarilo pripraviť po technickú hranicu bez billingu (9. 9.).**
+Manager účet `791-494-5272` je hotový a servisný účet Data Managera v ňom má
+Standard access. Reklamný podúčet `116-266-0696` vznikol, ale je Draft a pri
+otvorení núti onboarding business → campaign → payment; ten sa zámerne
+nedokončil. Preto je v Sub-account settings conversion account stále `None` a
+voľba `This manager` neaktívna.
+
+Na Manager účte existuje prvá cross-account akcia `lead_qualified`, Import from
+clicks, Conversion type ID `7754841584`, bez hodnoty, count One a okno 90 dní.
+Zostávajú `job_created`, `job_completed`, `package_sold` a `invoice_paid`.
+Predbežné operating/login mapovanie oboch na Manager ID sa nesmie považovať za
+produkčné, kým neprejde `validateOnly` a podúčet nebude používať `This manager`.
+
 ## Čo čaká na používateľa
 
 1. **Prevádzkovateľ vyriešený:** ADAMSON s. r. o.; údaje overené cez FinStat a ORSR.
@@ -528,17 +541,16 @@ a úlohy pred offline exportom sú v `PRIVACY_IMPLEMENTATION.md`.
 5. **Skúšobný e-mail na `info@filthyfilter.sk`.** Schránka existuje, doručenie nikto
    nepotvrdil.
 6. **Doplniť čistenie klimatizácií do profilu whispAir** na Google.
-7. **Po vzniku vlastnej s. r. o. dokončiť Google Ads/Manager účet.** Rozpracovaný
-   signup už ukázal obrazovku Manager účtu. Pre vlastné účty zvoliť „Manage my
-   accounts“; pred potvrdením overiť Slovensko, EUR a časové pásmo Bratislava/CET.
-   Kampaň ani platobný profil teraz nevytvárať pod dočasnou identitou.
-8. **Päť konverzných akcií** typu import z CRM so sledovaním konverzií z klikov:
-   `lead_qualified`, `job_created`, `job_completed`, `package_sold` a
-   `invoice_paid`. Ich identifikátory idú do príslušných `GOOGLE_DM_ACTION_*`.
-9. **Dokončiť Ads prístup servisného účtu.** Data Manager API a nový servisný
-   účet `whispair-data-manager@whispair-hvac.iam.gserviceaccount.com` už existujú;
-   po založení Ads účtu ho treba pridať ako Ads používateľa a overiť `validateOnly`.
-   Všetky podmienky sú v `GOOGLE_ADS_PRODUCTION_GATE.md`.
+7. **Po vzniku vlastnej s. r. o. dokončiť Draft reklamný podúčet.** Manager účet
+   je už hotový. Podúčet `116-266-0696` nesmie dostať kampaň ani billing pod
+   dočasnou identitou; potom ho premenovať na `FilthyFilter SK`.
+8. **Dokončiť štyri konverzné akcie.** `lead_qualified` už existuje s ID
+   `7754841584`; chýbajú `job_created`, `job_completed`, `package_sold` a
+   `invoice_paid`.
+9. **Priradiť podúčtu cross-account conversions a overiť Data Manager.** Servisný
+   účet už má Standard access. Po aktivácii podúčtu nastaviť `This manager`,
+   doplniť `.env` a overiť `validateOnly`. Všetky podmienky sú v
+   `GOOGLE_ADS_PRODUCTION_GATE.md`.
 
 ## Čo čaká na vývoj
 

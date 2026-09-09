@@ -29,6 +29,8 @@ so sledovaním konverzií z klikov a s hodnotou**.
 **Hotové, keď:** akcia existuje a jej identifikátor je v `.env` API ako
 `GOOGLE_DM_ACTION_INVOICE_PAID`.
 
+**Stav 9. 9. 2026:** ešte nevytvorená.
+
 ### T2 — Štyri pôvodné konverzné akcie
 **Vlastník:** ty · **Závisí od:** T3
 
@@ -37,15 +39,20 @@ typ ako T1, ale **bez hodnoty**: peniaze nesie iba `invoice_paid`.
 
 **Hotové, keď:** štyri identifikátory sú v `.env` ako `GOOGLE_DM_ACTION_*`.
 
+**Stav 9. 9. 2026:** `lead_qualified` je vytvorená na Manager účte ako Import
+from clicks, ID `7754841584`. `job_created`, `job_completed` a `package_sold`
+ešte chýbajú. Zdieľanie s podúčtom blokuje jeho stav Draft.
+
 ### T3 — Data Manager API a servisný účet
 **Vlastník:** ty · **Blokuje:** T1, T2
 
-Cloud časť je hotová: Data Manager API je zapnuté v projekte `whispair-hvac`,
-servisný účet je
-`whispair-data-manager@whispair-hvac.iam.gserviceaccount.com` a jeho kľúč je
-bezpečne uložený na DEV serveri. Po vzniku vlastnej s. r. o. treba dokončiť
-správny Google Ads/Manager účet, pridať doň tento servisný účet a doplniť
-operating/login account ID. Google Cloud IAM rola sama prístup do Ads nedáva.
+Cloud aj základ Ads prístupu sú hotové: Data Manager API je zapnuté v projekte
+`whispair-hvac`, servisný účet
+`whispair-data-manager@whispair-hvac.iam.gserviceaccount.com` má v Manager účte
+`791-494-5272` Standard access a jeho kľúč je bezpečne uložený na DEV serveri.
+Reklamný podúčet `116-266-0696` existuje, ale je Draft. Po vzniku vlastnej
+s. r. o. treba dokončiť jeho onboarding, nastaviť conversion account na
+`This manager` a potvrdiť operating/login mapovanie validačným volaním.
 
 **Hotové, keď:** worker prejde jedno volanie s `validateOnly` bez chyby oprávnení.
 

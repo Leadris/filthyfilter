@@ -30,47 +30,104 @@ všetky body nižšie.
   hodiny a treba ho opraviť.
 - Worker je dovtedy bezpečne neaktívny: bez Ads account ID a conversion action
   ID skončí ako `not_configured` a nič do Google neodošle.
+- Google Ads Manager účet **WhispAir Ads Manager** je vytvorený s voľbou
+  **Manage my accounts**, krajinou Slovakia, menou EUR a časovým pásmom
+  `(GMT+02:00) Czechia Time`, ktoré používa rovnaké stredoeurópske pravidlá ako
+  Slovensko. Jeho customer ID je `791-494-5272`.
+- Servisný účet je v tomto Manager účte pridaný ako používateľ s úrovňou
+  **Standard**. Cloud IAM a Ads prístup sú teda obe pripravené.
+- Pod Manager účtom je vytvorený reklamný podúčet `116-266-0696`. Google ho
+  založil s názvom **WhispAir Ads Manager** a stavom **Draft**. Otvorenie účtu
+  vždy presmeruje na povinný onboarding „business information → campaign →
+  payment“; kampaň ani payment sa nedokončili.
+- V Manager účte je vytvorená prvá cross-account conversion action
+  `lead_qualified`, Conversion type ID `7754841584`, zdroj **Import from
+  clicks**, bez hodnoty, count One, click-through window 90 dní, engaged-view
+  window 3 dni a data-driven attribution. Stav **Needs attention** je očakávaný,
+  kým nie je pripojený zdroj a neprídu dáta.
+- V `Accounts → Sub-account settings` má podúčet zatiaľ Google Ads conversion
+  account `None`. Voľby `Client` aj `This manager` sú sivé; pozorovaný dôvod je
+  nedokončený stav Draft. Zdieľanie conversion actions preto zostáva súčasťou
+  brány po aktivácii podúčtu.
 
-Rozpracovaný Google Ads signup ukázal obrazovku na vytvorenie **Manager účtu**,
-nie kampane. Zobrazené číslo účtu sa zatiaľ nepovažuje za finálny
-`OPERATING_ACCOUNT_ID` ani `LOGIN_ACCOUNT_ID`, kým nie je účet dokončený a jeho
-rola overená priamo v Google Ads.
+## Známe identifikátory a plánované mapovanie
+
+| Úloha | Google Ads ID | Stav |
+| --- | --- | --- |
+| Manager/login account | `7914945272` | vytvorený, servisný účet má Standard access |
+| Reklamný podúčet | `1162660696` | Draft, bez kampane a billingu |
+| `lead_qualified` action | `7754841584` | vytvorená na Manager účte |
+
+Plán je používať cross-account conversions vlastnené Manager účtom. V tomto
+variante je predbežné mapovanie:
+
+```dotenv
+GOOGLE_DM_OPERATING_ACCOUNT_ID=7914945272
+GOOGLE_DM_LOGIN_ACCOUNT_ID=7914945272
+GOOGLE_DM_ACTION_LEAD_QUALIFIED=7754841584
+```
+
+Nie je to ešte schválená produkčná konfigurácia. Data Manager vyžaduje, aby
+`operatingAccount` vlastnil conversion action; mapovanie sa preto definitívne
+potvrdí až úspešným `validateOnly` behom a po prepnutí podúčtu na conversion
+account `This manager`. Ak by sa conversion actions neskôr presunuli priamo do
+podúčtu, operating ID by bolo `1162660696` a login ID by zostalo
+`7914945272`.
+
+## Kde sú kľúče, tokeny a konfiguračné súbory
+
+Táto tabuľka je inventár umiestnení, nie úložisko tajomstiev. Skutočné heslá,
+tokeny a obsah JSON kľúčov sa do Gitu nekopírujú.
+
+| Čo | Umiestnenie | Poznámka |
+| --- | --- | --- |
+| Pôvodný stiahnutý Google service-account JSON | `C:\Users\cukiv\Downloads\whispair-hvac-b8ad356b95e0.json` | Lokálna citlivá kópia; neodosielať do Gitu ani chatu. Po potvrdení bezpečnej zálohy ju možno z Downloads odstrániť. |
+| Google Data Manager JSON používaný na DEV | `/home/jg046600/.secrets/google-data-manager.json` | Mimo document rootu; adresár `700`, súbor `600`. |
+| DEV API konfigurácia | `/home/jg046600/_sub_whispair_sk/api-dev/.env` | Tu sú `GOOGLE_DM_*` a DEV `JOB_REMINDER_CRON_TOKEN`. |
+| Záloha DEV `.env` pred Google DM zmenou | `/home/jg046600/tmp/api-dev-env-before-google-dm-20260909` | Obnova pôvodnej DEV konfigurácie. |
+| Produkčná API konfigurácia | `/home/jg046600/_sub_whispair_sk/api/.env` | Produkčné `GOOGLE_DM_*` a produkčný `JOB_REMINDER_CRON_TOKEN`; zatiaľ nedopĺňať Ads aktiváciu. |
+| Budúci produkčný Google DM JSON | odporúčané `/home/jg046600/.secrets/google-data-manager-prod.json` | Ešte nie je pripravený; samostatne spravovaný súbor, práva `600`. |
+| Lokálny SSH privátny kľúč pre WebHouse | `C:\Users\cukiv\.ssh\id_ed25519_whispair` | Neposielať ani nekopírovať do repozitára. Aktívny SSH port WebHouse sa mení. |
+| Google Ads prihlásenie | Google účet `cuk.ivan@gmail.com` | Google Ads nemá osobitné heslo v projekte; prístup je cez Google účet a servisný účet uvedený vyššie. |
+
+Webcron URL obsahuje hodnotu `JOB_REMINDER_CRON_TOKEN` z príslušného `.env`.
+V dokumentácii zostáva iba placeholder. Ak token treba dohľadať, číta sa priamo
+z DEV alebo PROD `.env`; nekopíruje sa sem. Produkčný a DEV token musia zostať
+odlišné.
 
 ## Až bude existovať vlastná s. r. o.
 
 1. Pripraviť presné firemné údaje: obchodné meno, sídlo, IČO, DIČ/IČ DPH podľa
    skutočného stavu a osobu oprávnenú konať za firmu.
-2. Dokončiť Google Ads/Manager účet pod touto firmou. Pri Manager účte určenom
-   na vlastné reklamné účty zvoliť **Manage my accounts**, nie správu cudzích
-   klientov.
-3. Pred potvrdením skontrolovať nemenné nastavenia: billing country
-   **Slovakia**, mena **EUR** a časové pásmo pre Bratislavu/Central European
-   Time. Samotný nápis „Czechia Time“ sa nepotvrdzuje bez overenia, že ide o
-   správne stredoeurópske pásmo účtu.
+2. Manager účet už existuje. Po vzniku firmy v ňom doplniť alebo overiť budúcu
+   firemnú identitu všade, kde ju Google vyžiada; účet sa nesmie zameniť s
+   dnešným reklamným podúčtom v stave Draft.
+3. Nemenné nastavenia Manager účtu sú už Slovakia, EUR a stredoeurópske časové
+   pásmo. Pri dokončení reklamného podúčtu ich znovu skontrolovať pred každým
+   nezvratným potvrdením.
 4. Vytvoriť platobný profil typu organizácia na vlastnú s. r. o., doplniť
    fakturačné a daňové údaje a dokončiť prípadné overenie inzerenta. Nevytvárať
    profil na súkromnú osobu iba preto, aby sa obišiel onboarding.
-5. Vytvoriť alebo pripojiť reklamný účet, ktorý bude prijímať konverzie.
-   Zapísať jeho zákaznícke ID bez pomlčiek ako `GOOGLE_DM_OPERATING_ACCOUNT_ID`.
-6. Ak bude servisný účet pridaný cez Manager účet, zapísať ID Manager účtu bez
-   pomlčiek ako `GOOGLE_DM_LOGIN_ACCOUNT_ID`. Ak bude pridaný priamo do
-   reklamného účtu, táto premenná zostane prázdna.
-7. Pridať servisný účet
-   `whispair-data-manager@whispair-hvac.iam.gserviceaccount.com` ako používateľa
-   Google Ads účtu alebo nadradeného Manager účtu s oprávnením nahrávať
-   konverzie. Google Cloud IAM rola sama osebe prístup do Google Ads nedáva.
+5. Dokončiť a aktivovať reklamný podúčet `116-266-0696` bez vytvorenia kampane
+   alebo billingu pod nesprávnou identitou. Názov podúčtu potom opraviť na
+   `FilthyFilter SK`.
+6. V Manager účte nastaviť tomuto podúčtu Google Ads conversion account
+   **This manager**. Dovtedy sú obe možnosti v rozhraní neaktívne.
+7. Ads prístup servisného účtu je už hotový. Pred ostrým použitím iba overiť,
+   že zostal na Manager účte s úrovňou Standard.
 8. V Google Ads vytvoriť päť akcií typu import z CRM/offline import z klikov:
 
    | Udalosť | Premenná API | Hodnota |
    | --- | --- | --- |
-   | kvalifikovaný lead | `GOOGLE_DM_ACTION_LEAD_QUALIFIED` | bez hodnoty |
+   | kvalifikovaný lead | `GOOGLE_DM_ACTION_LEAD_QUALIFIED` | bez hodnoty; hotové ID `7754841584` |
    | vytvorená zákazka | `GOOGLE_DM_ACTION_JOB_CREATED` | bez hodnoty |
    | dokončená zákazka | `GOOGLE_DM_ACTION_JOB_COMPLETED` | bez hodnoty |
    | predaný balík | `GOOGLE_DM_ACTION_PACKAGE_SOLD` | bez hodnoty |
    | uhradená faktúra | `GOOGLE_DM_ACTION_INVOICE_PAID` | netto hodnota a EUR |
 
    Do premenných patria identifikátory conversion actions používané Data
-   Manager API, nie ich zobrazované názvy.
+   Manager API, nie ich zobrazované názvy. Zostávajú vytvoriť posledné štyri;
+   `lead_qualified` už existuje.
 
 ## Povinný postup DEV → PROD
 

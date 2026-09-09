@@ -447,8 +447,11 @@ its Google Ads attribution:
 | local preview (`127.0.0.1`, `localhost`) | `https://api-dev.whispair.sk/api/v1/leads` |
 
 Staging and the local preview deliberately talk to the staging API, so a test
-enquiry never reaches the real field inbox. The mapping lives in `apiBase()` in
-`js/main.js`.
+enquiry never reaches the real field inbox. The authoritative public mapping is
+`config/environments.json`; `npm run build:config` generates
+`js/runtime-config.js`, which every public page loads before the application
+scripts. `js/main.js` also fails closed for unknown hosts instead of silently
+sending their enquiries to production.
 
 Two things must be true on the API side before a deployment can take leads:
 the route `POST /api/v1/leads` exists, and `CORS_ALLOWED_ORIGINS` in that
@@ -491,9 +494,10 @@ A caution learned while installing it: the server cannot `curl` its own public
 hostname, so a self-check from inside the SSH session returns `000` and looks
 exactly like an outage. Verify redirects from outside the server.
 
-Measurement is dormant until `TAG_ID` in `js/consent.js` is filled in. While it
-is empty the page loads no Google script, sets no cookie and shows no consent
-banner.
+The Google Tag Manager container is selected through the same generated public
+runtime configuration. It is a public identifier, not a credential. If it is
+empty, the page loads no Google script, sets no analytics cookie and shows no
+consent banner.
 
 ## Release contents
 
@@ -540,16 +544,27 @@ an archive may be sitting in the tree.
 Replace `<PORT>` with the active WebHouse SSH port and `<COMMIT>` with the
 deployed Git commit.
 
-1. Confirm the working tree, tests and pushed commit. Ak release obsahuje alebo
+1. Generate and verify the public runtime configuration, then run the tests:
+
+   ```powershell
+   npm run build:config
+   npm test
+   ```
+
+   `npm test` fails when `js/runtime-config.js` no longer matches
+   `config/environments.json`, which prevents an environment mapping from being
+   forgotten in the release archive.
+
+2. Confirm the working tree, tests and pushed commit. Ak release obsahuje alebo
    aktivuje Google Ads časť funnelu, najprv potvrdiť splnenie všetkých bodov v
    `GOOGLE_ADS_PRODUCTION_GATE.md`; bez toho release zastaviť.
-2. Create a clean local archive:
+3. Create a clean local archive:
 
    ```powershell
    tar.exe -czf "tmp\filthyfilter-release-<COMMIT>.tar.gz" .htaccess index.html robots.txt sitemap.xml favicon.ico favicon-16x16.png favicon-32x32.png apple-touch-icon.png icon-192.png icon-512.png icon-192-maskable.png icon-512-maskable.png site.webmanifest assets css js hall
    ```
 
-3. Upload the archive to the server staging directory:
+4. Upload the archive to the server staging directory:
 
    ```powershell
    scp -i "$env:USERPROFILE\.ssh\id_ed25519_whispair" -P <PORT> -o BatchMode=yes `
@@ -557,13 +572,13 @@ deployed Git commit.
      "jg046600@93.184.77.193:/home/jg046600/tmp/filthyfilter-release-<COMMIT>.tar.gz"
    ```
 
-4. Before extraction, create a rollback archive of the exact live directory:
+5. Before extraction, create a rollback archive of the exact live directory:
 
    ```text
    /home/jg046600/tmp/filthyfilter-before-<COMMIT>.tar.gz
    ```
 
-5. Extract the release into `/home/jg046600/www_root_filthyfilter_sk`, then
+6. Extract the release into `/home/jg046600/www_root_filthyfilter_sk`, then
    set directories to mode `755` and files to `644`. Do not remove the whole
    document root.
 
@@ -572,16 +587,16 @@ deployed Git commit.
    find /home/jg046600/www_root_filthyfilter_sk -type d -exec chmod 755 {} +
    find /home/jg046600/www_root_filthyfilter_sk -type f -exec chmod 644 {} +
    ```
-6. Verify the expected release marker on the server and confirm every newly
+7. Verify the expected release marker on the server and confirm every newly
    added large asset with `test -s` or `wc -c`.
-7. Verify publicly over HTTPS. Use a commit-specific query parameter when
+8. Verify publicly over HTTPS. Use a commit-specific query parameter when
    checking changed assets to avoid a false result from browser or CDN cache:
 
    ```text
    https://filthyfilter.sk/js/main.js?deploy=<COMMIT>
    ```
 
-8. Keep the server rollback archive until the deployment has been accepted.
+9. Keep the server rollback archive until the deployment has been accepted.
    Delete only the exact local temporary release archive after verification.
 
 ## Last verified deployment

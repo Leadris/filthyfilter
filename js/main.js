@@ -27,11 +27,16 @@
   // whole reason the form posts anywhere at all. The preview host and the local
   // preview talk to staging, so a test enquiry never reaches the field inbox.
   function apiBase() {
+    var configured = window.FILTHYFILTER_CONFIG && window.FILTHYFILTER_CONFIG.apiBase;
+    if (configured) return String(configured).replace(/\/$/, "");
     var host = location.hostname;
     var staging = host === "dev.filthyfilter.sk" ||
                   host === "127.0.0.1" ||
                   host === "localhost";
-    return staging ? "https://api-dev.whispair.sk" : "https://api.whispair.sk";
+    if (staging) return "https://api-dev.whispair.sk";
+    if (host === "filthyfilter.sk" || host === "www.filthyfilter.sk") return "https://api.whispair.sk";
+    // Fail closed on an unknown preview host instead of sending its leads to production.
+    return location.origin;
   }
 
   var LEAD_PATH = "/api/v1/leads";

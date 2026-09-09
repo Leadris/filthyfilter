@@ -3,7 +3,9 @@
    ads. The enquiry works independently. Consent is versioned and expires. */
 (function () {
   "use strict";
-  var TAG_ID = "GTM-57M8XLQJ";
+  var TAG_ID = window.FILTHYFILTER_CONFIG
+    ? window.FILTHYFILTER_CONFIG.gtmContainerId
+    : "GTM-57M8XLQJ";
   var CONVERSION_LABELS = { lead_submitted: "" }; // GTM owns the existing mapping.
   var STORE_KEY = "ff_consent_v2";
   var VERSION = "2026-09-07";

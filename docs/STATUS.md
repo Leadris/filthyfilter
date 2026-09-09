@@ -80,12 +80,20 @@ sedieť ako `Logged`. Pri hodnote zapisovanej až po úhrade tak mohla dlhá spl
 potichu zahodiť tržbu z merania.
 
 Worker teraz pred pokusom o upload porovná čas kliku z `lead_attribution.created_at`
-s časom udalosti v UTC. Presná hranica 90 dní je ešte platná; staršia udalosť
+s časom samotného pokusu, v UTC. Rozhoduje totiž okamih odoslania, nie okamih
+vzniku udalosti: Google odmietne konverziu nahranú viac než deväťdesiat dní po
+kliku, takže faktúra uhradená v deň osemdesiatdeväť je stratená, ak sa odošle
+v deň deväťdesiatpäť. Presná hranica 90 dní je ešte platná; staršia udalosť
 končí v terminálnom stave `Expired`, `upload_error` povie, o koľko okno prekročila,
 a počítadlo `expired` je v metrikách aj v čitateľnom súhrne `cron_run_logs`.
 Chýbajúca atribúcia sa zámerne neodhaduje: identifikátor môže byť stále platný,
 preto udalosť zostane `Logged` a platí pre ňu existujúci limit pokusov. Sweep beží
 aj bez Google credentials, lebo poriadok vo fronte nie je sieťová operácia.
+
+Tým sa denný rozvrh stáva nosnou časťou riešenia, nie pohodlím. Vypnutý alebo
+neexistujúci cron už tržbu neodkladá, ale ju likviduje, a **Webcron pre tento
+worker na `api-dev` zatiaľ založený nie je**. Kým nebeží, expirácia je overená
+schopnosť, nie stráž.
 
 Migrácia `20260909042547__conversion_click_window_expiry` rozširuje constraint
 `upload_status` o `Expired` a dáva mu stabilné meno. `conversion_events` zostáva

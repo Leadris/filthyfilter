@@ -140,7 +140,7 @@ nič. Ak sa spustí teraz, odídu tam tie placeholdery.
 
 ## Kvalita dát: bez toho meranie klame
 
-### T12 — Identita zákazníka
+### T12 — Identita zákazníka — ✅ hotové 8. 9. 2026, na dev
 **Vlastník:** ja · **Repozitár:** `whispair-api`
 
 `clients` nemá e-mail, normalizovaný telefón ani príznak firma/domácnosť. Tri
@@ -155,7 +155,10 @@ Migrácia: `clients.email`, `phone_normalized` (E.164, unikátne),
 **Hotové, keď:** firemná zákazka dostane štrnásťdennú splatnosť, konverzia nesie
 oba hashe, a prvá atribúcia sa pri konverzii leadu skopíruje na zákazníka.
 
-### T13 — Stráženie deväťdesiatdňového okna
+**Splnené 8. 9. 2026 na `api-dev`.** Všetky tri overené na zahodenom zákazníkovi,
+ktorý bol potom zmazaný. Podrobnosti v `STATUS.md`.
+
+### T13 — Stráženie deväťdesiatdňového okna — ✅ hotové 9. 9. 2026, na dev
 **Vlastník:** ja · **Repozitár:** `whispair-api`
 
 Google prijme offline konverziu, len ak je klik mladší než približne deväťdesiat
@@ -164,6 +167,9 @@ splatnosti sa už nenahrá. Worker to musí označiť a nahlásiť, nie ticho za
 
 **Hotové, keď:** taká udalosť skončí s vysvetľujúcou chybou a objaví sa v logu
 behu, nie v tichu.
+
+**Splnené 9. 9. 2026 na `api-dev`.** Starý klik končí ako `Expired`, dôvod aj
+počítadlo sú v logu behu a druhý beh ho už nevyberie. Podrobnosti v `STATUS.md`.
 
 ### T14 — Zmazanie starej emisie konverzií
 **Vlastník:** ja · **Repozitár:** `whispair-api`
@@ -246,5 +252,5 @@ Events a riadok sa prepne na `Uploaded`.
 1. **T1 až T3** naraz, sú tvoje a odblokujú všetko okolo Google.
 2. **T4**, lebo bez portálu je fáza 2 nepoužiteľná.
 3. **T20**, aby sa dopísal posledný krok T5 a otvorila sa Meta kampaň.
-4. **T12**, kým je zákazníkov málo a duplicity sa ešte dajú čistiť.
+4. ~~**T12**, kým je zákazníkov málo a duplicity sa ešte dajú čistiť.~~ Hotové 8. 9. 2026.
 5. Zvyšok podľa toho, čo sa uvoľní.

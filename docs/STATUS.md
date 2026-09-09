@@ -1,6 +1,6 @@
 # FilthyFilter — stav projektu
 
-**Aktualizované 8. 9. 2026, 22:15 UTC.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
+**Aktualizované 9. 9. 2026.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
 a čo otvorené. Rozhodnutia a ich dôvody zostávajú v `REDESIGN_PLAN.md` a
 `MARKETING_PLAN.md`; postup nasadenia v `DEPLOYMENT.md`. Ak sa niektorý z nich rozchádza
 s týmto súborom, platí tento a treba ho tam opraviť.
@@ -22,9 +22,83 @@ nebol úplný.
 | Produkčný web | **od 8. 9. večer** zhodný s dev vrátane WhatsApp tlačidla v mobilnej lište |
 | Ikony | hotové na stagingu aj na produkcii; stará baktéria je preč |
 | Technický review celého funnelu | hotový, `SYSTEM_REVIEW.md`; web verzia neverejne na `dev.filthyfilter.sk/system-review/` |
-| Sledovanie životného cyklu zákazky | plán v `LIFECYCLE_IMPLEMENTATION.md`; **fázy 1 a 2 hotové a na dev**, fáza 3 čaká na Billdu Premium |
+| Sledovanie životného cyklu zákazky | plán v `LIFECYCLE_IMPLEMENTATION.md`; **fázy 1 a 2 hotové a na dev**, z fázy 4 hotový krok 7 (identita zákazníka, T12); fáza 3 čaká na Billdu Premium |
 
 ## Čo je hotové
+
+**Zákazník má identitu — T12 (8. 9., na dev).** `clients` niesla meno, telefón
+a adresu a nič viac, čo stálo tri veci naraz. `invoicing_due_days` čítal segment,
+ktorý v tabuľke neexistoval, takže **každý doklad — aj firemný — bol splatný
+v deň vystavenia**. Konverzia po úhrade niesla len hashovaný telefón, hoci
+Google aj Meta párujú podľa e-mailu lepšie. A atribúcia žila na leade, takže
+druhá zákazka toho istého zákazníka o rok neskôr nevedela povedať, ktorá kampaň
+ho priviedla.
+
+Migrácia `20260908160000__client_identity` dopĺňa `email`, `phone_normalized`,
+`customer_type` a `acquisition_lead_attribution_id`; `db/schema.sql` je
+zosúladený. `customer_type` je `NOT NULL DEFAULT 'household'`, teda presne to,
+čím každý riadok doteraz fakticky bol.
+
+**Unikátny index na `phone_normalized` je čiastočný a migrácia zámerne nehádala.**
+Riadok, ktorého telefón sa nedá normalizovať, aj každý riadok zo skupiny, ktorá
+padne na to isté číslo, zostáva `NULL`. Zlúčenie dvoch zákazníkov je obchodné
+rozhodnutie so zákazkami, faktúrami a atribúciou na oboch stranách, nie niečo, čo
+si smie vziať migrácia. Na `api-dev` to hneď aj nastalo: obe existujúce klientske
+karty majú rovnaké číslo `+421902279094`, obe teda zostali bez normalizovaného
+telefónu a treba ich vyriešiť ručne. Nájdu sa dopytom, ktorý je zapísaný priamo
+v migrácii.
+
+Normalizácia je jedna funkcia, `client_normalize_phone()` v
+`endpoints/_client_identity_helpers.php`, a `conversion_normalize_phone()` na ňu
+odteraz len ukazuje. Uložený kľúč a hash odoslaný do Google tak nemôžu opísať
+rozdielneho účastníka. `0900 111 222`, `+421 900 111 222`, `00421900111222`,
+`(0900) 111-222` aj `421900111222` končia na `+421900111222`; nezmysel končí na
+`NULL`, nie na vymyslenom čísle, lebo za tým stojí unikátny index.
+
+Prvá atribúcia sa kopíruje na zákazníka v `conversion_link_attribution()`, teda
+na jednom mieste, cez ktoré idú obe cesty konverzie — `CapturedMessagesService::convert`
+aj `JobDraftsService::publish`. Zapisuje sa len dovtedy, kým je stĺpec prázdny,
+takže neskoršia kampaň prvú nikdy neprepíše.
+
+**Overené 8. 9. na `api-dev` na zahodenom zákazníkovi, ktorý bol potom zmazaný.**
+Firemná zákazka vyšla splatná 22. 9. pri vystavení 8. 9., tá istá zákazka po
+prepnutí na domácnosť 8. 9. Udalosť `invoice_paid` niesla oba hashe aj netto
+hodnotu 100 €. Druhý zákazník na tom istom čísle skončil na porušení unikátneho
+indexu. Po úklide zostalo v databáze presne to, čo pred behom.
+
+`php vendor/bin/phpunit`: 401 testov prechádza. Osem zlyhaní je rovnakých pred
+zásahom aj po ňom a všetky hovoria `not_configured`, teda chýbajúce kľúče
+OpenAI v testovacom prostredí, nie regresia.
+
+Zmena je zatiaľ **len na dev**. Na produkciu ide s najbližším balíkom podľa
+`ENVIRONMENTS.md`.
+
+**Starý klik už nezostane ticho vo fronte — T13 (9. 9., na dev).** Google prijíma
+offline konverziu iba v deväťdesiatdňovom okne od kliku. Worker doteraz skúšal
+príliš starú udalosť znova až po limit pokusov a potom ju nechal bez upozornenia
+sedieť ako `Logged`. Pri hodnote zapisovanej až po úhrade tak mohla dlhá splatnosť
+potichu zahodiť tržbu z merania.
+
+Worker teraz pred pokusom o upload porovná čas kliku z `lead_attribution.created_at`
+s časom udalosti v UTC. Presná hranica 90 dní je ešte platná; staršia udalosť
+končí v terminálnom stave `Expired`, `upload_error` povie, o koľko okno prekročila,
+a počítadlo `expired` je v metrikách aj v čitateľnom súhrne `cron_run_logs`.
+Chýbajúca atribúcia sa zámerne neodhaduje: identifikátor môže byť stále platný,
+preto udalosť zostane `Logged` a platí pre ňu existujúci limit pokusov. Sweep beží
+aj bez Google credentials, lebo poriadok vo fronte nie je sieťová operácia.
+
+Migrácia `20260909042547__conversion_click_window_expiry` rozširuje constraint
+`upload_status` o `Expired` a dáva mu stabilné meno. `conversion_events` zostáva
+podľa pôvodnej konvencie iba v migráciách, nie v `db/schema.sql`.
+
+**Overené 9. 9. na dev databáze dvoma behmi workera.** Zahodený klik starý 120 dní
+skončil po prvom behu ako `Expired` s chybou „o 30 dní“ a súhrn obsahoval
+`expired=1`. Druhý beh hlásil `expired=0`, teda riadok už nevybral. Obe syntetické
+testovacie položky boli potom zmazané a kontrola ukázala `remaining=0`.
+
+`php vendor/bin/phpunit`: 401 testov, 1172 assertions, všetko prešlo. PHPStan
+nenašiel chybu a PHP CS Fixer nad zdrojmi po vylúčení lokálneho chráneného
+`.secrets` adresára nenašiel rozdiel.
 
 **Všetko z 8. 9. je na ostrej doméne (8. 9. večer).** `filthyfilter.sk` beží na
 commite `683bb20`, teda vrátane WhatsApp tlačidla v mobilnej lište, opravy

@@ -91,9 +91,11 @@ preto udalosť zostane `Logged` a platí pre ňu existujúci limit pokusov. Swee
 aj bez Google credentials, lebo poriadok vo fronte nie je sieťová operácia.
 
 Tým sa denný rozvrh stáva nosnou časťou riešenia, nie pohodlím. Vypnutý cron už
-tržbu neodkladá, ale ju likviduje. **Webcron pre tento worker na `api-dev` už je
-založený**, no zobrazené nastavenie `* 1 * * *` znamená každú minútu počas
-jednej hodiny; treba ho opraviť na jeden denný beh, odporúčane `15 1 * * *`.
+tržbu neodkladá, ale ju likviduje. **Webcron pre tento worker na `api-dev` je
+založený a opravený na `15 1 * * *`**, teda jeden denný beh; pôvodné `* 1 * * *`
+by znamenalo šesťdesiat behov počas jednej hodiny. Za 9. 9. má worker v
+`cron_run_logs` iba behy s triggerom `cli`, teda ručné overovanie. Prvý plánovaný
+beh treba skontrolovať 10. 9.: má to byť jediný riadok s triggerom `http`.
 
 Migrácia `20260909042547__conversion_click_window_expiry` rozširuje constraint
 `upload_status` o `Expired` a dáva mu stabilné meno. `conversion_events` zostáva
@@ -116,6 +118,43 @@ súčty troch nasadených súborov sa zhodujú s repozitárom.
 `php vendor/bin/phpunit`: 401 testov, 1172 assertions, všetko prešlo. PHPStan
 nenašiel chybu a PHP CS Fixer nad zdrojmi po vylúčení lokálneho chráneného
 `.secrets` adresára nenašiel rozdiel.
+
+**Synchronizácia e-mailov bola celý deň mŕtva a log to nepovedal (9. 9., na dev).**
+Worker padal pri každom behu, teda každých päť minút, na chybe `inconsistent types
+deduced for parameter $2`. Ten istý pomenovaný parameter je v príkaze dvakrát a
+oprava z 8. 9. pridala pretypovanie iba na test na `NULL`. PHP 8.4 opakovaný
+parameter nerozdelí na dva, necháva jeden placeholder, takže mu Postgres odvodil raz
+`text` a raz `varchar` stĺpca a príkaz sa nepripravil vôbec. Rovnaký tvar mali štyri
+miesta. Každé z nich teraz nesie pretypovanie na všetkých výskytoch, čo platí aj
+keby ovládač parameter rozdeľoval.
+
+Dôkaz je v plánovaných behoch okolo nasadenia: 15:50 až 16:05 UTC `failed`,
+16:10 a ďalej `success`. Vetva `fix/pdo-repeated-parameter-casts`, commit `dd29422`.
+
+**Zlyhanie cronu už hovorí prečo, nielen koľko (9. 9., na dev).** Toto je dôvod,
+prečo si mŕtvej synchronizácie nikto deň nevšimol. `cron_run_logs` si z výsledku
+workera berie len kľúče zo zoznamu povolených metrík, takže dôvod, ktorý worker
+vracal pod vlastným kľúčom, sa cestou zahodil a v tabuľke ostalo `failed=1`
+s prázdnym `error_message`. Dôvod teraz cestuje vlastným kanálom: `error` pre celý
+beh a `errors` pre jednotlivé položky. Rovnaké dôvody sa zlučujú, takže dvadsať
+schránok padnutých na jednej chybe je jedna veta, a nad päť rôznych sa zvyšok
+spočíta.
+
+Doplnené je to vo všetkých workeroch, ktoré vedia zlyhať po jednej položke: e-maily,
+WhatsApp správy aj médiá, Meta katalóg, WooCommerce katalóg, denný súhrn podnetov,
+zajtrajšie pripomienky, marketingové drafty, extrakcia cenníkov, technické aj webové
+obohatenie a Google Ads konverzie. Dve miesta dôvod zahadzovali úplne: WooCommerce
+nahradil výnimku z prenosu neutrálnou vetou a nikam si ju neuložil, push odosielanie
+zabudlo `last_error` hneď po zápise na riadok udalosti. Pravidlo je zapísané
+v `whispair-api/ARCHITECTURE.md`, vrátane toho, že neznámy kľúč vo výsledku sa ticho
+zahodí.
+
+Overené na dev cez skutočnú logovaciu cestu a zahodené meno úlohy: dva rôzne dôvody
+skončili v `error_message`, duplicitný sa zlúčil, testovací riadok bol zmazaný.
+Trinásť nasadených súborov má kontrolné súčty zhodné s repozitárom, záloha je
+`/home/jg046600/tmp/api-dev-before-cron-logging-20260909.tar.gz`. Plánované behy
+o 16:25 UTC už bežali na novom kóde a prešli. Commity `30ea7b2` a `c3bc5ce` na
+`fix/pdo-repeated-parameter-casts`, `6e6255e` na `feature/service-package-vat`.
 
 **Všetko z 8. 9. je na ostrej doméne (8. 9. večer).** `filthyfilter.sk` beží na
 commite `683bb20`, teda vrátane WhatsApp tlačidla v mobilnej lište, opravy

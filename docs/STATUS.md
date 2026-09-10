@@ -155,13 +155,45 @@ Zdieľané pomocné súbory `_*.php` zostávajú, závisí od nich `/api/v1`.
 
 **Overené na `api-dev`.** Štyri autentifikované náhrady odpovedajú `401`, teda
 smerovanie žije a autentifikácia platí; verejné `POST /api/v1/leads` vracia na
-honeypot payload `202`. `php vendor/bin/phpunit`: 401 testov, rovnaký výsledok
+honeypot payload `202`. `php vendor/bin/phpunit`: 439 testov, rovnaký výsledok
 pred zásahom aj po ňom. Osem zlyhaní hlási `openai_not_configured`, respektíve
 `marketing_generation_not_configured`, teda chýbajúce kľúče v pracovnej kópii bez
 `.env`, nie regresiu.
 
-Zmena je zatiaľ **len v repozitári**, na server nenasadená. Po nasadení treba
-pustiť `scripts/smoke-test.ps1`, ako káže postup.
+**Nasadené na dev aj na produkciu 10. 9.** `api-dev` aj `api` prešli smoke testom
+po nasadení. Všetkých päť legacy ciest vracia `404`, prežívajúce legacy endpointy
+odpovedajú ďalej (`get_jobs` 401, `whatsapp_reply` 405, `export_conversions` 401)
+a náhrady v `/api/v1` odpovedajú `401`, verejné `POST /api/v1/leads` `202`. Záloha
+produkcie pred zásahom je
+`/home/jg046600/tmp/api-before-t14-legacy-removal-20260910.tar.gz`.
+
+**Prvé nasadenie na dev API zhodilo, a stálo za tým niečo iné ako T14.** Zjednotenie
+konfigurácie z 9. 9. pridalo do `load_local_env()` volanie `putenv()` bez kontroly.
+WebHouse má `putenv()` v `disable_functions` pre PHP-FPM, takže každá webová
+požiadavka skončila na `Call to undefined function putenv()`: `/api/v1/health`
+vrátilo `500` s prázdnym telom a legacy `health.php` hlásilo databázu ako
+`fail`. Na CLI funkcia existuje, preto to prešlo lokálnymi kontrolami aj serverovou
+konfiguračnou kontrolou, ktorá beží tiež na CLI. Oprava volá `putenv()` len tam,
+kde ju runtime ponúka; nič od jej úspechu nezáviselo, `$_ENV` sa plní tak či tak
+a `auth_value()`, `MailCredentialCipher::key()` aj `env_value()` majú vlastný
+fallback. **Na produkciu sa to nikdy nedostalo, lebo to zachytil smoke test po
+nasadení.** To je celý dôvod, prečo ten krok v postupe je.
+
+**Portál je nasadený tiež, dev aj produkcia.** Opravená `lead.php` na
+`portal.whispair.sk` nesie `data-api-base="https://api.whispair.sk/"` a odoslanie
+formulára prejde s `202` a správnou CORS hlavičkou. Stará cesta
+`portal/php-api/endpoints/submit_lead.php` vracia `404`, ako má. Promócia išla
+zdokumentovanou cestou `promote-to-live.ps1`, so zálohou v
+`/home/jg046600/tmp/portal-live-bak-20260910-021559`. Promovala celý strom, nie
+len túto stránku: produkcia portálu bola za `main` pozadu vo viacerých súboroch.
+
+**Smoke test portálu bol pokazený a mlčal o tom.** Cielil na predmigračné
+`https://cukivan.me/whispair-it`, hľadal portál pod `/portal/` a `health.php`
+aj `/api/v1/...` na tom istom hostiteľovi. Po promócii spadol na prvej kontrole,
+teda skript na potvrdenie releasu bol zaručený falošný poplach. Teraz berie
+adresu portálu a adresu API oddelene a pribudla kontrola, že `lead.php` nesie
+absolútnu základnú adresu a nespomína `php-api`. Overený zelený na produkcii
+aj na dev.
 
 **Synchronizácia e-mailov bola celý deň mŕtva a log to nepovedal (9. 9., na dev).**
 Worker padal pri každom behu, teda každých päť minút, na chybe `inconsistent types

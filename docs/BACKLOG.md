@@ -185,7 +185,7 @@ behu, nie v tichu.
 **Splnené 9. 9. 2026 na `api-dev`.** Starý klik končí ako `Expired`, dôvod aj
 počítadlo sú v logu behu a druhý beh ho už nevyberie. Podrobnosti v `STATUS.md`.
 
-### T14 — Zmazanie starej emisie konverzií — ✅ hotové 10. 9. 2026, v repozitári
+### T14 — Zmazanie starej emisie konverzií — ✅ hotové 10. 9. 2026, na produkcii
 **Vlastník:** ja · **Repozitár:** `whispair-api`
 
 Štyri endpointy duplikujú biznis logiku a emitujú konverzie druhýkrát
@@ -195,11 +195,13 @@ dvakrát. Postup mazania je v `ARCHITECTURE.md`.
 
 **Hotové, keď:** endpointy sú preč a testy prechádzajú.
 
-**Splnené 10. 9. 2026.** Zmazaných päť, nie štyri: rovnaký dôvod platil aj na
-`submit_lead.php`. Access log za 23. 8. až 10. 9. neukazuje na žiadny z nich ani
-jeden zásah a nevolá ich portál, terénna aplikácia ani web. Náhrady v `/api/v1`
-overené na `api-dev`. Nasadenie na server je ešte pred nami. Podrobnosti vrátane
-nálezu o mŕtvej stránke `portal/lead.php` sú v `STATUS.md`.
+**Splnené a nasadené 10. 9. 2026.** Zmazaných päť, nie štyri: rovnaký dôvod
+platil aj na `submit_lead.php`. Access log za 23. 8. až 10. 9. neukazuje na
+žiadny z nich ani jeden zásah a nevolá ich portál, terénna aplikácia ani web.
+Náhrady v `/api/v1` sú overené na `api-dev` aj na produkcii a obe prostredia
+prešli po nasadení smoke testom. Podrobnosti, vrátane mŕtvej stránky
+`portal/lead.php` a chyby s `putenv()`, ktorá zhodila prvé nasadenie na dev,
+sú v `STATUS.md`.
 
 ---
 

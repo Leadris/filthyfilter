@@ -142,8 +142,12 @@ na `portal.whispair.sk` aj na dev a načíta sa, ale formulár posiela na
 neexistuje, lebo API dostalo vlastnú doménu; overené volaním, vracia 404. Stránka
 teda nebola volajúcim, bola už dávno rozbitá a za celé obdobie logu ju nikto
 nenačítal. Web `filthyfilter.sk` posiela leady na `POST /api/v1/leads` a funguje.
-Rozhodnutie, či `portal/lead.php` opraviť alebo zmazať, patrí do `whispAirPortal`
-a je samostatná úloha.
+Stránka je odvtedy opravená: vo vetve `fix/lead-page-v1-endpoint` repozitára
+`whispAirPortal` posiela na `POST /api/v1/leads` a adresu API si berie
+z `partials/bootstrap.php`, nie z ručne napísanej relatívnej cesty. Posiela aj
+`business_brand` a Meta identifikátory `fbclid` a `ctwa_clid`, čo stará verzia
+nevedela. CORS preflight overený proti `api.whispair.sk` aj `api-dev.whispair.sk`.
+Nasadené ešte nie je.
 
 Z `index.php` odišli dva riadky smerovania, `update_job`
 a `create_service_contract`; zvyšné tri boli dostupné len priamou cestou k súboru.

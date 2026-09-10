@@ -1,6 +1,6 @@
 # FilthyFilter — stav projektu
 
-**Aktualizované 9. 9. 2026.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
+**Aktualizované 10. 9. 2026.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
 a čo otvorené. Rozhodnutia a ich dôvody zostávajú v `REDESIGN_PLAN.md` a
 `MARKETING_PLAN.md`; postup nasadenia v `DEPLOYMENT.md`. Ak sa niektorý z nich rozchádza
 s týmto súborom, platí tento a treba ho tam opraviť.
@@ -118,6 +118,46 @@ súčty troch nasadených súborov sa zhodujú s repozitárom.
 `php vendor/bin/phpunit`: 401 testov, 1172 assertions, všetko prešlo. PHPStan
 nenašiel chybu a PHP CS Fixer nad zdrojmi po vylúčení lokálneho chráneného
 `.secrets` adresára nenašiel rozdiel.
+
+**Stará emisia konverzií je preč — T14 (10. 9., v repozitári).** Päť endpointov
+v `whispair-api` obsahovalo tú istú biznis logiku ako služby v `src/Services`
+a emitovalo konverzie druhýkrát. Každý zásah do atribúcie sa preto musel robiť
+dvakrát a rozdiel medzi oboma kópiami nikto nevidel, kým sa neprejavil v dátach.
+Zmazané sú `update_captured_message.php`, `convert_captured_message_to_job.php`,
+`update_job.php`, `create_service_contract.php` a `submit_lead.php`.
+
+**Piaty pribudol zámerne.** `submit_lead.php` bol pri štruktúrovaných leadoch
+vedome nechaný bez nových polí a označený na zmazanie práve preto, že ten istý
+insert by sa udržiaval dvakrát; platí naň teda rovnaký dôvod ako na ostatné štyri.
+
+**Postup z `ARCHITECTURE.md` bol dodržaný, vrátane kroku o access logu.** Ani
+jeden z piatich sa nevolá z portálu, z terénnej aplikácie ani z webu; portál aj
+appka idú na `/api/v1`. Access log na serveri za 23. 8. až 10. 9. neukazuje ani
+jeden zásah na ktorýkoľvek z nich. Jediný legacy endpoint, ktorý ešte dostáva
+prevádzku, je `woocommerce_order_webhook.php`.
+
+**Pri overovaní sa našla mŕtva stránka v portáli.** `portal/lead.php` je nasadená
+na `portal.whispair.sk` aj na dev a načíta sa, ale formulár posiela na
+`../php-api/endpoints/submit_lead.php`. Taká cesta po prechode na WebHouse
+neexistuje, lebo API dostalo vlastnú doménu; overené volaním, vracia 404. Stránka
+teda nebola volajúcim, bola už dávno rozbitá a za celé obdobie logu ju nikto
+nenačítal. Web `filthyfilter.sk` posiela leady na `POST /api/v1/leads` a funguje.
+Rozhodnutie, či `portal/lead.php` opraviť alebo zmazať, patrí do `whispAirPortal`
+a je samostatná úloha.
+
+Z `index.php` odišli dva riadky smerovania, `update_job`
+a `create_service_contract`; zvyšné tri boli dostupné len priamou cestou k súboru.
+Zdieľané pomocné súbory `_*.php` zostávajú, závisí od nich `/api/v1`.
+
+**Overené na `api-dev`.** Štyri autentifikované náhrady odpovedajú `401`, teda
+smerovanie žije a autentifikácia platí; verejné `POST /api/v1/leads` vracia na
+honeypot payload `202`. `php vendor/bin/phpunit`: 401 testov, rovnaký výsledok
+pred zásahom aj po ňom. Osem zlyhaní hlási `openai_not_configured`, respektíve
+`marketing_generation_not_configured`, teda chýbajúce kľúče v pracovnej kópii bez
+`.env`, nie regresiu.
+
+Zmena je zatiaľ **len v repozitári**, na server nenasadená. Po nasadení treba
+pustiť `scripts/smoke-test.ps1`, ako káže postup.
 
 **Synchronizácia e-mailov bola celý deň mŕtva a log to nepovedal (9. 9., na dev).**
 Worker padal pri každom behu, teda každých päť minút, na chybe `inconsistent types

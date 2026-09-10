@@ -11,12 +11,23 @@
     />
     <title>Filthy Filter — Dnešné čistenie v Trnave</title>
     <link rel="stylesheet" href="./styles.css" />
+    <script src="./app.js" defer></script>
   </head>
   <body>
+    <header class="editor-toolbar">
+      <div class="editor-toolbar__brand"><strong>FILTHY FILTER</strong><small>editor fotografií</small></div>
+      <p><span class="desktop-hint">Kliknite na fotografiu alebo na ňu pretiahnite súbor.</span><span class="mobile-hint">Ťuknite na fotografiu a vyberte novú.</span></p>
+      <button class="reset-all" type="button" disabled>Obnoviť všetky</button>
+    </header>
     <main>
       <section class="case-hero" aria-labelledby="case-title">
         <div class="scene" aria-hidden="true"></div>
         <div class="hazard-line" aria-hidden="true"></div>
+        <div class="image-slot image-slot--hero" data-slot="hero">
+          <img alt="Vlastná veľká fotografia vpravo" />
+          <button class="image-slot__pick" type="button" aria-label="Zmeniť veľkú fotografiu vpravo"><span class="image-slot__action"><span aria-hidden="true">＋</span> Zmeniť</span></button>
+          <button class="image-slot__reset" type="button" aria-label="Obnoviť pôvodnú veľkú fotografiu vpravo" title="Obnoviť pôvodný obrázok" disabled>↺</button>
+        </div>
 
         <div class="case-copy">
           <header class="brand-row">
@@ -85,12 +96,22 @@
         <h2 id="evidence-title" class="sr-only">Porovnanie pred a po čistení</h2>
         <article class="evidence-card before">
           <div class="evidence-photo" role="img" aria-label="Znečistená klimatizácia pred čistením"></div>
+          <div class="image-slot image-slot--bottom-left" data-slot="bottom-left">
+            <img alt="Vlastná fotografia vľavo dole" />
+            <button class="image-slot__pick" type="button" aria-label="Zmeniť fotografiu vľavo dole"><span class="image-slot__action"><span aria-hidden="true">＋</span> Zmeniť</span></button>
+            <button class="image-slot__reset" type="button" aria-label="Obnoviť pôvodnú fotografiu vľavo dole" title="Obnoviť pôvodný obrázok" disabled>↺</button>
+          </div>
           <h3>DÔKAZ A<br /><span>PRED ČISTENÍM</span></h3>
           <div class="inspection-ring" aria-hidden="true"></div>
           <p>PRACH<br />PLESNE<br />BAKTÉRIE</p>
         </article>
         <article class="evidence-card after">
           <div class="evidence-photo" role="img" aria-label="Čistá klimatizácia po čistení"></div>
+          <div class="image-slot image-slot--bottom-right" data-slot="bottom-right">
+            <img alt="Vlastná fotografia vpravo dole" />
+            <button class="image-slot__pick" type="button" aria-label="Zmeniť fotografiu vpravo dole"><span class="image-slot__action"><span aria-hidden="true">＋</span> Zmeniť</span></button>
+            <button class="image-slot__reset" type="button" aria-label="Obnoviť pôvodnú fotografiu vpravo dole" title="Obnoviť pôvodný obrázok" disabled>↺</button>
+          </div>
           <h3>DÔKAZ B<br /><span>PO ČISTENÍ</span></h3>
           <div class="inspection-ring" aria-hidden="true"></div>
           <p>ČISTÉ FILTRE<br />SVIEŽI VZDUCH<br />ZDRAVŠÍ DOMOV</p>
@@ -104,5 +125,7 @@
         <strong>ČISTÍME TO, ČO DRUHÍ NEVIDIA</strong>
       </footer>
     </main>
+    <input id="file-picker" type="file" accept="image/png,image/jpeg,image/webp,image/avif" hidden />
+    <div class="toast" role="status" aria-live="polite"></div>
   </body>
 </html>

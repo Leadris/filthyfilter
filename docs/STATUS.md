@@ -18,7 +18,7 @@ nebol úplný.
 | Okruh tržieb späť do Google Ads | kód, API aj portál existujú; worker a 90-dňová expirácia sú na dev, Ads aktivácia čaká na vlastnú s. r. o. a je produkčnou bránou |
 | Reklamné stránky | dve, na stagingu |
 | Google Ads | Manager, servisný prístup, Draft podúčet a prvá offline akcia sú pripravené; aktivácia podúčtu, ďalšie štyri akcie, kampaň a billing čakajú na vlastnú s. r. o. Checklist: `GOOGLE_ADS_PRODUCTION_GATE.md`. |
-| Meta (Facebook a Instagram) | meranie zo servera hotové a na dev (Conversions API); pixel a reklamný materiál **nezačaté**, zadanie v `MARKETING_PLAN.md` kap. 11 |
+| Meta (Facebook a Instagram) | meranie zo servera hotové, na dev aj na `main` (Conversions API), ale **čaká na dataset a token z Events Managera** (bod 10 nižšie); pixel a reklamný materiál **nezačaté**, zadanie v `MARKETING_PLAN.md` kap. 11 |
 | Produkčný web | **od 8. 9. večer** zhodný s dev vrátane WhatsApp tlačidla v mobilnej lište |
 | Ikony | hotové na stagingu aj na produkcii; stará baktéria je preč |
 | Technický review celého funnelu | hotový, `SYSTEM_REVIEW.md`; web verzia neverejne na `dev.filthyfilter.sk/system-review/` |
@@ -425,9 +425,26 @@ pričom riadok správne zostal `Logged`. Do živého datasetu Meta neodišlo ni�
 Každý beh je v `cron_run_logs`. 400 testov API prešlo, `phpstan` aj kontrola
 štýlu sú čisté.
 
-**Zostáva k tomu:** používateľ musí založiť dataset v Events Manageri a vydať
-systémový token. Až s nimi sa dá prejsť posledný krok, teda prepnutie riadku na
-`Uploaded` po skutočnom prevzatí udalosti.
+**Doplnené 10. 9.** Worker je od 10. 9. na `main` vo `whispair-api`. Ukázalo sa
+pritom, že žiadna vetva nemala všetko naraz: jedna niesla T5 a T12 bez okna
+z T13, päť ďalších okno z T13 bez T5. Zlúčené sú obe, bez konfliktu, a merge
+odhalil vlastnú dieru — kľúče `META_CAPI_*` chýbali v `config/env.schema.php`,
+ktorý vznikol na inej vetve neskôr. Doplnené vlastným blokom vedľa katalógových,
+nie medzi ne.
+
+Oprava atribúcie sa medzitým z `api-dev` stratila, prepísalo ju nasadenie T13.
+Nasadená znova 10. 9. a overená na živom kóde: atribučný riadok s `platform='meta'`
+prejde cez `conversion_click_ids` aj s identifikátorom. Záloha pôvodného súboru je
+`~/tmp/_conversion_helpers.before-meta-20260910.php`. Dev tým ale **nie je zhodný
+s `main`**, má len tú dvojriadkovú záplatu; zosúladí to až riadne nasadenie.
+
+Webcron na jeden denný beh je založený. Prvý plánovaný beh treba potvrdiť riadkom
+v `cron_run_logs` s triggerom `http`; doteraz sú tam len behy s `cli`, teda ručné
+overovanie.
+
+**Zostáva k tomu:** dataset a systémový token z Events Managera. Až s nimi sa dá
+prejsť posledný krok, teda prepnutie riadku na `Uploaded` po skutočnom prevzatí
+udalosti. Zapísané ako bod 10 v „Čo čaká na používateľa“ a ako T20 v `BACKLOG.md`.
 
 **Štruktúrovaný dopyt a Meta identifikátor (8. 9., na dev).** Fáza 1 plánu
 životného cyklu. Formulár sa už roky pýtal na službu, obec, počet jednotiek,
@@ -643,6 +660,17 @@ produkčné, kým neprejde `validateOnly` a podúčet nebude používať `This m
    účet už má Standard access. Po aktivácii podúčtu nastaviť `This manager`,
    doplniť `.env` a overiť `validateOnly`. Všetky podmienky sú v
    `GOOGLE_ADS_PRODUCTION_GATE.md`.
+10. **Založiť dataset a vydať token v Meta Events Manageri (T20).** Worker
+    z T5 je hotový a na dev, ale bez prístupov ticho nič nerobí, takže Meta
+    dnes o žiadnej konverzii nevie. Tri kroky v Events Manageri: založiť alebo
+    vybrať dataset a odpísať jeho id, vydať systémový token s oprávnením
+    `ads_management` naň, a pri reklame s prechodom do WhatsAppu odpísať aj id
+    stránky za WhatsApp číslom. Do `.env` idú ako `META_CAPI_DATASET_ID`,
+    `META_CAPI_ACCESS_TOKEN` a `META_CAPI_PAGE_ID`. **Katalógové
+    `META_CATALOG_*` sa použiť nedajú**, katalóg a dataset sú iné objekty
+    a token na správu katalógu udalosti zapísať nevie. Na prvý beh sa oplatí
+    pridať `META_CAPI_TEST_EVENT_CODE` a sledovať to v Test Events.
+    Podrobnosti v `BACKLOG.md` bod T20.
 
 ## Čo čaká na vývoj
 

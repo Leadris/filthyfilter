@@ -10,6 +10,47 @@ Poradie prednosti zostáva: pokyny používateľa → `STATUS.md` → `MARKETING
 → `REDESIGN_PLAN.md` → tento súbor. Tento súbor opisuje architektúru
 a implementačný plán, nie stav; stav sa píše do `STATUS.md`.
 
+---
+
+> ## ⚠ Stav k 10. 9. 2026 — kapitoly A až I sú zadanie zo 7. 9., nie audit
+>
+> Za tri dni od zápisu sa **väčšina P0 implementovala**. Kto by čítal iba tento
+> súbor — alebo jeho web verziu na `dev.filthyfilter.sk/system-review/` — postavil
+> by druhýkrát veci, ktoré už bežia. Čo platí a čo nie, overené voči kódu
+> (`whispair-api` `main` `12de52c`, `filthyfilter` `0b22778`):
+>
+> | Bod | Čo tu stojí | Skutočnosť 10. 9. |
+> | --- | --- | --- |
+> | P0.1 štruktúrovaný lead | chýba | **hotové** — migrácia `20260908100000`, `build_lead_details()` |
+> | P0.2 atribúcia mimo Google | chýba | **čiastočne** — `platform`, `fbclid`, `ctwa_clid`, `meta_ad_id` sú; `consent_version`, `consent_at`, `campaign_id`, `adgroup_id`, `keyword_id`, `channel` **stále nie** |
+> | P0.3 peniaze na zákazke | chýba | **hotové**, na dev aj na produkcii |
+> | P0.4 účtovná kniha | chýba | **hotové** — `invoices`, `invoice_payments`, `job_costs` |
+> | P0.5 identita zákazníka | chýba | **hotové** — T12 |
+> | P0.6 lokalita ako dáta | chýba | **stále chýba** — žiadne `service_localities`, `client_locations`, `locality_id` |
+> | P0.7 zmazanie legacy emisie | chýba | **hotové v repozitári** (T14, päť súborov), nenasadené |
+>
+> **Kapitoly G.4 a G.7 sú prekonané.** Používateľ rozhodol, že peniaze nesie
+> `invoice_paid` v netto **až po úhrade**; `job_completed` zostáva míľnikom bez
+> hodnoty (migrácia `20260908140000`). Trojfázový plán prepínania primárnej
+> konverzie v G.4 preto v pôvodnom znení neplatí — aktuálny je v
+> `LANDING_PAGE_STRATEGY.md` kap. 10.2.
+>
+> **Bod P1.7 (tri mestské stránky) je zrušený.** Je v rozpore s rozhodnutím
+> používateľa zo 6. 9. v `MARKETING_PLAN.md` kap. 2: geografické stránky až podľa
+> dát o tom, odkiaľ chodia zákazky. Podmienky, za ktorých mestská stránka vzniká,
+> sú v `LANDING_PAGE_STRATEGY.md` kap. 11.5.
+>
+> **Téma landing pages, zámerov a ich atribúcie sa presunula do samostatného
+> súboru:** [`LANDING_PAGE_STRATEGY.md`](LANDING_PAGE_STRATEGY.md). Tento súbor
+> ju nerieši a riešiť nemá.
+>
+> Čo z tohto dokumentu zostáva v plnej platnosti: metóda (rozšíriť, nezakladať),
+> doménový model v kapitole E, celá kapitola G okrem G.4 a G.7, `ServiceQuoteEngine`
+> (P1.1), rezervácia pre servis (P1.2), recenzie (P1.5), retencia (P2.1) a odmietnutie
+> náhrady Billdu vlastným stackom (D.1).
+
+---
+
 Hlavný nález v jednej vete: **cesta klik → lead → zákazka → konverzia do
 Google existuje a je overená, ale ide po nej len udalosť, nie peniaze.**
 Zákazka nemá cenu, faktúra v systéme neexistuje, takže `job_completed`
@@ -372,6 +413,12 @@ V Google Ads má každá konverzná akcia prepínač „primárna“/„sekundá
 Smart Bidding** (Google posúva ponuky tak, aby ich bolo viac). Sekundárne
 sa iba zobrazujú.
 
+> **Prekonané 10. 9. 2026.** Tabuľka nižšie predpokladá, že hodnotu nesie
+> `job_completed`. Používateľ rozhodol inak: peniaze nesie `invoice_paid` v netto
+> až po úhrade a `job_completed` je zámerne bez hodnoty. Aktuálny trojfázový plán
+> vrátane podmienky o mediáne splatnosti je v `LANDING_PAGE_STRATEGY.md` kap. 10.2.
+> Tabuľka zostáva ako doklad úvahy, nie ako pokyn.
+
 Odporúčanie pre nás, v troch fázach:
 
 | Fáza | Primárna | Sekundárne |
@@ -494,7 +541,7 @@ rules“ v Google Ads (násobenie podľa geo/zariadenia) — hrubé, neodporúč
 | P1.4 | Faktúra: pri `Done` portál vyžiada číslo a sumy z Billdu (ručne), zapíše `invoices`; `job_completed` dostane hodnotu |
 | P1.5 | `review_requests` + `cron/review_request_worker.php`: 2 dni po Done šablóna WhatsApp (vyžaduje schválenú Meta šablónu) s fallbackom e-mail; sledovanie odoslania, follow-upu a kliku cez `link_token` |
 | P1.6 | Meta Pixel v `js/consent.js`, WhatsApp v mobilnej lište, `LocalBusiness` JSON-LD (už v `STATUS.md`) |
-| P1.7 | Tri mestské stránky (Bratislava, Trnava, Nitra) ako ručné HTML z jednej šablóny; dynamické časti (počet realizácií, najbližší termín, recenzie) z `GET /api/v1/public/localities/{slug}` |
+| ~~P1.7~~ | ~~Tri mestské stránky (Bratislava, Trnava, Nitra) ako ručné HTML z jednej šablóny~~ **Zrušené 10. 9. 2026** — v rozpore s `MARKETING_PLAN.md` kap. 2 (geografické stránky až podľa dát). Nahradené: landing pages podľa zámeru, nie podľa mesta, a podmienky pre mestskú stránku v `LANDING_PAGE_STRATEGY.md` kap. 5 a 11.5 |
 | P1.8 | Test v `tests/`, ktorý zlyhá, keď sa tri kópie formulára rozídu |
 | P1.9 | Telefónny lead: v portáli/aplikácii rýchly zápis so `source=PhoneNote` a povinným `lead_details.service_code` |
 

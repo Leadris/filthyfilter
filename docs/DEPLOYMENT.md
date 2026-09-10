@@ -60,6 +60,32 @@ extracted into the production root, which put `noindex` on all five live pages
 and `Disallow: /` in the live `robots.txt`. A single build with a flag is one
 forgotten argument away from repeating that; two files are not.
 
+## Smoke test after every deploy
+
+```bash
+npm run smoke             # filthyfilter.sk -> api.whispair.sk
+npm run smoke:staging     # dev.filthyfilter.sk -> api-dev.whispair.sk
+```
+
+`npm test` stays offline and says nothing about the live site. `npm run smoke`
+asks the one question the site exists to answer: can a visitor's enquiry still
+reach the API? It checks that all three pages serve the form, that the deployed
+`js/main.js` targets the right API host, that the CORS preflight from this
+origin is actually allowed, and that `POST /api/v1/leads` answers. The POST
+fills the honeypot field, so it stores nothing.
+
+It also checks that `www` still redirects to the apex. That is not cosmetic:
+`js/main.js` maps the `www` host to the production API, but the production
+`CORS_ALLOWED_ORIGINS` list contains only the apex origin, so a page actually
+running on `www` would have its enquiry blocked by the browser and the lead lost
+with no server-side trace. Adding `https://www.filthyfilter.sk` to that list
+would remove the dependency; until then the redirect is load-bearing.
+
+Run it because a broken enquiry form reports nothing. The visitor sees an error,
+the lead is gone, and the access log shows an ordinary page view. The portal's
+own landing page posted to a path that had stopped existing and nobody noticed
+for months, which is what this guards against here.
+
 ### Last production deploy
 
 - Date: 2026-09-08, WhatsApp in the mobile bar, the stray `data-inquiry` fix and

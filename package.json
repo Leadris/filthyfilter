@@ -7,7 +7,9 @@
     "build:config": "node scripts/build-runtime-config.mjs",
     "check:config": "node scripts/build-runtime-config.mjs --check",
     "test": "npm run check:config && node --test tests/forms.test.cjs tests/browser.test.cjs",
-    "test:forms": "node --test tests/forms.test.cjs"
+    "test:forms": "node --test tests/forms.test.cjs",
+    "smoke": "node scripts/smoke-test.mjs",
+    "smoke:staging": "node scripts/smoke-test.mjs staging"
   },
   "devDependencies": {
     "playwright": "^1.63.0"

@@ -195,6 +195,32 @@ adresu portálu a adresu API oddelene a pribudla kontrola, že `lead.php` nesie
 absolútnu základnú adresu a nespomína `php-api`. Overený zelený na produkcii
 aj na dev.
 
+**Smoke testy sú doplnené vo všetkých troch projektoch.** Dôvod je ten istý
+tvar zlyhania, ktorý sa v tomto kole ukázal dvakrát: cesta leadu sa dá ticho
+prerušiť a nikto sa to nedozvie, lebo návštevník vidí len chybu a v logu je
+obyčajné zobrazenie stránky.
+
+- **API.** Pribudla kontrola, že päť zmazaných endpointov naozaj zostáva preč.
+  Nie je to formalita: `-OnlyFiles` je neodstraňujúca vrstva a záložný FTP
+  nahráva súbor po súbore, takže ani jeden nič nemaže, a oživená kópia by začala
+  emitovať konverziu druhýkrát potichu, nie s chybou. Druhá nová kontrola je
+  verejné `POST /api/v1/leads` cez honeypot, ktorý nič neukladá. Kontrola CORS
+  teraz overuje, že vrátený origin sa zhoduje s tým, ktorý prehliadač poslal;
+  samotná prítomnosť hlavičky negarantuje nič, lebo produkcia má úzky zoznam.
+- **Web.** `npm run smoke` a `npm run smoke:staging` sú nové. `npm test` je
+  offline a o živom webe nehovorí nič. Smoke overí, že všetky tri stránky
+  servírujú formulár, že nasadený `js/main.js` mieri na správne API, že CORS
+  preflight z tohto originu prejde a že príjem leadu odpovedá.
+- **Portál.** Prepísaný, ako je popísané vyššie.
+
+**Pri tom sa našla latentná diera.** `js/main.js` mapuje hostiteľa
+`www.filthyfilter.sk` na produkčné API, ale produkčný `CORS_ALLOWED_ORIGINS`
+obsahuje iba apex `https://filthyfilter.sk`. Overené volaním: preflight z www
+originu sa vráti bez hlavičky, teda zablokovaný. Dnes to nevadí, lebo www robí
+301 na apex a stránka na tom origine nikdy nebeží. Drží to však presmerovanie,
+nie konfigurácia. Smoke test preto kontroluje aj to presmerovanie. Čistejšie by
+bolo pridať `https://www.filthyfilter.sk` do zoznamu, to je rozhodnutie na teba.
+
 **Synchronizácia e-mailov bola celý deň mŕtva a log to nepovedal (9. 9., na dev).**
 Worker padal pri každom behu, teda každých päť minút, na chybe `inconsistent types
 deduced for parameter $2`. Ten istý pomenovaný parameter je v príkaze dvakrát a

@@ -26,6 +26,112 @@
 
   <link rel="stylesheet" href="../css/styles.css?v=privacy-prices-1">
   <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Service",
+        "@id": "https://filthyfilter.sk/servis-klimatizacie/#service",
+        "name": "Servis a diagnostika klimatizácie",
+        "serviceType": "Diagnostika, opravy a servis klimatizácií",
+        "description": "Diagnostika porúch, kvapkania, zápachu a slabého chladenia klimatizácií. Bratislava, Trnava, Nitra a okolie do 20 km.",
+        "provider": {
+          "@type": "HVACBusiness",
+          "name": "FilthyFilter by whispAir",
+          "url": "https://filthyfilter.sk/",
+          "telephone": "+421902279094"
+        },
+        "areaServed": [
+          {
+            "@type": "City",
+            "name": "Bratislava"
+          },
+          {
+            "@type": "City",
+            "name": "Trnava"
+          },
+          {
+            "@type": "City",
+            "name": "Nitra"
+          },
+          {
+            "@type": "City",
+            "name": "Senec"
+          }
+        ],
+        "offers": [
+          {
+            "@type": "Offer",
+            "name": "Diagnostika a servis",
+            "price": "49.00",
+            "priceCurrency": "EUR",
+            "priceSpecification": {
+              "@type": "PriceSpecification",
+              "price": "49.00",
+              "priceCurrency": "EUR",
+              "valueAddedTaxIncluded": true
+            }
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://filthyfilter.sk/servis-klimatizacie/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Viete prísť dnes?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Termíny sú po dohode a urgentný výjazd negarantujeme. Napíšte aj tak. Ak sa niečo uvoľní v okolí, zavoláme práve vám."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Koľko bude stáť oprava?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Na to sa pred obhliadkou nedá odpovedať poctivo, a presne preto existuje poplatok za diagnostiku. Sľúbiť vieme to, že sumu poviete pred prácou, nie až na faktúre."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Čo ak sa to nedá opraviť?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Potom zaplatíte 49 € za to, že to viete, a nič viac. Povieme, aké máte možnosti, a ak je jednou z nich nová jednotka, rieši ju whispAir, nie my."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Servisujete každú značku?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Pošlite značku a model a povieme vám to ešte pred dohodnutím termínu. Je horšia odpoveď prísť a zistiť, že nepomôžeme, než to napísať v správe."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Neviete len doplniť chladivo?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Tesný okruh sa nemíňa. Ak je chladiva málo, niekde uniká, a doplniť ho bez nájdenia príčiny sú peniaze naliate do netesnosti. Najprv hľadáme príčinu a povieme, čo zásah obnáša."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Čo mám poslať vopred?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Značku a model zo štítka, fotku displeja, ak svieti kód, a pár sekúnd videa, ak vás trápi zvuk. Každá z tých vecí skracuje výjazd."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body data-ff-page="ff-servis">
 
@@ -435,7 +541,7 @@
             <textarea id="inq-preview" class="inquiry__preview" rows="7" readonly></textarea>
           </div>
 
-          <p class="inquiry__privacy" id="inq-privacy"><span  data-sk="Údaje dostane ADAMSON s. r. o. na vybavenie dopytu a dohodnutie služby. Reklamné meranie je dobrovoľné a nastavuje sa osobitne." data-en="ADAMSON s. r. o. uses your details to respond and arrange the service. Advertising measurement is optional and controlled separately.">Údaje dostane ADAMSON s. r. o. na vybavenie dopytu a dohodnutie služby. Reklamné meranie je dobrovoľné a nastavuje sa osobitne.</span> <a href="../ochrana-osobnych-udajov/" data-sk="Ako spracúvame údaje" data-en="How we process data">Ako spracúvame údaje</a>.</p>
+          <p class="inquiry__privacy" id="inq-privacy"><span  data-sk="Údaje dostane whispAir s.r.o. na vybavenie dopytu a dohodnutie služby. Reklamné meranie je dobrovoľné a nastavuje sa osobitne." data-en="whispAir s.r.o. uses your details to respond and arrange the service. Advertising measurement is optional and controlled separately.">Údaje dostane whispAir s.r.o. na vybavenie dopytu a dohodnutie služby. Reklamné meranie je dobrovoľné a nastavuje sa osobitne.</span> <a href="../ochrana-osobnych-udajov/" data-sk="Ako spracúvame údaje" data-en="How we process data">Ako spracúvame údaje</a>.</p>
           <div class="inquiry__actions">
             <button type="submit" class="btn btn--primary" id="inq-send" aria-describedby="inq-privacy"
                     data-en="Send the enquiry" data-sk="Odoslať dopyt">Odoslať dopyt</button>

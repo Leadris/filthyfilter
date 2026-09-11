@@ -254,10 +254,15 @@ shipping it here would add a file that can only ever do nothing or go wrong.
   across future package deploys because the package extracts over the root
   without wiping it; nothing in `build_dev.py` or the release tar lists it, so
   it can never reach production by accident.
-- The page is rendered from `docs/SYSTEM_REVIEW.md` by `tmp/build_system_review.py`
-  (uncommitted, like the other tmp deploy scripts). It carries its own
-  `noindex, nofollow, noarchive` meta; the staging `robots.txt` disallows
-  everything anyway. Unlisted, not password protected.
+- The page is rendered from `docs/SYSTEM_REVIEW.md` by `scripts/build-system-review.py`.
+  It carries its own `noindex, nofollow, noarchive` meta; the staging `robots.txt`
+  disallows everything anyway. Unlisted, not password protected.
+  **Corrected 2026-09-10:** the script used to live in `tmp/`, which is gitignored,
+  so the rendered page was committed while the only thing able to rebuild it was
+  not. Anyone editing the source would have had no way to refresh the page and the
+  two would have drifted apart silently. It is now in `scripts/` and committed.
+  It needs the `markdown` package; run `python scripts/build-system-review.py`
+  after every edit to `docs/SYSTEM_REVIEW.md`, then redeploy the page on its own.
 - Verified: `https://dev.filthyfilter.sk/system-review/` answers 200, 76 154 bytes,
   SHA-256 `213e4cab…1440` identical to the repository file.
 - Uploaded package: `/home/jg046600/tmp/ff-dev-system-review-20260907.tar.gz`.

@@ -1,6 +1,6 @@
 # FilthyFilter — stav projektu
 
-**Aktualizované 10. 9. 2026.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
+**Aktualizované 11. 9. 2026.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
 a čo otvorené. Rozhodnutia a ich dôvody zostávajú v `REDESIGN_PLAN.md` a
 `MARKETING_PLAN.md`; postup nasadenia v `DEPLOYMENT.md`. Ak sa niektorý z nich rozchádza
 s týmto súborom, platí tento a treba ho tam opraviť.
@@ -21,10 +21,71 @@ nebol úplný.
 | Meta (Facebook a Instagram) | meranie zo servera hotové, na dev aj na `main` (Conversions API), ale **čaká na dataset a token z Events Managera** (bod 10 nižšie); pixel a reklamný materiál **nezačaté**, zadanie v `MARKETING_PLAN.md` kap. 11 |
 | Produkčný web | **od 8. 9. večer** zhodný s dev vrátane WhatsApp tlačidla v mobilnej lište |
 | Ikony | hotové na stagingu aj na produkcii; stará baktéria je preč |
-| Technický review celého funnelu | hotový, `SYSTEM_REVIEW.md`; web verzia neverejne na `dev.filthyfilter.sk/system-review/` |
+| Technický review celého funnelu | `SYSTEM_REVIEW.md` **prepísaný 10. 9. podľa skutočnosti**: čo je hotové, je označené a odkazuje sem. Web verzia je prebuildovaná v repozitári, ale **na dev ešte nenasadená**, takže `dev.filthyfilter.sk/system-review/` stále ukazuje verziu zo 7. 9. |
+| Stratégia landing pages a zámerov | rozhodovací návrh v `LANDING_PAGE_STRATEGY.md` (10. 9.); **nič z neho nie je implementované**, čaká na sedem rozhodnutí v jeho kap. 14 |
 | Sledovanie životného cyklu zákazky | plán v `LIFECYCLE_IMPLEMENTATION.md`; **fázy 1 a 2 hotové a na dev**, z fázy 4 hotový krok 7 (identita zákazníka, T12); fáza 3 čaká na Billdu Premium |
 
+**Schema.org JSON-LD, podrobný cenový odhad a premenovaná firma (11. 9., v repozitári).**
+Tri zmeny na vetve `codex/filthyfilter-redesign`:
+
+1. **Štruktúrované dáta Schema.org.** Do `index.html` pribudol skript `application/ld+json`
+   s typom `HVACBusiness` (adresa, telefón, cenník ako `hasOfferCatalog`) a `FAQPage`
+   (7 otázok zo sekcie FAQ). Stránky `/cistenie-klimatizacie/` a `/servis-klimatizacie/`
+   dostali `Service` + `FAQPage` (6 otázok každá). Overené validátorom Google Rich Results.
+
+2. **Podrobný cenový odhad v dopytovacom formulári.** `js/main.js` doplnený o funkcie
+   `priceAmount`, `formatMoney` a `buildEstimateLines`, ktoré vypočítajú transparentný
+   rozpis `počet ks × sadzba + expres`. Rozpis sa objaví v náhľade formulára pre zákazníka
+   aj v tele správy posielanej do `POST /api/v1/leads` — technik teda v portáli vidí
+   rovnaký odhad. Vyžadovalo pridanie číselného `amount` do tabuľky `PRICES`.
+
+3. **Preregistrácia firmy na whispAir s.r.o.** Všetky výskyty `ADAMSON s. r. o.` nahradené
+   za `whispAir s.r.o.` vo všetkých piatich HTML súboroch a v teste `tests/browser.test.cjs`.
+   Stránka ochrany osobných údajov uvádza `whispAir s.r.o. (v štádiu zakladania, Česká republika)`.
+   Bez IČO/DIČ, firma ešte nie je zapísaná.
+
+**Overené:** `node --test tests/forms.test.cjs` — 4/4 prechádza;
+`npm test` (Playwright + Chrome) — 13/13 prechádza.
+
+**Nasadené:** zatiaľ len v repozitári na vetve `codex/filthyfilter-redesign`.
+Na dev ide s najbližším balíkom podľa `DEPLOYMENT.md`.
+
 ## Čo je hotové
+
+**Technický review je zosúladený so skutočnosťou a jeho generátor je konečne
+v gite (10. 9.).** `SYSTEM_REVIEW.md` bol zo 7. 9. a končil vetou „nič z tohto
+dokumentu ešte nie je implementované“. Za tri dni sa implementovala väčšina jeho
+P0, takže tá veta prestala byť pravdivá presne v dokumente, ktorý mal slúžiť ako
+zadanie. Kto by ho čítal, postavil by druhýkrát štruktúrovaný lead, peniaze na
+zákazke, účtovnú knihu aj identitu zákazníka.
+
+Kapitoly A až D, H a I sú prepísané: hotové body sú označené a odkazujú sem,
+nesplnené zostali. Zmenili sa aj dve rozhodnutia, ktoré dokument popisoval inak,
+než sa nakoniec spravili. Hodnotu nesie `invoice_paid` v netto po úhrade, nie
+`job_completed`. A bod P1.7 s tromi mestskými stránkami je **odložený, nie
+zrušený ako myšlienka**: rozhodnutie zo 6. 9. hovorí „geografické stránky až
+podľa dát, nie dopredu“, čo je podmienka na načasovanie, a P1.7 chcel tri
+stránky dopredu.
+
+Zo štyroch nesplnených P0 zostáva **jedno celé**: lokalita ako dáta (P0.6).
+Z P0.2 chýba polovica, a je to tá právne dôležitá: `consent_version` a
+`consent_at` na `lead_attribution` nikde nie sú, hoci ich web pozná, a bez nich
+sa nemá púšťať prvý ostrý export konverzií.
+
+**Pri tom sa našla vlastná diera.** Stránka `interne/system-review/index.html` je
+v gite, ale `tmp/build_system_review.py`, ktorý ju vyrába, nie: `tmp/` je
+v `.gitignore` kvôli 22 MB deploy archívom. Rendrovaná stránka teda bola
+verzovaná a jediná vec schopná ju obnoviť nie. Ktokoľvek by upravil zdroj, nemal
+by ako stránku prekresliť, a obe by sa ticho rozišli. Skript je presunutý do
+`scripts/build-system-review.py` a je verzovaný; postup je opravený
+v `DEPLOYMENT.md`.
+
+**Stránka je prebuildovaná, ale na dev nenasadená.** `dev.filthyfilter.sk/system-review/`
+stále ukazuje verziu zo 7. 9. Nasadzuje sa samostatne, nie ako súčasť balíka,
+podľa postupu v `DEPLOYMENT.md`.
+
+Súbežne vznikol `LANDING_PAGE_STRATEGY.md`, rozhodovací návrh k viacerým landing
+pages podľa zámeru. Nič z neho nie je implementované a čaká na sedem rozhodnutí.
 
 **Zákazník má identitu — T12 (8. 9., na dev).** `clients` niesla meno, telefón
 a adresu a nič viac, čo stálo tri veci naraz. `invoicing_due_days` čítal segment,

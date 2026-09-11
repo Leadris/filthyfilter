@@ -172,7 +172,7 @@ test('Every public page: working privacy links, responsive layout, SK/EN and loc
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,route+' overflow at '+width);
       assert.ok(await page.locator('a[href*="ochrana-osobnych-udajov/"]').count());
       await page.click('[data-lang="en"]');assert.equal(await page.locator('html').getAttribute('lang'),'en');
-      if(route.includes('ochrana')){assert.match(await page.locator('main').innerText(),/ADAMSON/);await page.screenshot({path:path.join(root,'tmp/privacy-'+width+'.png'),fullPage:width===1440});}
+      if(route.includes('ochrana')){assert.match(await page.locator('main').innerText(),/whispAir s\.r\.o\./i);await page.screenshot({path:path.join(root,'tmp/privacy-'+width+'.png'),fullPage:width===1440});}
       if(route.includes('/hall/')){
         const poster=await page.locator('.case-poster__art img').evaluate(el=>({src:el.currentSrc,loaded:el.complete&&el.naturalWidth>0,opacity:getComputedStyle(el.parentElement).opacity}));
         assert.match(poster.src,/\.webp$/);assert.ok(poster.loaded);assert.equal(poster.opacity,'0.5');

@@ -1,14 +1,63 @@
 # Technický review: FilthyFilter + whispair-api voči modelu „klik → faktúra → recenzia → ďalšia objednávka“
 
-Zapísané 7. 9. 2026. Review voči skutočnému kódu v `filthyfilter` (vetva
-`codex/filthyfilter-redesign`, 98873b5) a `whispair-api` (vetva
-`feature/service-package-vat`, a1cbb1e, plus `main` a `wip/installation-slots`).
-Benchmark VyčistímKlímu slúži len ako zoznam schopností; ich čísla sa neberú
-ako fakt. Nič z tohto dokumentu ešte nie je implementované; je to zadanie.
+Zapísané 7. 9. 2026, **prepísané podľa skutočnosti 10. 9. 2026**. Pôvodné
+review bolo voči `filthyfilter` (`codex/filthyfilter-redesign`, 98873b5)
+a `whispair-api` (`feature/service-package-vat`, a1cbb1e). Revízia je voči
+`filthyfilter` `0b22778` a `whispair-api` `main` `12de52c`. Benchmark
+VyčistímKlímu slúži len ako zoznam schopností; ich čísla sa neberú ako fakt.
+
+**Pôvodná veta „nič z tohto dokumentu ešte nie je implementované“ už neplatí.**
+Za tri dni sa implementovala väčšina P0. Kapitoly A až D, H a I sú od 10. 9.
+zosúladené so stavom; čo je hotové, je označené ✅ a odkazuje na `STATUS.md`.
 
 Poradie prednosti zostáva: pokyny používateľa → `STATUS.md` → `MARKETING_PLAN.md`
 → `REDESIGN_PLAN.md` → tento súbor. Tento súbor opisuje architektúru
 a implementačný plán, nie stav; stav sa píše do `STATUS.md`.
+
+---
+
+## Záznam revízie — čo sa zmenilo od 7. 9. do 10. 9.
+
+Overené voči kódu, nie voči dokumentom (`whispair-api` `main` `12de52c`,
+`filthyfilter` `0b22778`). Podrobnosti a dôkazy o nasadení sú v `STATUS.md`;
+tu je len to, čo mení tento dokument.
+
+| Pôvodná priorita | Čo tu stálo | Skutočnosť 10. 9. |
+| --- | --- | --- |
+| P0.1 štruktúrovaný lead | chýba | ✅ migrácia `20260908100000`, `build_lead_details()`, web posiela polia |
+| P0.2 atribúcia mimo Google | chýba | ⚠ **polovica** — `platform`, `fbclid`, `ctwa_clid`, `meta_ad_id`, WhatsApp `referral` sú. `consent_version`, `consent_at`, `campaign_id`, `adgroup_id`, `keyword_id`, `channel` **stále nie** |
+| P0.3 peniaze na zákazke | chýba | ✅ ocenené riadky a súčty, na dev aj na produkcii |
+| P0.4 účtovná kniha | chýba | ✅ `invoices`, `invoice_payments`, `job_costs` |
+| P0.5 identita zákazníka | chýba | ✅ T12 vrátane `acquisition_lead_attribution_id` |
+| P0.6 lokalita ako dáta | chýba | ❌ **stále chýba** — žiadne `service_localities`, `client_locations`, `locality_id` |
+| P0.7 zmazanie legacy emisie | chýba | ✅ v repozitári (T14, päť súborov), **nenasadené** |
+| P1.6 Meta Pixel, JSON-LD | chýba | ⚠ meranie zo servera hotové (Meta CAPI worker, T5); **pixel a `LocalBusiness` stále chýbajú** |
+| P1.8 test troch formulárov | chýba | ✅ `tests/forms.test.cjs` |
+
+**Model hodnoty konverzie sa zmenil.** Kapitoly G.4 a G.7 predpokladajú hodnotu
+na `job_completed`. Používateľ rozhodol inak: peniaze nesie **`invoice_paid`
+v netto až po úhrade**, `job_completed` zostáva míľnikom bez hodnoty (migrácia
+`20260908140000`). Aktuálny plán prepínania primárnej konverzie je
+v `LANDING_PAGE_STRATEGY.md` kap. 10.2.
+
+**Bod P1.7 (tri mestské stránky ihneď) je odložený, nie zrušený ako myšlienka.**
+Rozhodnutie používateľa zo 6. 9. v `MARKETING_PLAN.md` kap. 2 znie doslova:
+„Geografické stránky až podľa dát o tom, odkiaľ reálne chodia zákazky, nie
+dopredu.“ Je to teda **podmienka na načasovanie**, nie odmietnutie mestských
+stránok. P1.7 chcel tri stránky hneď, čo tú podmienku porušuje. Podmienky, za
+ktorých mestská stránka vzniká a smie sa indexovať, sú v
+`LANDING_PAGE_STRATEGY.md` kap. 11.5.
+
+**Téma landing pages, zámerov a ich atribúcie sa presunula do samostatného
+súboru:** [`LANDING_PAGE_STRATEGY.md`](LANDING_PAGE_STRATEGY.md). Tento súbor
+ju nerieši a riešiť nemá.
+
+Čo z tohto dokumentu zostáva v plnej platnosti: metóda (rozšíriť, nezakladať),
+doménový model v kapitole E, celá kapitola G okrem G.4 a G.7, `ServiceQuoteEngine`
+(P1.1), rezervácia pre servis (P1.2), recenzie (P1.5), retencia (P2.1) a odmietnutie
+náhrady Billdu vlastným stackom (D.1).
+
+---
 
 Hlavný nález v jednej vete: **cesta klik → lead → zákazka → konverzia do
 Google existuje a je overená, ale ide po nej len udalosť, nie peniaze.**
@@ -49,34 +98,55 @@ sa dnes nedá zodpovedať z dát.
 | AI tam, kde je to opodstatnené | Groq prepis hlasu (`GroqTranscriptionService`), OpenAI vision pri výbere fotiek, OpenAI pri cenníkoch dodávateľov |
 | Testy | `whispair-api/tests/Unit` (PHPUnit, 54 súborov vrátane `ConversionHelpersTest`, `DataManagerHelpersTest`, `LeadHelpersTest`, `WhatsAppHelpersTest`, `PricingEngineTest`); `filthyfilter/tests/browser.test.cjs` (Playwright) |
 
+**Pribudlo medzi 8. a 10. 9. 2026** (podrobnosti a dôkazy o nasadení v `STATUS.md`):
+
+| Schopnosť | Kde presne |
+| --- | --- |
+| Štruktúrovaný lead a rozlíšenie našej značky | `captured_messages.lead_details` JSONB (`service_key`, `service_code`, `place`, `unit_count`, `preferred_time_text`, `express`) a `business_brand`; migrácia `20260908100000`, `build_lead_details()` v `_lead_helpers.php` |
+| Atribúcia neutrálna k platforme | `lead_attribution` a `conversion_events` s `platform`, `fbclid`, `ctwa_clid`; `lead_attribution.meta_ad_id`; migrácie `20260908110000`, `20260908120000`. **`platform` sa odvodzuje na serveri, nikdy sa neberie z požiadavky** |
+| Meta reklama s prechodom do WhatsAppu | `whatsapp_parse_inbound()` číta `messages[].referral`; značka sa číta z cieľovej adresy a z textu správy, pri rozpore rozhodne človek; `tools/backfill_whatsapp_referrals.php` na staré riadky |
+| Peniaze na zákazke | ocenené riadky zákazky a súčty; migrácia `20260908130000` |
+| Účtovná kniha | `invoices`, `invoice_payments`, `job_costs` s `issue_mode`; DPH a splatnosti z `app_settings`, na doklade zmrazené k dátumu vystavenia |
+| Konverzia s hodnotou | udalosť `invoice_paid`, netto, až po úhrade; `conversion_events.invoice_id` a unikátny index `uq_conversion_events_invoice_type`; migrácia `20260908140000` |
+| Identita zákazníka | `clients.email`, `phone_normalized` (E.164, čiastočný unikátny index), `customer_type`, `acquisition_lead_attribution_id`; jedna normalizačná funkcia `client_normalize_phone()`; migrácia `20260908160000` |
+| Stráženie 90-dňového okna kliku | worker porovnáva čas kliku s časom **odoslania**, nie vzniku udalosti; terminálny stav `Expired` s počítadlom v `cron_run_logs`; migrácia `20260909042547` |
+| Meta Conversions API | `cron/meta_conversions_worker.php`, `endpoints/_meta_conversions_helpers.php`; web klik ako `website` s `fbclid` v cookie `fbc`, klik do WhatsAppu ako `business_messaging` s `ctwa_clid`; telefón hašovaný podľa pravidla Meta |
+| Dôvod zlyhania cronu v logu | `error` pre beh a `errors` pre položky vo všetkých workeroch, ktoré vedia zlyhať po jednej položke; pravidlo v `whispair-api/ARCHITECTURE.md` |
+| Statický test troch formulárov | `filthyfilter/tests/forms.test.cjs`, štyri testy nad poliami, typmi, ponukou služieb a mobilnou lištou |
+
 ---
 
 ## B. PARTIAL — máme, ale dnešný tvar nestačí
 
-1. **Lead je voľný text.** Web skladá službu, počet jednotiek, termín a expres
-   do reťazca `message` (`js/main.js` `buildMessage`) a API ukladá iba
-   `parsed_contact_name/phone/email/address/notes`. Kód balíka, počet a typ
-   jednotiek, PSČ ani expres neexistujú ako stĺpce. Žiadny cenový engine sa
-   nad tým nedá spustiť; človek to musí prečítať.
+1. ~~**Lead je voľný text.**~~ ✅ **Vyriešené 8. 9.** `captured_messages.lead_details`
+   JSONB nesie `service_key`, `service_code`, `place`, `unit_count`,
+   `preferred_time_text` a `express`; `business_brand` hovorí, ktorej značke dopyt
+   patrí. Zložený text zostal nezmenený, lebo ho číta technik. **Zostáva otvorené:**
+   PSČ nie je vlastný stĺpec (`place` je voľný text) a `preferred_time_text` je
+   text, nie dátum. Oboje blokuje bod 7 nižšie a P0.6.
 
-2. **Hodnota konverzie chýba tam, kde záleží.** `JobsService::update` posiela
-   `job_completed` bez `value` a `currency`, lebo `jobs` nemá cenu. Hodnotu
-   nesie iba `package_sold`. Google dostane fakt, že sa niečo stalo, nie koľko
-   to stálo. Rovnako `job_completed` nemá hash e-mailu, iba telefónu.
+2. ~~**Hodnota konverzie chýba tam, kde záleží.**~~ ✅ **Vyriešené 8. 9., ale inak,
+   než tento dokument navrhoval.** Zákazka má ocenené riadky a súčty, a hodnotu
+   nesie **nová udalosť `invoice_paid` v netto až po úhrade**, nie `job_completed`.
+   Ten zostáva zámerne míľnikom bez hodnoty. Konverzia nesie hash e-mailu aj
+   telefónu (T12). Pozri záznam revízie na začiatku.
 
-3. **Atribúcia žije na leade, nie na zákazníkovi.** `lead_attribution` sa pri
-   convert prepojí na `client_id` a `job_id`. Druhá zákazka toho istého
-   zákazníka o rok nemá žiadny záznam, z ktorého by sa dalo povedať „tento
-   zákazník prišiel z kampane X“. Pre Google je to správne (okno kliku je
-   ~90 dní), pre vlastné vyhodnotenie LTV kampane nie.
+3. ~~**Atribúcia žije na leade, nie na zákazníkovi.**~~ ✅ **Vyriešené 8. 9. (T12).**
+   `clients.acquisition_lead_attribution_id` sa nastaví v
+   `conversion_link_attribution()`, teda na jednom mieste, cez ktoré idú obe cesty
+   konverzie. Zapisuje sa len dovtedy, kým je stĺpec prázdny, takže neskoršia
+   kampaň prvú neprepíše. Pravidlo, že sa to **neposiela Google ako nová konverzia
+   po 90 dňoch**, platí ďalej.
 
-4. **Google-centrická atribúcia.** `lead_attribution` a `conversion_events`
-   poznajú tri Google identifikátory. Používateľ zvolil ako prvý kanál Meta →
-   WhatsApp. Meta click-to-WhatsApp reklama posiela vo webhooku pole
-   `messages[].referral` (`ctwa_clid`, `source_url`, `source_id`, `headline`),
-   ktoré `whatsapp_parse_inbound` **ignoruje**. `fbclid` z webu sa nezachytáva.
-   Bez toho sa kampaň, ktorú chcete spustiť ako prvú, nedá zmerať ďalej než
-   po počet správ.
+4. ~~**Google-centrická atribúcia.**~~ ⚠ **Z väčšej časti vyriešené 8. 9.**
+   `lead_attribution` aj `conversion_events` majú `platform`, `fbclid` a
+   `ctwa_clid`; `lead_attribution` má aj `meta_ad_id`. `whatsapp_parse_inbound`
+   číta `messages[].referral` a zakladá z neho atribučný riadok.
+   `cron/meta_conversions_worker.php` je hotový a na `main`. **Zostáva otvorené:**
+   `consent_version`, `consent_at`, `campaign_id`, `adgroup_id`, `keyword_id`
+   a `channel` neexistujú (grep vracia nulu), a Meta worker čaká na dataset
+   a token (T20). Súhlas je pritom podmienkou prvého ostrého exportu podľa
+   `PRIVACY_IMPLEMENTATION.md`.
 
 5. **WhatsApp je inbox, nie konverzácia.** Každá prichádzajúca správa vytvorí
    nový riadok `captured_messages` (`whatsapp_store_inbound`). Neexistuje
@@ -118,24 +188,33 @@ sa dnes nedá zodpovedať z dát.
     `service_packages.interval_months` a `reminder_days_before` sa zapisujú, ale
     žiadny cron ich nečíta. `tomorrow_job_reminders` je pre technikov.
 
-12. **Zákazník je meno, telefón, adresa.** `clients` nemá e-mail, typ
-    (domácnosť/firma), IČO ani záznam o súhlase. Párovanie pri convert je
-    `WHERE phone = :phone` bez normalizácie, hoci `conversion_normalize_phone`
-    existuje. `+421 902…` a `0902…` sú dvaja zákazníci.
+12. ~~**Zákazník je meno, telefón, adresa.**~~ ✅ **Vyriešené 8. 9. (T12).**
+    `clients` má `email`, `phone_normalized` (E.164, čiastočný unikátny index),
+    `customer_type` a `acquisition_lead_attribution_id`. Normalizácia je jedna
+    funkcia, `client_normalize_phone()`, a `conversion_normalize_phone()` na ňu
+    ukazuje. Migrácia zámerne nehádala: nejednoznačné čísla zostali `NULL`
+    a zlúčenie dvoch zákazníkov je obchodné rozhodnutie, nie úloha migrácie.
+    **Zostáva otvorené:** firemné polia (IČO, DIČ, IČ DPH) a záznam o súhlase.
 
-13. **Súhlas nie je doložený na serveri.** `PRIVACY_IMPLEMENTATION.md` bod 1:
-    frontend posiela click ID iba so súhlasom, ale `lead_attribution` nemá
-    verziu a čas súhlasu. Pred prvým ostrým exportom to musí existovať.
+13. **Súhlas nie je doložený na serveri.** ❌ **Stále otvorené.**
+    `PRIVACY_IMPLEMENTATION.md` bod 1: frontend posiela click ID iba so súhlasom,
+    ale `lead_attribution` nemá verziu a čas súhlasu. Web ich pozná
+    (`js/consent.js`, `VERSION = "2026-09-07"`), server ich nemá kam uložiť.
+    **Pred prvým ostrým exportom to musí existovať.** Je to najstarší nesplnený
+    bod z P0.2.
 
-14. **Legacy a v1 emitujú konverzie dvakrát.** `endpoints/update_captured_message.php`,
-    `convert_captured_message_to_job.php`, `create_service_contract.php`,
-    `update_job.php` obsahujú tú istú emisiu ako služby v `src/Services`.
-    `ARCHITECTURE.md` hovorí, že klienti už legacy nevolajú; kód tam stále je
-    a každá zmena atribúcie sa musí robiť na dvoch miestach.
+14. ~~**Legacy a v1 emitujú konverzie dvakrát.**~~ ✅ **Vyriešené 10. 9. (T14),
+    zatiaľ len v repozitári.** Zmazaných päť súborov, nie štyri: rovnaký dôvod
+    platil aj na `submit_lead.php`. Postup z `ARCHITECTURE.md` bol dodržaný
+    vrátane kroku o access logu (23. 8. až 10. 9., ani jeden zásah).
+    **Na server nenasadené**; po nasadení treba pustiť `scripts/smoke-test.ps1`.
 
-15. **Formulár na webe je trikrát.** Ten istý blok v `index.html`,
-    `cistenie-klimatizacie/index.html`, `servis-klimatizacie/index.html`.
-    Pridanie štruktúrovaného poľa = tri úpravy (známy dlh v `STATUS.md`).
+15. **Formulár na webe je trikrát.** ⚠ **Stále platí, ale už je strážený.**
+    Ten istý blok v `index.html`, `cistenie-klimatizacie/index.html`,
+    `servis-klimatizacie/index.html`. `tests/forms.test.cjs` (P1.8) zlyhá, keď sa
+    polia, ich typy alebo ponuka služieb rozídu, takže tichý rozchod už nehrozí.
+    Kopírovanie ako také zostáva a **s ďalšími landing pages sa násobí**; riešenie
+    je v `LANDING_PAGE_STRATEGY.md` kap. 13.1.
 
 ---
 
@@ -143,18 +222,20 @@ sa dnes nedá zodpovedať z dát.
 
 | Chýba | Poznámka |
 | --- | --- |
-| **Faktúra a platba** | V API nie je ani tabuľka. Fakturuje sa v Billdu mimo systému. `plan_nahrady_billdu_whispair.pdf` (18. 7. 2026) navrhuje celú náhradu Billdu v inom stacku (NestJS, Next.js, React Native), čo je v priamom rozpore s `ARCHITECTURE.md` („bez frameworku“) a s pravidlom „nestavaj druhé CRM“. Pozri D.1. |
-| **Náklady zákazky a marža** | Nič. `inventory_units.purchase_price` je jediný náklad v systéme a týka sa skladu. |
+| ~~**Faktúra a platba**~~ | ✅ **Vyriešené 8. 9., na dev aj na produkcii.** `invoices` a `invoice_payments` ako **účtovná kniha**, nie druhý fakturačný systém: doklady vystavuje Billdu, kniha eviduje, čo bolo vystavené a čo zaplatené. `issue_mode` zaznamenáva pri každom doklade, či šiel ručne. Sadzba DPH a splatnosti sú v `app_settings`, ale na doklade sa **zmrazí tá, ktorá platila pri vystavení**. Plán náhrady Billdu z PDF sa nerealizuje (D.1). Napojenie na Billdu API je T15–T17. |
+| ~~**Náklady zákazky a marža**~~ | ✅ **Tabuľka `job_costs` existuje od 8. 9.** Marža sa z nej dá spočítať. Marža ako bidding signál zostáva P3.4. |
 | **Cenová ponuka ako entita** | Žiadny `quote`: cena sa dohodne v správe alebo telefonicky a nikde sa nezapíše. |
 | **Rezervácia/booking pre servis** | Len rozpracované montážne držanie na vetve `wip/installation-slots`. |
 | **Dostupnosť technika** | Žiadna tabuľka, žiadny výpočet. |
 | **Žiadosť o recenziu a jej sledovanie** | Nič. `B2B_TRUST_LAYER.md` opisuje pravidlá, kód žiadny. |
 | **Retenčný worker a „objednať znovu“** | Nič. |
-| **Meta Pixel, Meta Conversions API, `fbclid`, `ctwa_clid`** | Nič (Pixel je v `STATUS.md` ako blokujúci pre Meta kampaň). |
+| **Meta Pixel** | ⚠ Stále nič. Musí ísť **do** `js/consent.js`, nie vedľa neho (T7, závisí od rozhodnutia T6 o personalizovaných reklamách). Blokujúci pre Meta kampaň. |
+| ~~**Meta Conversions API, `fbclid`, `ctwa_clid`**~~ | ✅ **Vyriešené 8. 9., worker na `main` od 10. 9.** `cron/meta_conversions_worker.php` je zrkadlom Google workera nad tou istou frontou, filtrované podľa `platform='meta'`. Web klik ide ako `website` s `fbclid` v cookie `fbc`, klik do WhatsAppu ako `business_messaging` s `ctwa_clid`. Telefón sa hašuje podľa pravidla Meta, nie Google. **Čaká na dataset a token z Events Managera (T20)**, dovtedy ticho nič nerobí. |
 | **Import nákladov na reklamu** | Nič. Bez toho sa ROAS nedá spočítať v systéme. |
 | **Report atribúcie** | Žiadny endpoint, ktorý by zložil kampaň → leady → zákazky → fakturované → marža. |
 | **Meranie hovorov** | `phone_click` je klik; hovor sa zapisuje ručne ako `PhoneNote`. |
-| **Mestské stránky** | Len `/cistenie-klimatizacie/` a `/servis-klimatizacie/`; žiadny dátový model lokality. |
+| **Mestské stránky** | Len `/cistenie-klimatizacie/` a `/servis-klimatizacie/`; žiadny dátový model lokality. **Je to zámerné**: rozhodnutie zo 6. 9. hovorí „geografické stránky až podľa dát, nie dopredu“. Chýbajúci model lokality (P0.6) je skutočný dlh; chýbajúce mestské stránky nie sú. Pozri `LANDING_PAGE_STRATEGY.md` kap. 11.5. |
+| **Landing pages podľa zámeru** | Dve stránky pokrývajú službu, žiadna nepokrýva symptóm ani typ zákazníka. Zámer nie je pole: `intent_key` ani `problem_key` neexistujú a `landing_token` nesie tri rôzne druhy hodnôt naraz. Rozobrané v `LANDING_PAGE_STRATEGY.md`. |
 | **Verejný endpoint realizácií (Hall of Filth)** | Spis La Donuteria je ručne písané HTML; `marketing_assets` nemajú publikačnú fázu (`publicationUrl` je vždy `null`). |
 | **B2B** | Žiadne organizácie, kontakty, sekvencie. |
 | **Konverzačný stav pre WhatsApp** | Nič. |
@@ -178,33 +259,40 @@ sa dnes nedá zodpovedať z dát.
    ten istý endpoint. Tabuľka `PRICES` v `js/main.js` ostane iba ako záloha
    pre výpadok API, čo už dnes je.
 
-3. **Peniaze nie sú na zákazke.** `jobs` nemá riadky, cenu ani DPH režim.
-   Všetko, čo sa o hodnote dá povedať, je v texte alebo v Billdu. Toto je
-   najdrahší dlh, lebo bez neho je celý konverzný okruh prázdny.
+3. ~~**Peniaze nie sú na zákazke.**~~ ✅ **Vyriešené 8. 9.** Zákazka má ocenené
+   riadky, súčty a DPH režim; hodnotu do reklamy nesie `invoice_paid` v netto po
+   úhrade. Toto bol najdrahší dlh v dokumente a je splatený.
 
 4. **Adresa ako reťazec** na troch miestach (`clients.address`, `jobs.address`,
    `captured_messages.parsed_address`) bez PSČ. Každá funkcia s geografiou
    (dojazd, mestské stránky, trasa, kapacita) na tom stroskotá.
 
-5. **Legacy endpointy duplikujú biznis logiku** (B.14). Pokiaľ sa nezmažú,
-   každý zásah do atribúcie a konverzií je dvojitý. `ARCHITECTURE.md` má
-    postup mazania; treba ho vykonať aspoň pre `update_captured_message`,
-   `convert_captured_message_to_job`, `update_job`, `create_service_contract`.
+5. ~~**Legacy endpointy duplikujú biznis logiku**~~ ✅ **Vyriešené 10. 9. (T14),
+   zatiaľ len v repozitári.** Zmazaných päť súborov vrátane `submit_lead.php`.
+   Pri overovaní sa navyše našla mŕtva stránka `portal/lead.php`, ktorá roky
+   posielala na neexistujúcu cestu; oprava je vo vetve `fix/lead-page-v1-endpoint`
+   a tiež nie je nasadená. Zostáva jediný legacy endpoint s prevádzkou:
+   `woocommerce_order_webhook.php`.
 
 6. **Zariadenie viazané na montáž** (B.9). Pre čistenie je zariadenie zákazníka
    primárny objekt (opakovaná služba), nie vedľajší produkt montáže.
 
-7. **Konverzný model pozná len Google.** `conversion_events` nemá `platform`;
-   pridanie Meta bude buď kopírovať tabuľku, alebo ju rozšíriť. Rozšíriť teraz
-   je lacnejšie.
+7. ~~**Konverzný model pozná len Google.**~~ ✅ **Vyriešené 8. 9. rozšírením, nie
+   kopírovaním**, presne ako odporúčal tento bod. `conversion_events` má
+   `platform`, `fbclid` a `ctwa_clid`; oba workery si berú vlastnú frontu podľa
+   `platform`, takže môžu bežať v ľubovoľnom poradí. Pri tom sa opravila diera,
+   ktorá by frontu Meta držala navždy prázdnu: dopyty na atribúciu vyberali len
+   tri Google stĺpce, takže každá konverzia sa značila ako `google`.
 
 8. **Marketingový trigger pevne na `Installation`.** Podmienka v kóde, nie
    v dátach; čistenie ako hlavný obsahový zdroj FilthyFilter cez ňu neprejde.
 
-9. **Web bez buildu má tri kópie formulára.** Pri štruktúrovaných poliach
-   (P0.1) to bude bolieť tretíkrát. Odporúčanie držať pravidlo „bez buildu“
-   pre nasadenie, ale pripustiť **kontrolný test** v `tests/`, ktorý porovná
-   tri formuláre a zlyhá pri nesúlade. Lacné a v duchu existujúcich testov.
+9. **Web bez buildu má tri kópie formulára.** ⚠ **Kontrolný test hotový 8. 9.**
+   (`tests/forms.test.cjs`), takže tichý rozchod už nehrozí. Kopírovanie zostáva
+   a **s každou ďalšou landing page rastie lineárne**: nielen formulár, ale aj
+   pätička, mobilná lišta, súhlas a servisná oblasť, každé v dvoch jazykoch inline.
+   Odporúčanie držať pravidlo „bez buildu“ pre nasadenie platí ďalej; návrh
+   generátora v čase písania je v `LANDING_PAGE_STRATEGY.md` kap. 13.1.
 
 10. **`commerce_orders.attribution`** je stĺpec bez zapisovateľa. Buď ho
     WooCommerce webhook začne plniť (cookie → hidden field v checkoute), alebo
@@ -372,6 +460,12 @@ V Google Ads má každá konverzná akcia prepínač „primárna“/„sekundá
 Smart Bidding** (Google posúva ponuky tak, aby ich bolo viac). Sekundárne
 sa iba zobrazujú.
 
+> **Prekonané 10. 9. 2026.** Tabuľka nižšie predpokladá, že hodnotu nesie
+> `job_completed`. Používateľ rozhodol inak: peniaze nesie `invoice_paid` v netto
+> až po úhrade a `job_completed` je zámerne bez hodnoty. Aktuálny trojfázový plán
+> vrátane podmienky o mediáne splatnosti je v `LANDING_PAGE_STRATEGY.md` kap. 10.2.
+> Tabuľka zostáva ako doklad úvahy, nie ako pokyn.
+
 Odporúčanie pre nás, v troch fázach:
 
 | Fáza | Primárna | Sekundárne |
@@ -474,15 +568,15 @@ rules“ v Google Ads (násobenie podľa geo/zariadenia) — hrubé, neodporúč
 
 ### P0 — foundation (teraz; neskôr sa to prerába draho)
 
-| # | Čo | Prečo teraz |
+| # | Čo | Stav 10. 9. |
 | --- | --- | --- |
-| P0.1 | Štruktúrovaný lead: `captured_messages.lead_details JSONB`, `postcode`; web posiela `service_code`, `unit_count`, `unit_type`, `preferred_date`, `express`, `postcode` ako polia | bez toho nie je cenový engine, booking ani report podľa služby |
-| P0.2 | Atribúcia neutrálna k platforme + súhlas: rozšírenie `lead_attribution` a `conversion_events`; WhatsApp `referral`; `fbclid` na webe; `clients.acquisition_lead_attribution_id` | Meta kampaň je prvá; súhlas musí byť doložený pred prvým exportom |
-| P0.3 | Peniaze na zákazke: `job_services`, `jobs.price_*`, `vat_mode`; `job_completed.value` | konverzný okruh je bez toho prázdny |
-| P0.4 | Účtovná kniha: `invoices`, `job_costs` s ručným zápisom v portáli; PDF plán Billdu označiť ako pozastavený | odpovedá na otázku o tržbe a marži; zabráni tretiemu backendu |
-| P0.5 | Identita zákazníka: `clients.email`, `phone_normalized`, `customer_type`, firemné polia; párovanie cez normalizovaný telefón | inak vznikajú duplicity a retencia nemá koho osloviť |
-| P0.6 | Lokalita ako dáta: `service_localities`, `client_locations`, PSČ na `jobs`, `service_area_postcodes.locality_id/travel_zone` | mestské stránky, dojazd aj kapacita to potrebujú |
-| P0.7 | Zmazať legacy emisiu konverzií (4 súbory) podľa postupu v `ARCHITECTURE.md` | jeden zapisovateľ pre atribúciu |
+| P0.1 | Štruktúrovaný lead: `captured_messages.lead_details JSONB`; web posiela `service_code`, `unit_count`, `preferred_time_text`, `express` ako polia | ✅ **hotové 8. 9.**, na dev. Otvorené zostáva PSČ ako stĺpec a `preferred_date` ako dátum |
+| P0.2 | Atribúcia neutrálna k platforme + súhlas | ⚠ **polovica.** Hotové: `platform`, `fbclid`, `ctwa_clid`, `meta_ad_id`, WhatsApp `referral`, `clients.acquisition_lead_attribution_id`. **Otvorené: `consent_version`, `consent_at`, `campaign_id`, `adgroup_id`, `keyword_id`, `channel`.** Súhlas blokuje prvý ostrý export |
+| P0.3 | Peniaze na zákazke | ✅ **hotové 8. 9.**, na dev aj na produkcii. Hodnotu nesie `invoice_paid`, nie `job_completed` |
+| P0.4 | Účtovná kniha: `invoices`, `invoice_payments`, `job_costs` | ✅ **hotové 8. 9.**, na dev aj na produkcii, vrátane obrazoviek v portáli (T4) |
+| P0.5 | Identita zákazníka | ✅ **hotové 8. 9. (T12)**, na dev. Firemné polia (IČO, DIČ, IČ DPH) zostávajú otvorené |
+| P0.6 | Lokalita ako dáta: `service_localities`, `client_locations`, PSČ na `jobs`, `service_area_postcodes.locality_id/travel_zone` | ❌ **nezačaté.** Jediné nesplnené P0 v celku. Potrebuje to dojazd, kapacita aj akákoľvek budúca mestská stránka |
+| P0.7 | Zmazať legacy emisiu konverzií podľa postupu v `ARCHITECTURE.md` | ✅ **hotové 10. 9. (T14)**, päť súborov namiesto štyroch, **nenasadené** |
 
 ### P1 — MVP FilthyFilter (na reálny launch)
 
@@ -491,11 +585,11 @@ rules“ v Google Ads (násobenie podľa geo/zariadenia) — hrubé, neodporúč
 | P1.1 | `ServiceQuoteEngine` + `quotes` + verejný `POST /api/v1/public/quotes` (rate limit); web ukáže cenu hneď po zadaní obce, typu a počtu jednotiek; portál tvorí ponuku tým istým |
 | P1.2 | Dostupnosť pre servis: `booking_holds`, `GET /api/v1/public/availability?kind=cleaning&postcode=`, kapacita z `app_settings` (`cleaning.max_minutes_per_day`, `working_weekdays`, `blocked_dates`); potvrdenie = zákazka `Planned` z ponuky |
 | P1.3 | Technik: zariadenie z čistenia (`customer_devices` pre technika na priradenej zákazke), `service_visits` s `filth_rating_before/after`, checklist v `checklist_json`; marketingový trigger aj pre `Service` |
-| P1.4 | Faktúra: pri `Done` portál vyžiada číslo a sumy z Billdu (ručne), zapíše `invoices`; `job_completed` dostane hodnotu |
-| P1.5 | `review_requests` + `cron/review_request_worker.php`: 2 dni po Done šablóna WhatsApp (vyžaduje schválenú Meta šablónu) s fallbackom e-mail; sledovanie odoslania, follow-upu a kliku cez `link_token` |
-| P1.6 | Meta Pixel v `js/consent.js`, WhatsApp v mobilnej lište, `LocalBusiness` JSON-LD (už v `STATUS.md`) |
-| P1.7 | Tri mestské stránky (Bratislava, Trnava, Nitra) ako ručné HTML z jednej šablóny; dynamické časti (počet realizácií, najbližší termín, recenzie) z `GET /api/v1/public/localities/{slug}` |
-| P1.8 | Test v `tests/`, ktorý zlyhá, keď sa tri kópie formulára rozídu |
+| ~~P1.4~~ | ✅ **Hotové 8. 9.** Faktúra sa zapisuje ručne z Billdu v portáli. **Hodnotu dostal `invoice_paid` po úhrade, nie `job_completed`** — pôvodné znenie tohto riadku bolo prekonané rozhodnutím používateľa |
+| P1.5 | `review_requests` + `cron/review_request_worker.php`: 2 dni po Done šablóna WhatsApp (vyžaduje schválenú Meta šablónu, T9) s fallbackom e-mail; sledovanie odoslania, follow-upu a kliku cez `link_token`. ❌ nezačaté |
+| P1.6 | ⚠ **WhatsApp v mobilnej lište hotový 8. 9.** (T8). **Meta Pixel** (T7, čaká na rozhodnutie T6) a **`LocalBusiness` JSON-LD stále chýbajú** |
+| ~~P1.7~~ | ~~Tri mestské stránky (Bratislava, Trnava, Nitra) hneď~~ **Odložené 10. 9. 2026.** Nie preto, že by mestské stránky boli zlé, ale preto, že rozhodnutie zo 6. 9. hovorí „geografické stránky **až podľa dát** o tom, odkiaľ reálne chodia zákazky, **nie dopredu**“. P1.7 chcel tri stránky dopredu. Nahradené: landing pages podľa zámeru (`LANDING_PAGE_STRATEGY.md` kap. 5) a podmienky, za ktorých mestská stránka vzniká (kap. 11.5) |
+| ~~P1.8~~ | ✅ **Hotové 8. 9.** `tests/forms.test.cjs`, štyri testy, overený zlyhaním |
 | P1.9 | Telefónny lead: v portáli/aplikácii rýchly zápis so `source=PhoneNote` a povinným `lead_details.service_code` |
 
 ### P2 — automation (odstráni ručnú prácu po rozbehu)
@@ -503,7 +597,7 @@ rules“ v Google Ads (násobenie podľa geo/zariadenia) — hrubé, neodporúč
 | # | Čo |
 | --- | --- |
 | P2.1 | Retenčný worker: `next_service_due_at − reminder_days_before` → `outbound_messages` (`purpose=retention`) s odkazom `/objednat-znova/?t=<token>`, ktorý predvyplní ponuku z `customer_devices` a `client_locations` |
-| P2.2 | Meta Conversions API worker (zrkadlo Google workera) pre `conversion_events.platform='meta'` s `fbclid`/`ctwa_clid` |
+| ~~P2.2~~ | ✅ **Hotové 8. 9., na `main` od 10. 9. (T5).** Predbehlo svoju prioritu, lebo Meta je prvý platený kanál. **Čaká na dataset a token (T20)** |
 | P2.3 | `ad_spend_daily` import (CSV z Google Ads a Meta) + `GET /api/v1/reports/attribution` |
 | P2.4 | WhatsApp vedený tok: `conversations` so stavovým automatom (služba → jednotky → PSČ → foto → cena → termín), deterministický, s prepnutím na človeka slovom alebo tlačidlom; človek vždy dostupný |
 | P2.5 | Technická dostupnosť: `technician_availability`, odhad trvania (`unit_count × minúty + dojazd zo zóny`), automatické priradenie |
@@ -530,7 +624,10 @@ rules“ v Google Ads (násobenie podľa geo/zariadenia) — hrubé, neodporúč
 Každý krok je samostatne nasaditeľný a spätne kompatibilný (aditívne
 migrácie, nullable stĺpce). Poradie zodpovedá P0 → P1.
 
-### Krok 1 — Štruktúrovaný lead (P0.1)
+### ✅ Krok 1 — Štruktúrovaný lead (P0.1) — hotové 8. 9. 2026, na dev
+
+> Vykonané. PSČ ako stĺpec a `preferred_date` ako dátum sa nespravili a patria
+> ku kroku 5. Zápis a dôkazy: `STATUS.md`, `LIFECYCLE_IMPLEMENTATION.md` kap. 6.
 
 - **Cieľ:** lead nesie službu, počet a typ jednotiek, PSČ, termín, expres ako dáta.
 - **Komponenty:** `filthyfilter/js/main.js` (3× formulár), `whispair-api`
@@ -541,7 +638,13 @@ migrácie, nullable stĺpce). Poradie zodpovedá P0 → P1.
 - **Testy:** `LeadHelpersTest` pre whitelist; `browser.test.cjs` pre payload.
 - **Riziká:** tri kópie formulára; app whispAirField musí ignorovať neznáme polia (JSON, robí to).
 
-### Krok 2 — Atribúcia pre Meta a súhlas (P0.2)
+### ⚠ Krok 2 — Atribúcia pre Meta a súhlas (P0.2) — polovica hotová 8. 9. 2026
+
+> Vykonané: `platform` (odvodený na serveri), `fbclid`, `ctwa_clid`, `meta_ad_id`,
+> WhatsApp `referral`, `clients.acquisition_lead_attribution_id`.
+> **Nevykonané: `consent_version`, `consent_at`, `campaign_id`, `adgroup_id`,
+> `keyword_id`, `channel`.** Súhlas blokuje prvý ostrý export konverzií.
+> ValueTrack suffix je stále nastavenie účtu, ktoré nikto nespravil.
 
 - **Cieľ:** jeden atribučný riadok bez ohľadu na platformu, so súhlasom.
 - **Komponenty:** `js/attribution.js`, `_lead_helpers.php`, `_whatsapp_helpers.php`, `_conversion_helpers.php`, `ClientsRepository`.
@@ -552,7 +655,10 @@ migrácie, nullable stĺpce). Poradie zodpovedá P0 → P1.
 - **Testy:** `WhatsAppHelpersTest` s referral payloadom; `LeadHelpersTest`.
 - **Riziká:** `referral` prichádza len pri prvej správe z reklamy; ďalšie správy ho nemajú, preto sa viaže na telefón v okne 24 h.
 
-### Krok 3 — Peniaze na zákazke (P0.3)
+### ✅ Krok 3 — Peniaze na zákazke (P0.3) — hotové 8. 9. 2026, na dev aj na produkcii
+
+> Vykonané inak, než je popísané nižšie: hodnotu nesie **`invoice_paid` v netto po
+> úhrade**, nie `job_completed`. Text nižšie zostáva ako doklad pôvodnej úvahy.
 
 - **Cieľ:** zákazka má riadky, cenu a DPH režim; `job_completed` má hodnotu.
 - **Komponenty:** `JobsService`, `JobsRepository`, `JobDraftsService`, `CapturedMessagesService`, portál (editor riadkov), whispAirField (iba čítanie).
@@ -562,7 +668,11 @@ migrácie, nullable stĺpce). Poradie zodpovedá P0 → P1.
 - **Testy:** `ConversionHelpersTest` na value; kontraktový test `JobSyncContractTest` (nové polia nullable).
 - **Riziká:** MAUI sync feed musí prežiť nové stĺpce; kontrola `JobSyncRepository`.
 
-### Krok 4 — Účtovná kniha (P0.4)
+### ✅ Krok 4 — Účtovná kniha (P0.4) — hotové 8. 9. 2026, na dev aj na produkcii
+
+> Vykonané vrátane `invoice_payments` a obrazoviek v portáli (T4). Sadzba DPH
+> a splatnosti sú v `app_settings`, ale na doklade sa zmrazí tá, ktorá platila pri
+> vystavení. Napojenie na Billdu API je T15–T17.
 
 - **Cieľ:** fakturovaná suma, platba a náklady na zákazke.
 - **Komponenty:** nový `InvoicesController/Service/Repository`, portál.
@@ -573,13 +683,22 @@ migrácie, nullable stĺpce). Poradie zodpovedá P0 → P1.
 - **Testy:** stavový automat faktúry.
 - **Riziká:** dvojité vedenie (Billdu + náš zápis). Zámerne minimálne polia.
 
-### Krok 5 — Zákazník a lokalita (P0.5, P0.6)
+### ⚠ Krok 5 — Zákazník a lokalita (P0.5, P0.6) — zákazník hotový 8. 9., lokalita nezačatá
+
+> Vykonané (T12): `clients.email`, `phone_normalized` s čiastočným unikátnym
+> indexom, `customer_type`, `acquisition_lead_attribution_id`.
+> **Nevykonané: firemné polia a celá lokalita** — `client_locations`,
+> `service_localities`, PSČ na `jobs`, `travel_zone`. Je to jediné P0, ktoré sa
+> nezačalo.
 
 - **Migrácia:** `clients ADD email, phone_normalized, customer_type, company_name, ico, dic, ic_dph, marketing_consent_at`; unikátny index `(phone_normalized)` čiastočný; `client_locations`; `service_localities`; `service_area_postcodes ADD locality_id, travel_zone`; `jobs ADD client_location_id, postcode, locality_id`.
 - **Backend:** `ClientsRepository::findByPhone` cez `conversion_normalize_phone`; backfill `phone_normalized`; `import_service_area_postcodes.php` rozšíriť o lokalitu a zónu (41 obcí z bežiaceho pruhu).
 - **Riziká:** duplicitní zákazníci pri backfille; riešiť reportom, nie automatickým zlúčením.
 
-### Krok 6 — Zrušenie legacy emisie (P0.7)
+### ✅ Krok 6 — Zrušenie legacy emisie (P0.7) — hotové 10. 9. 2026, v repozitári
+
+> Vykonané, päť súborov namiesto štyroch. **Na server nenasadené**; po nasadení
+> treba pustiť `scripts/smoke-test.ps1`, ako káže postup nižšie.
 
 - Zmazať `endpoints/update_captured_message.php`, `convert_captured_message_to_job.php`, `update_job.php`, `create_service_contract.php` a ich riadky v `index.php`; `scripts/smoke-test.ps1` po nasadení. Predtým overiť access log, ako káže `ARCHITECTURE.md`.
 
@@ -626,10 +745,13 @@ migrácie, nullable stĺpce). Poradie zodpovedá P0 → P1.
 - **Integrácie:** Meta schválenie šablóny správy; Google Place ID (otvorené).
 - **Riziká:** bez schválenej šablóny WhatsApp neodíde; e-mail fallback musí existovať od začiatku.
 
-### Krok 11 — Mestské stránky (P1.7)
+### ~~Krok 11 — Mestské stránky (P1.7)~~ — zrušené 10. 9. 2026
 
-- `GET /api/v1/public/localities/{slug}` (počet realizácií, priemerný FFFF, najbližší voľný deň, počet recenzií ak je Place ID); tri HTML stránky z jednej šablóny; `LocalBusiness` + `areaServed`; `sitemap.xml`.
-- **Riziká:** obsah musí byť odlišný (referencie, FAQ, dojazd), inak je to práve ten spam, ktorý nechceme.
+Nahradené krokmi 1 až 7 v `LANDING_PAGE_STRATEGY.md` kap. 13.2: landing pages
+podľa zámeru (problém, služba, typ zákazníka), generátor namiesto ručných kópií,
+a mestská stránka až po splnení podmienok z kap. 11.5. Endpoint
+`GET /api/v1/public/localities/{slug}` zostáva v pláne, ale patrí ku kroku
+o lokalite ako dátach (P0.6), nie k mestským stránkam.
 
 ### Krok 12 — Retencia (P2.1)
 
@@ -639,15 +761,21 @@ migrácie, nullable stĺpce). Poradie zodpovedá P0 → P1.
 
 - `ad_spend_daily`, import CSV cez portál; `GET /api/v1/reports/attribution?from&to&platform` s SQL z kapitoly G.8; portál tabuľka kampaň → leady → zákazky → fakturované → zaplatené → marža.
 
-### Krok 14 — Meta CAPI (P2.2) a úpravy konverzií (P2.6)
+### ⚠ Krok 14 — Meta CAPI (P2.2) hotové, úpravy konverzií (P2.6) nezačaté
 
-- Worker podľa vzoru `google_ads_conversion_worker.php`, spoločná fronta `conversion_events` filtrovaná podľa `platform`; retraction pri `invoices.status='Credited'`.
+- ✅ **Meta CAPI worker hotový 8. 9., na `main` od 10. 9. (T5).** Postavený presne
+  podľa vzoru `google_ads_conversion_worker.php` nad spoločnou frontou
+  `conversion_events` filtrovanou podľa `platform`. Predbehol svoju prioritu,
+  lebo Meta je prvý platený kanál. **Čaká na dataset a token (T20).**
+- ❌ Úpravy konverzií (retraction pri `invoices.status='Credited'`) nezačaté.
+  Sú podmienkou fázy 3 v `LANDING_PAGE_STRATEGY.md` kap. 10.2, kde je hodnota
+  primárnym signálom a dobropis musí vedieť odísť späť.
 
 ---
 
 ## Čo z benchmarku vedome neberieme
 
-- Stovky mestských stránok. Tri mestá s vlastným obsahom, ďalšie podľa dát.
+- Stovky mestských stránok. **Upresnené 10. 9.:** ani tri dopredu. Mestská stránka vzniká až po splnení podmienok v `LANDING_PAGE_STRATEGY.md` kap. 11.5, čo je presnejšie znenie rozhodnutia zo 6. 9.
 - Pohoda API. Fakturácia je Billdu; my vedieme len knihu.
 - B2B scraping s Playwrightom. Legálne posúdenie predtým, dáta len z verejných registrov.
 - AI pri cene, termíne a stave. Deterministické pravidlá, AI len pri texte.
@@ -655,8 +783,24 @@ migrácie, nullable stĺpce). Poradie zodpovedá P0 → P1.
 
 ## Otvorené rozhodnutia pre používateľa
 
-1. Billdu: potvrdiť, že plán náhrady v PDF sa **pozastavuje** a API vedie len účtovnú knihu.
-2. Kto zapisuje faktúru do portálu po zákazke (technik alebo kancelária) a do kedy.
-3. Hodnota konverzie: netto bez DPH (odporúčané) alebo brutto.
-4. Meta: číslo WhatsApp Business a či bude spoločné s whispAir (ovplyvňuje `referral` aj šablóny).
-5. Ktorým mestom sa začína (opakuje sa zo `STATUS.md`).
+Stav k 10. 9. 2026. Štyri z piatich sú zodpovedané; zostáva jedno, a je otvorené
+od 6. 9.
+
+1. ✅ **Billdu: plán náhrady v PDF sa pozastavuje**, API vedie len účtovnú knihu.
+   Rozhodnuté a postavené 8. 9. Napojenie na Billdu API je T15–T17.
+2. ✅ **Faktúru zapisuje kancelária, nie technik.** Všetky fakturačné routy sú od
+   role manažér vyššie; právo visí na role, nie na priradení k zákazke. Lehotu
+   drží prehľad hotových zákaziek bez dokladu s odpočtom do pätnástich dní podľa
+   zákona o DPH.
+3. ✅ **Hodnota konverzie je netto bez DPH** a odchádza až po úhrade, ako udalosť
+   `invoice_paid`.
+4. ⚠ **Meta: číslo je spoločné s whispAir** (`+421 902 279 094`) a značka sa preto
+   **číta, nehádže** — z cieľovej adresy reklamy a z textu správy. Otvorené
+   zostáva, či beží ako Business účet, a schválenie šablón (T9).
+5. ❌ **Ktorým mestom sa začína.** Bratislava, Trnava alebo Nitra. Otvorené od
+   6. 9., opakuje sa v `STATUS.md`, `MARKETING_PLAN.md` aj
+   `LANDING_PAGE_STRATEGY.md`. Blokuje geo prvej kampane a je predpokladom
+   akejkoľvek budúcej mestskej stránky.
+
+Ďalších sedem rozhodnutí k landing pages a zámerom je v
+`LANDING_PAGE_STRATEGY.md` kap. 14.

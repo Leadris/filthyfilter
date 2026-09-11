@@ -144,13 +144,13 @@
      separate portal action; an empty feed is a valid response.
      ======================================================================= */
   var PRICES = {
-    "p-nastenna":    { code: "FF-CIST-NASTENNA", sk: "79 €",  en: "€79" },
-    "p-kazetova":    { code: "FF-CIST-KAZETOVA", sk: "129 €", en: "€129" },
-    "p-udrzba":      { code: "FF-UDRZBA",        sk: "49 €",  en: "€49" },
-    "p-diagnostika": { code: "FF-DIAGNOSTIKA",   sk: "49 €",  en: "€49" },
+    "p-nastenna":    { code: "FF-CIST-NASTENNA", amount: 79,  sk: "79 €",  en: "€79" },
+    "p-kazetova":    { code: "FF-CIST-KAZETOVA", amount: 129, sk: "129 €", en: "€129" },
+    "p-udrzba":      { code: "FF-UDRZBA",        amount: 49,  sk: "49 €",  en: "€49" },
+    "p-diagnostika": { code: "FF-DIAGNOSTIKA",   amount: 49,  sk: "49 €",  en: "€49" },
     // A surcharge, not a service on its own: it is added to whichever cleaning
     // or service package the visitor picked above.
-    "p-expres":      { code: "FF-EXPRES-24H",    sk: "49 €",  en: "€49" }
+    "p-expres":      { code: "FF-EXPRES-24H",    amount: 49,  sk: "49 €",  en: "€49" }
   };
 
   var PRICE_TOKEN = /\{\{(p-[a-z]+)\}\}/g;
@@ -205,6 +205,7 @@
           var amount = (cents / 100).toFixed(cents % 100 ? 2 : 0);
           PRICES[key].sk = amount.replace(".", ",") + " €";
           PRICES[key].en = "€" + amount;
+          PRICES[key].amount = pkg.priceAmount;
           changed = true;
         });
         if (changed) {
@@ -258,6 +259,113 @@
     }
   }
 
+  var SERVICE_BASE_PRICE = {
+    nastenna: "p-nastenna",
+    kazetova: "p-kazetova",
+    udrzba: "p-udrzba",
+    diagnostika: "p-diagnostika"
+  };
+
+  function formatMoney(amount, lang) {
+    var isWhole = (amount % 1 === 0);
+    if (lang === "en") {
+      return "€" + (isWhole ? amount.toFixed(0) : amount.toFixed(2));
+    }
+    return (isWhole ? amount.toFixed(0) : amount.toFixed(2).replace(".", ",")) + " €";
+  }
+
+  function priceAmount(token) {
+    var p = PRICES[token];
+    if (!p) return 0;
+    if (typeof p.amount === "number") return p.amount;
+    var match = (p.sk || "").match(/\d+(?:[.,]\d+)?/);
+    return match ? parseFloat(match[0].replace(",", ".")) : 0;
+  }
+
+  function buildEstimateLines(data, lang) {
+    var baseToken = SERVICE_BASE_PRICE[data.service];
+    if (!baseToken) return [];
+
+    var isEn = lang === "en";
+    var baseUnitRate = priceAmount(baseToken);
+    var serviceLabel = (SERVICES[data.service] && SERVICES[data.service][lang]) || "";
+    var isCountable = !!COUNTABLE[data.service];
+
+    var count = 1;
+    var hasKnownCount = true;
+    if (isCountable) {
+      if (data.units && /^[1-9][0-9]*$/.test(data.units)) {
+        count = parseInt(data.units, 10);
+      } else {
+        count = 1;
+        hasKnownCount = false;
+      }
+    }
+
+    var baseSubtotal = baseUnitRate * count;
+    var hasExpress = !!data.express;
+    var expressRate = hasExpress ? priceAmount("p-expres") : 0;
+    var total = baseSubtotal + expressRate;
+
+    var lines = [];
+
+    if (data.service === "diagnostika") {
+      var diagTitle = isEn
+        ? "Estimated price from website: " + formatMoney(total, lang) + " incl. VAT (deducted if you order the repair)"
+        : "Orientačný odhad z webu: " + formatMoney(total, lang) + " s DPH (pri objednaní opravy sa odpočíta)";
+      lines.push(diagTitle);
+
+      var diagParts = serviceLabel + " (" + formatMoney(baseSubtotal, lang) + ")";
+      if (hasExpress) {
+        diagParts += isEn
+          ? " + priority express surcharge (" + formatMoney(expressRate, lang) + ")"
+          : " + expresný príplatok (" + formatMoney(expressRate, lang) + ")";
+      }
+      lines.push((isEn ? "Breakdown: " : "Rozpis: ") + diagParts);
+      return lines;
+    }
+
+    // Countable services (nastenna, kazetova, udrzba)
+    if (hasKnownCount) {
+      var title = isEn
+        ? "Estimated starting price: from " + formatMoney(total, lang) + " incl. VAT"
+        : "Orientačný odhad z webu: od " + formatMoney(total, lang) + " s DPH";
+      lines.push(title);
+
+      var parts = count + "× " + serviceLabel + " (" + (isEn ? "from " : "od ") + formatMoney(baseSubtotal, lang) + ")";
+      if (hasExpress) {
+        parts += isEn
+          ? " + priority express surcharge (" + formatMoney(expressRate, lang) + ")"
+          : " + expresný príplatok (" + formatMoney(expressRate, lang) + ")";
+      }
+      lines.push((isEn ? "Breakdown: " : "Rozpis: ") + parts);
+      lines.push(isEn
+        ? "(Final price confirmed before we start based on condition and access)"
+        : "(Konečná cena sa potvrdzuje pred zásahom podľa stavu a prístupu)");
+    } else {
+      var suffix = isEn
+        ? " (estimate for 1 unit" + (hasExpress ? " + express" : "") + ")"
+        : " (odhad pre 1 ks" + (hasExpress ? " + expres" : "") + ")";
+      var titleUnknown = isEn
+        ? "Estimated starting price: from " + formatMoney(total, lang) + " incl. VAT" + suffix
+        : "Orientačný odhad z webu: od " + formatMoney(total, lang) + " s DPH" + suffix;
+      lines.push(titleUnknown);
+
+      var partsUnknown = serviceLabel + " (" + (isEn ? "from " : "od ") + formatMoney(baseUnitRate, lang) + (isEn ? " / unit" : " / ks") + ")";
+      if (hasExpress) {
+        partsUnknown += isEn
+          ? " + priority express surcharge (" + formatMoney(expressRate, lang) + ")"
+          : " + expresný príplatok (" + formatMoney(expressRate, lang) + ")";
+      }
+      lines.push((isEn ? "Breakdown: " : "Rozpis: ") + partsUnknown);
+      lines.push(isEn
+        ? "(Final price confirmed before we start based on unit count, condition and access)"
+        : "(Konečná cena sa potvrdzuje pred zásahom podľa počtu, stavu a prístupu)");
+    }
+
+    return lines;
+  }
+
   /* Build the message from whatever the visitor actually filled in. Empty fields
      are left out rather than sent as blank lines, so a two-line enquiry stays a
      two-line enquiry.
@@ -287,6 +395,14 @@
     // Only written when it is ticked. A line saying "no" would make every
     // ordinary enquiry read like a refused upsell.
     if (data.express) lines.push(withPrices(L.express, lang));
+
+    var estimateLines = buildEstimateLines(data, lang);
+    if (estimateLines.length) {
+      lines.push("");
+      for (var k = 0; k < estimateLines.length; k++) {
+        lines.push(estimateLines[k]);
+      }
+    }
     return lines.join("\n");
   }
 

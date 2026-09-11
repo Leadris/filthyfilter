@@ -50,6 +50,29 @@ Tri zmeny na vetve `codex/filthyfilter-redesign`:
 **Nasadené:** zatiaľ len v repozitári na vetve `codex/filthyfilter-redesign`.
 Na dev ide s najbližším balíkom podľa `DEPLOYMENT.md`.
 
+**Fakturácia a jurisdikcia (11. 9., v repozitári).** Účtovná kniha vznikla, kým
+bol prevádzkovateľom zapísaný slovenský platiteľ DPH. Zmenou firmy prestali byť
+faktom tri veci, ktoré mal kód zabudované:
+
+1. **Sadzba.** Dvadsaťtri percent je slovenská, dvadsaťjeden česká. Ktorá platí,
+   nerozhoduje sídlo firmy, ale **miesto plnenia**. Servis zariadenia
+   zabudovaného v budove je službou vzťahujúcou sa na nehnuteľnosť, takže miesto
+   plnenia je tam, kde budova stojí (čl. 47 smernice 2006/112/ES, § 10 českého
+   zákona o DPH). Slovenské domácnosti teda ukazujú na slovenskú DPH a na
+   slovenskú registráciu bez ohľadu na to, kde firma sídli. **Toto musí potvrdiť
+   účtovník, nie vývojár**, preto to zostáva nastavením a nie konštantou.
+2. **Pätnásťdňová lehota na vystavenie.** Slovenský § 73 aj český § 28 ods. 5
+   hovoria zhodne pätnásť dní, takže číslo zmenu prežilo — ale zhodou okolností.
+   Je teraz nastavením vedľa sadzby a zoznam nevyfakturovaných zákaziek ho číta.
+3. **Dodávateľ.** Nezapísaná firma nemá IČO a nemôže byť platiteľom DPH, takže
+   doklad vystavený v jej mene by bol neplatný. **Vystavenie je preto zablokované**,
+   kým nie je vyplnená jurisdikcia, názov, IČO a — ak sa účtuje sadzba — aj IČ DPH.
+   Prehľad fakturácie povie dôvod raz, namiesto toho, aby zlyhávalo každé tlačidlo
+   zvlášť.
+
+Nič sa za účtovníka nehádže: zavedené hodnoty sú prázdne. Overené 453 testami.
+Commit `2e28383` v `whispair-api`; **na dev ešte nenasadené**, SSH okno vypršalo.
+
 ## Čo je hotové
 
 **Technický review je zosúladený so skutočnosťou a jeho generátor je konečne
@@ -456,7 +479,8 @@ Rozhodnutia pre používateľa sú na konci dokumentu (Billdu, hodnota konverzie
 číslo WhatsApp Business, prvé mesto).
 
 **Súkromie, ceny a optimalizácia (7. 9., nasadené na dev).**
-SK/EN informácie podľa čl. 13 GDPR s ADAMSON s. r. o.; odkazy pri všetkých troch
+SK/EN informácie podľa čl. 13 GDPR (vtedy s ADAMSON s. r. o., od 11. 9. whispAir s.r.o.,
+pozri „Prevádzkovateľ" nižšie); odkazy pri všetkých troch
 formulároch a v piatich pätičkách. Basic Consent Mode blokuje Google pred súhlasom,
 atribúcia sa ukladá len so súhlasom, voľba má verziu/čas a platnosť 180 dní, súhlas
 sa dá odvolať. Google Fonts sú nahradené lokálnymi WOFF2. Nepravdivé tvrdenie, že
@@ -735,10 +759,19 @@ Nebráni spusteniu, ale chýba: **žiadna stránka nemá `LocalBusiness` v JSON-
 
 ## Vyriešené 7. 9. 2026 večer
 
-**Prevádzkovateľ je známy a stránka o spracovaní údajov existuje.** Je ním
+**Prevádzkovateľ a stránka o spracovaní údajov existujú.** `PRIVACY_URL`
+v `js/consent.js` na ňu ukazuje.
+
+**Platné od 11. 9. 2026:** prevádzkovateľom je uvedená **whispAir s.r.o.
+(v štádiu zakladania, Česká republika)**, bez IČO a bez DIČ. Pôvodne to bola
 ADAMSON s. r. o., Topoľčianska 19, 851 05 Bratislava, IČO 45378843,
-IČ DPH SK2022960159. `PRIVACY_URL` v `js/consent.js` na ňu už ukazuje. Tým padá
-bod 1 zo zoznamu nižšie aj bod 7 z kapitoly 10 v `MARKETING_PLAN.md`.
+IČ DPH SK2022960159; tie údaje už na stránke nie sú.
+
+**Otvorené k tomu:** nezapísaná spoločnosť nie je právnickou osobou, takže
+prevádzkovateľom podľa GDPR byť nemôže. Do zápisu ním je ten, kto o spracúvaní
+skutočne rozhoduje, teda konkrétna osoba alebo existujúca firma. Stránka dnes
+menuje subjekt, ktorý ešte nevznikol, a dotknutá osoba tak nemá komu adresovať
+žiadosť. Treba to rozhodnúť skôr, než sa spustí platená kampaň.
 
 Používateľ odložil dokončenie Google Ads do vzniku vlastnej s. r. o. Nejde o
 identitu dnešného prevádzkovateľa webu, ale o budúcu právnu a fakturačnú identitu
@@ -761,7 +794,10 @@ produkčné, kým neprejde `validateOnly` a podúčet nebude používať `This m
 
 ## Čo čaká na používateľa
 
-1. **Prevádzkovateľ vyriešený:** ADAMSON s. r. o.; údaje overené cez FinStat a ORSR.
+1. **Prevádzkovateľ nie je uzavretý.** Od 11. 9. je na stránke whispAir s.r.o.
+   v štádiu zakladania, bez IČO. Nezapísaná firma nemôže byť prevádzkovateľom;
+   treba uviesť toho, kto ním je do zápisu. S tým súvisí aj daňová jurisdikcia,
+   pozri „Fakturácia a jurisdikcia" nižšie.
 2. **Ktorým mestom začať s reklamou.** Bratislava, Trnava alebo Nitra. Rozhoduje to,
    kam sa vám najlepšie jazdí a kde už máte zákazníkov.
 3. **Kto dvíha telefón a do koľkých minút** odpovedá na dopyt.

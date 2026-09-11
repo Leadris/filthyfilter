@@ -82,8 +82,26 @@ riadkoch zákazky sa uloží tá sadzba, ktorá platila v okamihu vystavenia, ni
 odkaz na nastavenie. Inak by zmena sadzby prepísala históriu a staré doklady by
 prestali sedieť s priznaním.
 
-ADAMSON s. r. o. je platiteľ DPH (`IČ DPH SK2022960159`), takže netto a brutto
-sú rôzne sumy a rozlíšenie je nutné.
+**Revidované 11. 9. 2026 po zmene firmy.** Táto kapitola pôvodne stála na tom, že
+prevádzkovateľom je ADAMSON s. r. o., zapísaný slovenský platiteľ DPH
+(`IČ DPH SK2022960159`). Prevádzkovateľ je teraz whispAir s.r.o. v štádiu
+zakladania, v Česku, bez IČO a bez DIČ. Čo z toho plynie:
+
+- **Sadzbu nerozhoduje sídlo firmy, ale miesto plnenia.** Servis zariadenia
+  zabudovaného v budove je službou vzťahujúcou sa na nehnuteľnosť, takže miesto
+  plnenia je tam, kde budova stojí (čl. 47 smernice 2006/112/ES, v českom práve
+  § 10 zákona o DPH). Slovenská domácnosť teda znamená slovenskú DPH, dnes
+  dvadsaťtri percent, a pravdepodobne aj povinnosť registrácie na Slovensku, aj
+  keď firma sídli v Česku. Pri odberateľovi, ktorý je platiteľom v krajine
+  nehnuteľnosti, sa daň prenáša na neho; pri domácnosti ju odvádza dodávateľ.
+  **Toto je vec pre účtovníka.** Systém to preto nerozhoduje a drží obe možné
+  sadzby ako nastavenie.
+- **Kým firma nie je zapísaná, nie je platiteľom DPH a nemá IČO**, takže doklad
+  v jej mene by bol neplatný. Vystavenie je preto zablokované, kým nie sú
+  vyplnené `invoicing.tax_jurisdiction`, `supplier_name`, `supplier_company_id`
+  a pri nenulovej sadzbe aj `supplier_vat_id`.
+- **Netto a brutto zostávajú rôzne sumy** v každom scenári okrem neplatiteľa,
+  takže rozlíšenie je nutné tak či tak.
 
 ### Splatnosť
 
@@ -104,8 +122,10 @@ Obe hodnoty idú do `app_settings` (`invoicing.due_days_b2c`,
 
 ### Lehota na vystavenie
 
-Platiteľ DPH musí faktúru vyhotoviť **do 15 dní** odo dňa dodania služby
-(§ 73 zákona o DPH). Keďže faktúru potvrdzuje kancelária a nie technik, medzi
+Platiteľ DPH musí faktúru vyhotoviť **do 15 dní** odo dňa dodania služby.
+Zhodne to hovorí slovenský § 73 aj český § 28 ods. 5 zákona o DPH, takže zmena
+firmy toto číslo nezmenila. Zhoda je ale náhodná, preto je lehota od 11. 9.
+nastavením `invoicing.issue_deadline_days` a nie konštantou v kóde. Keďže faktúru potvrdzuje kancelária a nie technik, medzi
 dokončením zákazky a vystavením vzniká priestor na omeškanie.
 
 Preto: portál musí mať zoznam zákaziek v stave `Done` **bez faktúry**, zoradený
@@ -118,6 +138,12 @@ znamená aj chýbajúcu konverziu.
 Od 1. januára 2027 budú tuzemskí platitelia DPH musieť pri dodaní tuzemskej
 zdaniteľnej osobe vystavovať faktúry v štruktúrovanom formáte XML podľa
 EN 16931 (Peppol BIS). Dobrovoľná fáza beží už v roku 2026.
+
+**Pozor po zmene firmy:** táto povinnosť je slovenská. Na českú firmu dopadá
+český režim, ktorý plošnú tuzemskú e-fakturáciu k tomu istému dátumu nezavádza;
+celoeurópsky režim podľa ViDA prichádza neskôr. Ktorý z nich platí, závisí od
+toho, kde firma nakoniec vznikne a kde bude registrovaná — ďalší dôvod uzavrieť
+jurisdikciu skôr než neskôr.
 
 Pre tento plán je to argument navyše za to, že **Billdu zostáva**. Povinnosť sa
 týka toho, kto doklad vystavuje; keby sme si fakturáciu postavili sami, museli

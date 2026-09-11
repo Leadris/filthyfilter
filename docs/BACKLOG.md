@@ -205,6 +205,35 @@ sú v `STATUS.md`.
 
 ---
 
+## Jurisdikcia a prevádzkovateľ
+
+### T21 — Uzavrieť daňovú jurisdikciu a dodávateľa
+**Vlastník:** ty (s účtovníkom) · **Blokuje:** akékoľvek vystavenie dokladu
+
+Účtovná kniha vznikla, kým bol prevádzkovateľom zapísaný slovenský platiteľ DPH.
+Firma je teraz whispAir s.r.o. v štádiu zakladania, v Česku, bez IČO a bez DIČ.
+Kód sa už netvári, že to vie: vystavenie je zablokované a všetko podstatné je
+nastavením. Rozhodnúť treba tri veci.
+
+1. **Kde firma vznikne a kde bude registrovaná k DPH.** Miesto plnenia pri
+   servise zariadenia v budove je tam, kde budova stojí, takže slovenské
+   domácnosti ukazujú na slovenskú DPH a pravdepodobne aj na slovenskú
+   registráciu, aj keď firma sídli v Česku. Nech to potvrdí účtovník.
+2. **Sadzba**, ktorá z toho vyplýva: dvadsaťtri percent slovenských alebo
+   dvadsaťjeden českých.
+3. **Kto je prevádzkovateľ podľa GDPR do zápisu firmy.** Nezapísaná spoločnosť
+   ním byť nemôže a stránka o ochrane údajov dnes menuje subjekt, ktorý ešte
+   nevznikol.
+
+**Hotové, keď:** v `app_settings` sú vyplnené `invoicing.tax_jurisdiction`,
+`supplier_name`, `supplier_company_id` a `supplier_vat_id`, sadzba zodpovedá
+rozhodnutiu, a stránka o ochrane údajov menuje skutočného prevádzkovateľa.
+
+**Stav 11. 9. 2026:** kód pripravený a otestovaný (commit `2e28383`
+v `whispair-api`), na dev ešte nenasadený. Rozhodnutie chýba.
+
+---
+
 ## Billdu
 
 ### T15 — Povýšenie účtu na Premium

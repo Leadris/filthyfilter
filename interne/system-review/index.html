@@ -110,10 +110,10 @@
 </li>
 <li><a href="#i-implementation-plan-male-kroky">I. IMPLEMENTATION PLAN — malé kroky</a><ul>
 <li><a href="#krok-1-strukturovany-lead-p01-hotove-8-9-2026-na-dev">✅ Krok 1 — Štruktúrovaný lead (P0.1) — hotové 8. 9. 2026, na dev</a></li>
-<li><a href="#krok-2-atribucia-pre-meta-a-suhlas-p02-polovica-hotova-8-9-2026">⚠ Krok 2 — Atribúcia pre Meta a súhlas (P0.2) — polovica hotová 8. 9. 2026</a></li>
+<li><a href="#krok-2-atribucia-pre-meta-a-suhlas-p02-dokoncene-11-9-2026-na-dev">✅ Krok 2 — Atribúcia pre Meta a súhlas (P0.2) — dokončené 11. 9. 2026, na dev</a></li>
 <li><a href="#krok-3-peniaze-na-zakazke-p03-hotove-8-9-2026-na-dev-aj-na-produkcii">✅ Krok 3 — Peniaze na zákazke (P0.3) — hotové 8. 9. 2026, na dev aj na produkcii</a></li>
 <li><a href="#krok-4-uctovna-kniha-p04-hotove-8-9-2026-na-dev-aj-na-produkcii">✅ Krok 4 — Účtovná kniha (P0.4) — hotové 8. 9. 2026, na dev aj na produkcii</a></li>
-<li><a href="#krok-5-zakaznik-a-lokalita-p05-p06-zakaznik-hotovy-8-9-lokalita-nezacata">⚠ Krok 5 — Zákazník a lokalita (P0.5, P0.6) — zákazník hotový 8. 9., lokalita nezačatá</a></li>
+<li><a href="#krok-5-zakaznik-a-lokalita-p05-p06-zakaznik-hotovy-8-9-lokalita-11-9">⚠ Krok 5 — Zákazník a lokalita (P0.5, P0.6) — zákazník hotový 8. 9., lokalita 11. 9.</a></li>
 <li><a href="#krok-6-zrusenie-legacy-emisie-p07-hotove-10-9-2026-v-repozitari">✅ Krok 6 — Zrušenie legacy emisie (P0.7) — hotové 10. 9. 2026, v repozitári</a></li>
 <li><a href="#krok-7-servicequoteengine-a-ponuka-p11">Krok 7 — ServiceQuoteEngine a ponuka (P1.1)</a></li>
 <li><a href="#krok-8-dostupnost-a-booking-pre-servis-p12">Krok 8 — Dostupnosť a booking pre servis (P1.2)</a></li>
@@ -136,7 +136,7 @@
 <header>
   <p class="kicker">FilthyFilter by whispAir · interný dokument</p>
   <h1>Technický review: FilthyFilter + whispair-api voči modelu „klik → faktúra → recenzia → ďalšia objednávka“</h1>
-  <p class="sub">Zdroj: <code>docs/SYSTEM_REVIEW.md</code> v repozitári FilthyFilter. Vygenerované 10. 9. 2026.</p>
+  <p class="sub">Zdroj: <code>docs/SYSTEM_REVIEW.md</code> v repozitári FilthyFilter. Vygenerované 11. 9. 2026.</p>
   <div class="notice">Neindexovaná, neverejná stránka na stagingu. Nie je chránená heslom, adresu berte ako neuvedenú, nie tajnú.</div>
 </header>
 
@@ -173,7 +173,7 @@ tu je len to, čo mení tento dokument.</p>
 <tr>
 <td>P0.2 atribúcia mimo Google</td>
 <td>chýba</td>
-<td>⚠ <strong>polovica</strong> — <code>platform</code>, <code>fbclid</code>, <code>ctwa_clid</code>, <code>meta_ad_id</code>, WhatsApp <code>referral</code> sú. <code>consent_version</code>, <code>consent_at</code>, <code>campaign_id</code>, <code>adgroup_id</code>, <code>keyword_id</code>, <code>channel</code> <strong>stále nie</strong></td>
+<td>✅ <strong>hotové 11. 9., na dev</strong> — k <code>platform</code>, <code>fbclid</code>, <code>ctwa_clid</code>, <code>meta_ad_id</code> a WhatsApp <code>referral</code> pribudli <code>consent_version</code>, <code>consent_at</code>, <code>channel</code>, <code>campaign_id</code>, <code>adgroup_id</code>, <code>keyword_id</code>. Export bez dôkazu súhlasu je zavretý</td>
 </tr>
 <tr>
 <td>P0.3 peniaze na zákazke</td>
@@ -193,7 +193,7 @@ tu je len to, čo mení tento dokument.</p>
 <tr>
 <td>P0.6 lokalita ako dáta</td>
 <td>chýba</td>
-<td>❌ <strong>stále chýba</strong> — žiadne <code>service_localities</code>, <code>client_locations</code>, <code>locality_id</code></td>
+<td>⚠ <strong>z väčšej časti hotové 11. 9., na dev</strong> — <code>service_localities</code> so 41 obcami, PSČ a <code>locality_id</code> na dopyte aj na zákazke, rozpoznanie z voľného textu. Otvorené: zápis <code>locality_id</code> na zákazku (T22) a <code>client_locations</code></td>
 </tr>
 <tr>
 <td>P0.7 zmazanie legacy emisie</td>
@@ -1037,7 +1037,7 @@ rules“ v Google Ads (násobenie podľa geo/zariadenia) — hrubé, neodporúč
 <tr>
 <td>P0.2</td>
 <td>Atribúcia neutrálna k platforme + súhlas</td>
-<td>⚠ <strong>polovica.</strong> Hotové: <code>platform</code>, <code>fbclid</code>, <code>ctwa_clid</code>, <code>meta_ad_id</code>, WhatsApp <code>referral</code>, <code>clients.acquisition_lead_attribution_id</code>. <strong>Otvorené: <code>consent_version</code>, <code>consent_at</code>, <code>campaign_id</code>, <code>adgroup_id</code>, <code>keyword_id</code>, <code>channel</code>.</strong> Súhlas blokuje prvý ostrý export</td>
+<td>✅ <strong>hotové 11. 9., na dev a overené.</strong> Web posiela <code>consent_version</code> a <code>consent_at</code>, server ich ukladá a jedna brána (<code>conversion_consent_gate_sql</code>) drží oba workery aj CSV export. Riadok bez dôkazu sa nevyváža a počíta sa v logu behu ako <code>blocked_no_consent</code>. Pribudol <code>channel</code> a tri identifikátory kampane z ValueTrack</td>
 </tr>
 <tr>
 <td>P0.3</td>
@@ -1057,7 +1057,7 @@ rules“ v Google Ads (násobenie podľa geo/zariadenia) — hrubé, neodporúč
 <tr>
 <td>P0.6</td>
 <td>Lokalita ako dáta: <code>service_localities</code>, <code>client_locations</code>, PSČ na <code>jobs</code>, <code>service_area_postcodes.locality_id/travel_zone</code></td>
-<td>❌ <strong>nezačaté.</strong> Jediné nesplnené P0 v celku. Potrebuje to dojazd, kapacita aj akákoľvek budúca mestská stránka</td>
+<td>⚠ <strong>z väčšej časti hotové 11. 9., na dev a overené.</strong> <code>service_localities</code> nesie 41 obcí vygenerovaných z bežiaceho pruhu na webe; PSČ a <code>locality_id</code> pribudli na dopyt aj na zákazku, <code>service_area_postcodes</code> dostalo <code>locality_id</code> a <code>travel_zone</code>. Dopyt sa rozpozná pri príjme z voľného textu „Obec alebo PSČ“. <strong>Otvorené:</strong> zápis <code>locality_id</code> na zákazku (jeden <code>INSERT</code>, ktorý práve mení iná vetva) a <code>client_locations</code>, ktorý zatiaľ nemá kto písať</td>
 </tr>
 <tr>
 <td>P0.7</td>
@@ -1214,13 +1214,23 @@ ku kroku 5. Zápis a dôkazy: <code>STATUS.md</code>, <code>LIFECYCLE_IMPLEMENTA
 <li><strong>Testy:</strong> <code>LeadHelpersTest</code> pre whitelist; <code>browser.test.cjs</code> pre payload.</li>
 <li><strong>Riziká:</strong> tri kópie formulára; app whispAirField musí ignorovať neznáme polia (JSON, robí to).</li>
 </ul>
-<h3 id="krok-2-atribucia-pre-meta-a-suhlas-p02-polovica-hotova-8-9-2026">⚠ Krok 2 — Atribúcia pre Meta a súhlas (P0.2) — polovica hotová 8. 9. 2026</h3>
+<h3 id="krok-2-atribucia-pre-meta-a-suhlas-p02-dokoncene-11-9-2026-na-dev">✅ Krok 2 — Atribúcia pre Meta a súhlas (P0.2) — dokončené 11. 9. 2026, na dev</h3>
 <blockquote>
-<p>Vykonané: <code>platform</code> (odvodený na serveri), <code>fbclid</code>, <code>ctwa_clid</code>, <code>meta_ad_id</code>,
-WhatsApp <code>referral</code>, <code>clients.acquisition_lead_attribution_id</code>.
-<strong>Nevykonané: <code>consent_version</code>, <code>consent_at</code>, <code>campaign_id</code>, <code>adgroup_id</code>,
-<code>keyword_id</code>, <code>channel</code>.</strong> Súhlas blokuje prvý ostrý export konverzií.
-ValueTrack suffix je stále nastavenie účtu, ktoré nikto nespravil.</p>
+<p>Prvá polovica 8. 9.: <code>platform</code> (odvodený na serveri), <code>fbclid</code>, <code>ctwa_clid</code>,
+<code>meta_ad_id</code>, WhatsApp <code>referral</code>, <code>clients.acquisition_lead_attribution_id</code>.</p>
+<p>Druhá polovica 11. 9. na vetve <code>feature/lead-attribution-consent</code>
+vo <code>whispair-api</code> a na <code>codex/filthyfilter-redesign</code> na webe:
+<code>consent_version</code>, <code>consent_at</code>, <code>channel</code>, <code>campaign_id</code>, <code>adgroup_id</code>,
+<code>keyword_id</code>. Vývoz bez dôkazu súhlasu je zavretý na jednom mieste, ktoré
+používajú oba workery aj CSV export.</p>
+<p><strong>Vykonané inak, než plán predpokladal, a je to zámer:</strong> riadok bez dôkazu sa
+neoznačuje natrvalo. T13 zaviedlo terminálny stav <code>Expired</code> pre klik mimo
+okna, lebo taký klik sa už použiteľným nestane. Chýbajúci súhlas nie je to
+isté: pri WhatsApp riadkoch ide o právny základ, ktorý sa dá doplniť, a
+pochovať ich rozhodnutím kódu by bola tichá strata. Preto zostávajú <code>Logged</code>,
+nespotrebujú pokus a každý beh ich vypíše ako <code>blocked_no_consent</code>.</p>
+<p><strong>ValueTrack suffix je stále nastavenie účtu, ktoré nikto nespravil</strong>, takže
+tri identifikátory kampane zostanú prázdne, kým sa to nestane.</p>
 </blockquote>
 <ul>
 <li><strong>Cieľ:</strong> jeden atribučný riadok bez ohľadu na platformu, so súhlasom.</li>
@@ -1262,13 +1272,23 @@ vystavení. Napojenie na Billdu API je T15–T17.</p>
 <li><strong>Testy:</strong> stavový automat faktúry.</li>
 <li><strong>Riziká:</strong> dvojité vedenie (Billdu + náš zápis). Zámerne minimálne polia.</li>
 </ul>
-<h3 id="krok-5-zakaznik-a-lokalita-p05-p06-zakaznik-hotovy-8-9-lokalita-nezacata">⚠ Krok 5 — Zákazník a lokalita (P0.5, P0.6) — zákazník hotový 8. 9., lokalita nezačatá</h3>
+<h3 id="krok-5-zakaznik-a-lokalita-p05-p06-zakaznik-hotovy-8-9-lokalita-11-9">⚠ Krok 5 — Zákazník a lokalita (P0.5, P0.6) — zákazník hotový 8. 9., lokalita 11. 9.</h3>
 <blockquote>
 <p>Vykonané (T12): <code>clients.email</code>, <code>phone_normalized</code> s čiastočným unikátnym
-indexom, <code>customer_type</code>, <code>acquisition_lead_attribution_id</code>.
-<strong>Nevykonané: firemné polia a celá lokalita</strong> — <code>client_locations</code>,
-<code>service_localities</code>, PSČ na <code>jobs</code>, <code>travel_zone</code>. Je to jediné P0, ktoré sa
-nezačalo.</p>
+indexom, <code>customer_type</code>, <code>acquisition_lead_attribution_id</code>.</p>
+<p>Lokalita 11. 9. na vetve <code>feature/lead-attribution-consent</code>, nasadená a overená na dev:
+<code>service_localities</code> so 41 obcami <strong>vygenerovanými z bežiaceho pruhu na webe</strong>,
+nie prepísanými ručne, takže tabuľka a verejný sľub začínajú zhodné;
+<code>service_area_postcodes</code> dostalo <code>locality_id</code> a <code>travel_zone</code>; PSČ
+a <code>locality_id</code> pribudli na <code>captured_messages</code> aj na <code>jobs</code>. Dopyt sa
+rozpozná pri príjme z jediného voľného poľa „Obec alebo PSČ“ — PSČ, ak tam je,
+inak názov obce zložený na jeden tvar bez diakritiky.</p>
+<p><strong>Nevykonané a prečo:</strong> zápis <code>locality_id</code> na zákazku prechádza jediným
+<code>INSERT</code>-om v <code>JobsRepository::create</code>, ktorý súbežne mení iná vetva; dve
+úpravy toho istého príkazu je presne to, ako sa pri zlúčení ticho stratí
+stĺpec. <code>client_locations</code> nevzniklo, lebo doň nemá kto písať: portál na to
+nemá obrazovku a opakované návštevy sú P2. Prázdna tabuľka je sľub, ktorý kód
+nedrží. <strong>Firemné polia</strong> (IČO, DIČ, IČ DPH) zostávajú otvorené.</p>
 </blockquote>
 <ul>
 <li><strong>Migrácia:</strong> <code>clients ADD email, phone_normalized, customer_type, company_name, ico, dic, ic_dph, marketing_consent_at</code>; unikátny index <code>(phone_normalized)</code> čiastočný; <code>client_locations</code>; <code>service_localities</code>; <code>service_area_postcodes ADD locality_id, travel_zone</code>; <code>jobs ADD client_location_id, postcode, locality_id</code>.</li>
@@ -1380,7 +1400,7 @@ od 6. 9.</p>
 </ol>
 <p>Ďalších sedem rozhodnutí k landing pages a zámerom je v
 <code>LANDING_PAGE_STRATEGY.md</code> kap. 14.</p>
-<footer>FilthyFilter by whispAir · technický review · 10. 9. 2026</footer>
+<footer>FilthyFilter by whispAir · technický review · 11. 9. 2026</footer>
 </div>
 </main>
 </div>

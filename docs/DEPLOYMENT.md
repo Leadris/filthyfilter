@@ -170,6 +170,33 @@ shipping it here would add a file that can only ever do nothing or go wrong.
 
 ### Last staging deploy
 
+- Date: 2026-09-11 evening, consent proof and campaign ids in the enquiry
+  (`js/attribution.js`, `js/consent.js`), plus the review page rebuilt from the
+  updated `docs/SYSTEM_REVIEW.md`.
+- SSH port: 22491.
+- **Two files, not a package.** `codex/filthyfilter-redesign` also carries the
+  Schema.org, price-estimate and company-rename work from another session, which
+  `STATUS.md` says goes out with the next full package. Shipping a package here
+  would have taken all of it along, so only the two changed scripts were
+  uploaded. They are self-contained: neither needs anything from the newer HTML.
+- The API half went to `api-dev` the same way and in the same session — both
+  migrations applied with `php8.4 migrate.php up <version>` and the changed PHP
+  files uploaded individually, for the same reason. Details and the rollback
+  archive are in `STATUS.md`; the API repository keeps its own procedure.
+- Verified: both scripts answer 200 and their SHA-256 matches the repository
+  byte for byte. On the live staging page `ffConsent.version()` exists, a
+  visitor who has not agreed sends only `landing_token`, and after agreeing the
+  payload carries `consent_version`, `consent_at` and the three ValueTrack
+  campaign ids. Consent was withdrawn again afterwards.
+- Review page: 200, 95 782 bytes, SHA-256 `0251ca06…d83c`, identical to the
+  repository.
+- Rollback: `/home/jg046600/tmp/ff-dev-js-before-consent-20260911.tar.gz` for
+  the two scripts; the review page is rebuilt from its source at any time with
+  `python scripts/build-system-review.py`.
+- Production untouched.
+
+### Previous staging deploy
+
 - Date: 2026-09-11, internal system review page refreshed to the 10 September
   render (`interne/system-review/index.html` as committed in `b4c5f5a`).
 - SSH port: 22491, supplied by the user. The host key on this port is the same

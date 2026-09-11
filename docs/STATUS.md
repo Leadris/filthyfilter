@@ -353,8 +353,15 @@ Google ponechal rolu aj stav a nevznikol duplikát. Testovacie riadky sú zmazan
 Celý tok dev-login, `auth/me` a odhlásenie teraz v smoke teste prechádza;
 predtým bola tá skupina preskočená.
 
-**Na produkciu zatiaľ nenasadené.** Je to zásah do cesty prihlasovania, čaká na
-tvoje slovo.
+**Nasadené na produkciu 11. 9.**, po nasadení na dev a na tvoje slovo. Smoke test
+prešiel. Záloha pred zásahom je
+`/home/jg046600/tmp/api-before-auth-identity-20260911.tar.gz`. Overené na živom
+API: vývojárske prihlásenie zostáva vypnuté a vracia `403 dev_login_disabled`,
+prihlásenie cez Google s neplatným tokenom vracia `401`, nasadený kód nesie nové
+pravidlo a tabuľka používateľov je nezmenená, stále jediný schválený účet cez
+Google. Vetva `409` je na produkcii nedosiahnuteľná zámerne, lebo vývojárske
+prihlásenie je tam vypnuté; zmysel opravy na produkcii je ten druhý smer, teda
+že sa už nikto nemôže ocitnúť bez možnosti prihlásiť sa cez Google.
 
 **Synchronizácia e-mailov bola celý deň mŕtva a log to nepovedal (9. 9., na dev).**
 Worker padal pri každom behu, teda každých päť minút, na chybe `inconsistent types

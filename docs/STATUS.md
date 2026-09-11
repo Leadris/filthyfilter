@@ -21,7 +21,7 @@ nebol úplný.
 | Meta (Facebook a Instagram) | meranie zo servera hotové, na dev aj na `main` (Conversions API), ale **čaká na dataset a token z Events Managera** (bod 10 nižšie); pixel a reklamný materiál **nezačaté**, zadanie v `MARKETING_PLAN.md` kap. 11 |
 | Produkčný web | **od 8. 9. večer** zhodný s dev vrátane WhatsApp tlačidla v mobilnej lište |
 | Ikony | hotové na stagingu aj na produkcii; stará baktéria je preč |
-| Technický review celého funnelu | `SYSTEM_REVIEW.md` **prepísaný 10. 9. podľa skutočnosti**: čo je hotové, je označené a odkazuje sem. Web verzia je prebuildovaná v repozitári, ale **na dev ešte nenasadená**, takže `dev.filthyfilter.sk/system-review/` stále ukazuje verziu zo 7. 9. |
+| Technický review celého funnelu | `SYSTEM_REVIEW.md` **prepísaný 10. 9. podľa skutočnosti**: čo je hotové, je označené a odkazuje sem. Web verzia z 10. 9. je **od 11. 9. nasadená na dev** (`dev.filthyfilter.sk/system-review/`). |
 | Stratégia landing pages a zámerov | rozhodovací návrh v `LANDING_PAGE_STRATEGY.md` (10. 9.); **nič z neho nie je implementované**, čaká na sedem rozhodnutí v jeho kap. 14 |
 | Sledovanie životného cyklu zákazky | plán v `LIFECYCLE_IMPLEMENTATION.md`; **fázy 1 a 2 hotové a na dev**, z fázy 4 hotový krok 7 (identita zákazníka, T12); fáza 3 čaká na Billdu Premium |
 
@@ -118,9 +118,10 @@ by ako stránku prekresliť, a obe by sa ticho rozišli. Skript je presunutý do
 `scripts/build-system-review.py` a je verzovaný; postup je opravený
 v `DEPLOYMENT.md`.
 
-**Stránka je prebuildovaná, ale na dev nenasadená.** `dev.filthyfilter.sk/system-review/`
-stále ukazuje verziu zo 7. 9. Nasadzuje sa samostatne, nie ako súčasť balíka,
-podľa postupu v `DEPLOYMENT.md`.
+**Stránka je nasadená na dev (11. 9. večer, SSH port 22491).**
+`dev.filthyfilter.sk/system-review/` ukazuje verziu z 10. 9., bajtovo zhodnú
+s `interne/system-review/index.html` v gite. Nasadzuje sa samostatne, nie ako
+súčasť balíka, podľa postupu v `DEPLOYMENT.md`; záznam je tam.
 
 Súbežne vznikol `LANDING_PAGE_STRATEGY.md`, rozhodovací návrh k viacerým landing
 pages podľa zámeru. Nič z neho nie je implementované a čaká na sedem rozhodnutí.

@@ -170,6 +170,28 @@ shipping it here would add a file that can only ever do nothing or go wrong.
 
 ### Last staging deploy
 
+- Date: 2026-09-11, internal system review page refreshed to the 10 September
+  render (`interne/system-review/index.html` as committed in `b4c5f5a`).
+- SSH port: 22491, supplied by the user. The host key on this port is the same
+  `SHA256:rcRNahF2vL6Xtrn6QGzmuKanYspAeg8cQXQKFHdYf80` already pinned for 22876,
+  so a `[93.184.77.193]:22491` line was appended to `known_hosts_whispair`
+  (previous file kept beside it with a `.bak-` timestamp) and
+  `webhouse-ssh-status.json` now says 22491.
+- Deployed on its own, not as a staging package, into the existing
+  `system-review/` directory. The old file was backed up first:
+  `/home/jg046600/tmp/ff-dev-system-review-before-20260911.tar.gz`.
+- Rebuilding with `scripts/build-system-review.py` changed only the two
+  "Vygenerované" dates, so the committed file was deployed as is rather than
+  committing a date-only churn.
+- Verified: `https://dev.filthyfilter.sk/system-review/` answers 200, 94 739 bytes,
+  SHA-256 `e9901ebd…107c` identical to the working-copy file (CRLF checkout);
+  `noindex, nofollow, noarchive` present, staging `robots.txt` still disallows all.
+- Uploaded package: `/home/jg046600/tmp/ff-dev-system-review-20260911.tar.gz`.
+- Production untouched; its homepage SHA-256 checked before and after
+  (`/home/jg046600/tmp/ff-prod-before-system-review-20260911.sha256`, OK).
+
+### Previous staging deploy
+
 - Date: 2026-09-08, WhatsApp in the mobile bar, the stray `data-inquiry` fix and
   the brand line in every WhatsApp message. Commit `2f72f69`.
 - SSH port: 22530, supplied by the user. The pin sat on 22261, which was closed;

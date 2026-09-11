@@ -229,8 +229,10 @@ nastavením. Rozhodnúť treba tri veci.
 `supplier_name`, `supplier_company_id` a `supplier_vat_id`, sadzba zodpovedá
 rozhodnutiu, a stránka o ochrane údajov menuje skutočného prevádzkovateľa.
 
-**Stav 11. 9. 2026:** kód pripravený a otestovaný (commit `2e28383`
-v `whispair-api`), na dev ešte nenasadený. Rozhodnutie chýba.
+**Stav 11. 9. 2026:** kód hotový, otestovaný a **nasadený na dev** (commit
+`2e28383` v `whispair-api`); poistka tam overená. Na produkcii poistka zatiaľ
+nie je a doklad sa tam vystaviť dá, hoci zatiaľ žiadny nevznikol. Rozhodnutie
+chýba.
 
 ---
 

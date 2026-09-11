@@ -71,7 +71,22 @@ faktom tri veci, ktoré mal kód zabudované:
    zvlášť.
 
 Nič sa za účtovníka nehádže: zavedené hodnoty sú prázdne. Overené 453 testami.
-Commit `2e28383` v `whispair-api`; **na dev ešte nenasadené**, SSH okno vypršalo.
+Commit `2e28383` v `whispair-api`.
+
+**Nasadené a overené na dev 11. 9.** Nastavenia hlásia dôvod
+`tax_jurisdiction_undecided`, prehľad fakturácie ten dôvod povie, a pokus
+vystaviť doklad na ocenenej zákazke skončí s `supplier_not_configured`. Skúšobné
+dáta po sebe upratané.
+
+**Na produkcii poistka zatiaľ nie je.** Produkčné API fakturačnú vrstvu má
+a migrácie po `20260908140000` sú tam aplikované, takže **doklad sa tam dnes
+vystaviť dá** — v mene firmy, ktorá ešte nevznikla, a v sadzbe, ktorú nikto
+nepotvrdil. Nič sa zatiaľ nestalo: na produkcii je nula faktúr, nula úhrad, nula
+ocenených zákaziek a nula konverzií po úhrade. Nasadenie som nespravil zámerne:
+produkcia má tri neaplikované migrácie z inej rozrobenej práce, dve z nich
+označené ako deštruktívne, a spustiť cudziu migráciu na produkcii nie je moje
+rozhodnutie. Samotný kód je pritom bezpečný aj bez migrácie — chýbajúce
+nastavenia padnú na prázdne hodnoty, takže poistka drží zatvorené.
 
 ## Čo je hotové
 

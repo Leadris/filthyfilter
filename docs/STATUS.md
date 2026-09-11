@@ -320,6 +320,41 @@ originu sa vráti bez hlavičky, teda zablokovaný. Dnes to nevadí, lebo www ro
 nie konfigurácia. Smoke test preto kontroluje aj to presmerovanie. Čistejšie by
 bolo pridať `https://www.filthyfilter.sk` do zoznamu, to je rozhodnutie na teba.
 
+**Prihlásenie cez druhý spôsob padalo na nezmyselnej chybe (11. 9., na dev).**
+Prihlásiť sa dá cez Google, a na testovacom serveri aj vývojárskym prihlásením.
+Ku každému účtu je uložené, ktorým spôsobom vznikol, a systém ho podľa toho aj
+hľadá. Tabuľka `app_users` má však zároveň `UNIQUE (email)`, teda jedna adresa
+znamená jeden účet. Tie dve pravidlá si odporujú presne vtedy, keď sa človek,
+ktorý už účet má, prihlási tým druhým spôsobom: vyhľadanie ho nenájde, vloženie
+narazí na obmedzenie a volajúci dostane `500 Database error`, z ktorého sa nedá
+vyčítať nič.
+
+**Nebezpečnejší je opačný smer, nie vývojárske prihlásenie.** To je na produkcii
+vypnuté. Ale keby na produkcii existoval čo i len jeden účet vzniknutý inak než
+cez Google, ten človek by sa cez Google neprihlásil už nikdy. Overil som
+produkčnú databázu: každý riadok je `google` a schválený, jediné iné riadky sú
+seedy s doménou `example.invalid`. Dnes to teda dosiahnuteľné nie je, bola to
+nastražená pasca, nie prebiehajúci incident.
+
+**Rozhoduje jedna otázka: overil ten spôsob prihlásenia adresu?** Google ju
+overuje, odmietne token, ktorého `email_verified` nie je `true`. Zhoda na adrese
+je teda tá istá osoba, existujúci účet sa prevezme aj s rolou a stavom
+schválenia. Vývojárske prihlásenie neoveruje nič, adresu si tam len napíšeš.
+Preberanie účtov by znamenalo, že ktokoľvek s prístupom k nemu na prostredí, kde
+je zapnuté, sa môže vydávať za kohokoľvek vrátane vlastníka. Dostane preto `409`
+s vysvetlením. Pravidlo je čistá funkcia s piatimi testami, popísané je aj
+v `whispair-api/README.md` v sekcii Authentication.
+
+Overené na `api-dev`, nie prečítané: dev-login s adresou registrovanou cez
+Google vracia `409`, s voľnou adresou založí čakajúci účet a vráti `403`,
+a prevzatie som vyskúšal priamo na zahodenom riadku, ktorý si po prihlásení cez
+Google ponechal rolu aj stav a nevznikol duplikát. Testovacie riadky sú zmazané.
+Celý tok dev-login, `auth/me` a odhlásenie teraz v smoke teste prechádza;
+predtým bola tá skupina preskočená.
+
+**Na produkciu zatiaľ nenasadené.** Je to zásah do cesty prihlasovania, čaká na
+tvoje slovo.
+
 **Synchronizácia e-mailov bola celý deň mŕtva a log to nepovedal (9. 9., na dev).**
 Worker padal pri každom behu, teda každých päť minút, na chybe `inconsistent types
 deduced for parameter $2`. Ten istý pomenovaný parameter je v príkaze dvakrát a

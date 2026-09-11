@@ -25,11 +25,11 @@ tu je len to, čo mení tento dokument.
 | Pôvodná priorita | Čo tu stálo | Skutočnosť 10. 9. |
 | --- | --- | --- |
 | P0.1 štruktúrovaný lead | chýba | ✅ migrácia `20260908100000`, `build_lead_details()`, web posiela polia |
-| P0.2 atribúcia mimo Google | chýba | ⚠ **polovica** — `platform`, `fbclid`, `ctwa_clid`, `meta_ad_id`, WhatsApp `referral` sú. `consent_version`, `consent_at`, `campaign_id`, `adgroup_id`, `keyword_id`, `channel` **stále nie** |
+| P0.2 atribúcia mimo Google | chýba | ✅ **hotové 11. 9., na dev** — k `platform`, `fbclid`, `ctwa_clid`, `meta_ad_id` a WhatsApp `referral` pribudli `consent_version`, `consent_at`, `channel`, `campaign_id`, `adgroup_id`, `keyword_id`. Export bez dôkazu súhlasu je zavretý |
 | P0.3 peniaze na zákazke | chýba | ✅ ocenené riadky a súčty, na dev aj na produkcii |
 | P0.4 účtovná kniha | chýba | ✅ `invoices`, `invoice_payments`, `job_costs` |
 | P0.5 identita zákazníka | chýba | ✅ T12 vrátane `acquisition_lead_attribution_id` |
-| P0.6 lokalita ako dáta | chýba | ❌ **stále chýba** — žiadne `service_localities`, `client_locations`, `locality_id` |
+| P0.6 lokalita ako dáta | chýba | ⚠ **z väčšej časti hotové 11. 9., na dev** — `service_localities` so 41 obcami, PSČ a `locality_id` na dopyte aj na zákazke, rozpoznanie z voľného textu. Otvorené: zápis `locality_id` na zákazku (T22) a `client_locations` |
 | P0.7 zmazanie legacy emisie | chýba | ✅ v repozitári (T14, päť súborov), **nenasadené** |
 | P1.6 Meta Pixel, JSON-LD | chýba | ⚠ meranie zo servera hotové (Meta CAPI worker, T5); **pixel a `LocalBusiness` stále chýbajú** |
 | P1.8 test troch formulárov | chýba | ✅ `tests/forms.test.cjs` |
@@ -571,11 +571,11 @@ rules“ v Google Ads (násobenie podľa geo/zariadenia) — hrubé, neodporúč
 | # | Čo | Stav 10. 9. |
 | --- | --- | --- |
 | P0.1 | Štruktúrovaný lead: `captured_messages.lead_details JSONB`; web posiela `service_code`, `unit_count`, `preferred_time_text`, `express` ako polia | ✅ **hotové 8. 9.**, na dev. Otvorené zostáva PSČ ako stĺpec a `preferred_date` ako dátum |
-| P0.2 | Atribúcia neutrálna k platforme + súhlas | ⚠ **polovica.** Hotové: `platform`, `fbclid`, `ctwa_clid`, `meta_ad_id`, WhatsApp `referral`, `clients.acquisition_lead_attribution_id`. **Otvorené: `consent_version`, `consent_at`, `campaign_id`, `adgroup_id`, `keyword_id`, `channel`.** Súhlas blokuje prvý ostrý export |
+| P0.2 | Atribúcia neutrálna k platforme + súhlas | ✅ **hotové 11. 9., na dev a overené.** Web posiela `consent_version` a `consent_at`, server ich ukladá a jedna brána (`conversion_consent_gate_sql`) drží oba workery aj CSV export. Riadok bez dôkazu sa nevyváža a počíta sa v logu behu ako `blocked_no_consent`. Pribudol `channel` a tri identifikátory kampane z ValueTrack |
 | P0.3 | Peniaze na zákazke | ✅ **hotové 8. 9.**, na dev aj na produkcii. Hodnotu nesie `invoice_paid`, nie `job_completed` |
 | P0.4 | Účtovná kniha: `invoices`, `invoice_payments`, `job_costs` | ✅ **hotové 8. 9.**, na dev aj na produkcii, vrátane obrazoviek v portáli (T4) |
 | P0.5 | Identita zákazníka | ✅ **hotové 8. 9. (T12)**, na dev. Firemné polia (IČO, DIČ, IČ DPH) zostávajú otvorené |
-| P0.6 | Lokalita ako dáta: `service_localities`, `client_locations`, PSČ na `jobs`, `service_area_postcodes.locality_id/travel_zone` | ❌ **nezačaté.** Jediné nesplnené P0 v celku. Potrebuje to dojazd, kapacita aj akákoľvek budúca mestská stránka |
+| P0.6 | Lokalita ako dáta: `service_localities`, `client_locations`, PSČ na `jobs`, `service_area_postcodes.locality_id/travel_zone` | ⚠ **z väčšej časti hotové 11. 9., na dev a overené.** `service_localities` nesie 41 obcí vygenerovaných z bežiaceho pruhu na webe; PSČ a `locality_id` pribudli na dopyt aj na zákazku, `service_area_postcodes` dostalo `locality_id` a `travel_zone`. Dopyt sa rozpozná pri príjme z voľného textu „Obec alebo PSČ“. **Otvorené:** zápis `locality_id` na zákazku (jeden `INSERT`, ktorý práve mení iná vetva) a `client_locations`, ktorý zatiaľ nemá kto písať |
 | P0.7 | Zmazať legacy emisiu konverzií podľa postupu v `ARCHITECTURE.md` | ✅ **hotové 10. 9. (T14)**, päť súborov namiesto štyroch, **nenasadené** |
 
 ### P1 — MVP FilthyFilter (na reálny launch)
@@ -638,13 +638,26 @@ migrácie, nullable stĺpce). Poradie zodpovedá P0 → P1.
 - **Testy:** `LeadHelpersTest` pre whitelist; `browser.test.cjs` pre payload.
 - **Riziká:** tri kópie formulára; app whispAirField musí ignorovať neznáme polia (JSON, robí to).
 
-### ⚠ Krok 2 — Atribúcia pre Meta a súhlas (P0.2) — polovica hotová 8. 9. 2026
+### ✅ Krok 2 — Atribúcia pre Meta a súhlas (P0.2) — dokončené 11. 9. 2026, na dev
 
-> Vykonané: `platform` (odvodený na serveri), `fbclid`, `ctwa_clid`, `meta_ad_id`,
-> WhatsApp `referral`, `clients.acquisition_lead_attribution_id`.
-> **Nevykonané: `consent_version`, `consent_at`, `campaign_id`, `adgroup_id`,
-> `keyword_id`, `channel`.** Súhlas blokuje prvý ostrý export konverzií.
-> ValueTrack suffix je stále nastavenie účtu, ktoré nikto nespravil.
+> Prvá polovica 8. 9.: `platform` (odvodený na serveri), `fbclid`, `ctwa_clid`,
+> `meta_ad_id`, WhatsApp `referral`, `clients.acquisition_lead_attribution_id`.
+>
+> Druhá polovica 11. 9. na vetve `feature/lead-attribution-consent`
+> vo `whispair-api` a na `codex/filthyfilter-redesign` na webe:
+> `consent_version`, `consent_at`, `channel`, `campaign_id`, `adgroup_id`,
+> `keyword_id`. Vývoz bez dôkazu súhlasu je zavretý na jednom mieste, ktoré
+> používajú oba workery aj CSV export.
+>
+> **Vykonané inak, než plán predpokladal, a je to zámer:** riadok bez dôkazu sa
+> neoznačuje natrvalo. T13 zaviedlo terminálny stav `Expired` pre klik mimo
+> okna, lebo taký klik sa už použiteľným nestane. Chýbajúci súhlas nie je to
+> isté: pri WhatsApp riadkoch ide o právny základ, ktorý sa dá doplniť, a
+> pochovať ich rozhodnutím kódu by bola tichá strata. Preto zostávajú `Logged`,
+> nespotrebujú pokus a každý beh ich vypíše ako `blocked_no_consent`.
+>
+> **ValueTrack suffix je stále nastavenie účtu, ktoré nikto nespravil**, takže
+> tri identifikátory kampane zostanú prázdne, kým sa to nestane.
 
 - **Cieľ:** jeden atribučný riadok bez ohľadu na platformu, so súhlasom.
 - **Komponenty:** `js/attribution.js`, `_lead_helpers.php`, `_whatsapp_helpers.php`, `_conversion_helpers.php`, `ClientsRepository`.
@@ -683,13 +696,25 @@ migrácie, nullable stĺpce). Poradie zodpovedá P0 → P1.
 - **Testy:** stavový automat faktúry.
 - **Riziká:** dvojité vedenie (Billdu + náš zápis). Zámerne minimálne polia.
 
-### ⚠ Krok 5 — Zákazník a lokalita (P0.5, P0.6) — zákazník hotový 8. 9., lokalita nezačatá
+### ⚠ Krok 5 — Zákazník a lokalita (P0.5, P0.6) — zákazník hotový 8. 9., lokalita 11. 9.
 
 > Vykonané (T12): `clients.email`, `phone_normalized` s čiastočným unikátnym
 > indexom, `customer_type`, `acquisition_lead_attribution_id`.
-> **Nevykonané: firemné polia a celá lokalita** — `client_locations`,
-> `service_localities`, PSČ na `jobs`, `travel_zone`. Je to jediné P0, ktoré sa
-> nezačalo.
+>
+> Lokalita 11. 9. na vetve `feature/lead-attribution-consent`, nasadená a overená na dev:
+> `service_localities` so 41 obcami **vygenerovanými z bežiaceho pruhu na webe**,
+> nie prepísanými ručne, takže tabuľka a verejný sľub začínajú zhodné;
+> `service_area_postcodes` dostalo `locality_id` a `travel_zone`; PSČ
+> a `locality_id` pribudli na `captured_messages` aj na `jobs`. Dopyt sa
+> rozpozná pri príjme z jediného voľného poľa „Obec alebo PSČ“ — PSČ, ak tam je,
+> inak názov obce zložený na jeden tvar bez diakritiky.
+>
+> **Nevykonané a prečo:** zápis `locality_id` na zákazku prechádza jediným
+> `INSERT`-om v `JobsRepository::create`, ktorý súbežne mení iná vetva; dve
+> úpravy toho istého príkazu je presne to, ako sa pri zlúčení ticho stratí
+> stĺpec. `client_locations` nevzniklo, lebo doň nemá kto písať: portál na to
+> nemá obrazovku a opakované návštevy sú P2. Prázdna tabuľka je sľub, ktorý kód
+> nedrží. **Firemné polia** (IČO, DIČ, IČ DPH) zostávajú otvorené.
 
 - **Migrácia:** `clients ADD email, phone_normalized, customer_type, company_name, ico, dic, ic_dph, marketing_consent_at`; unikátny index `(phone_normalized)` čiastočný; `client_locations`; `service_localities`; `service_area_postcodes ADD locality_id, travel_zone`; `jobs ADD client_location_id, postcode, locality_id`.
 - **Backend:** `ClientsRepository::findByPhone` cez `conversion_normalize_phone`; backfill `phone_normalized`; `import_service_area_postcodes.php` rozšíriť o lokalitu a zónu (41 obcí z bežiaceho pruhu).

@@ -24,6 +24,93 @@ nebol úplný.
 | Technický review celého funnelu | `SYSTEM_REVIEW.md` **prepísaný 10. 9. podľa skutočnosti**: čo je hotové, je označené a odkazuje sem. Web verzia z 10. 9. je **od 11. 9. nasadená na dev** (`dev.filthyfilter.sk/system-review/`). |
 | Stratégia landing pages a zámerov | rozhodovací návrh v `LANDING_PAGE_STRATEGY.md` (10. 9.); **nič z neho nie je implementované**, čaká na sedem rozhodnutí v jeho kap. 14 |
 | Sledovanie životného cyklu zákazky | plán v `LIFECYCLE_IMPLEMENTATION.md`; **fázy 1 a 2 hotové a na dev**, z fázy 4 hotový krok 7 (identita zákazníka, T12); fáza 3 čaká na Billdu Premium |
+| Súhlas v atribúcii (P0.2) | **hotové 11. 9., na dev a overené.** Vetva `feature/lead-attribution-consent` vo `whispair-api`, nezlúčená. Bez dôkazu súhlasu sa konverzia nevyváža |
+| Lokalita ako dáta (P0.6) | **z väčšej časti hotové 11. 9., na dev a overené.** Tá istá vetva. Otvorený zostáva zápis na zákazku (T22) a `client_locations` |
+
+**Súhlas cestuje s dopytom a vývoz bez neho je zavretý (11. 9., v repozitári).**
+Banner si od 7. 9. pamätá verziu aj čas voľby, ale to zostávalo v prehliadači.
+Vec, ktorá na tom stojí — nahranie offline konverzie — sa deje na serveri o mesiace
+neskôr, takže riadok v `lead_attribution` nevedel povedať, s čím a kedy človek
+súhlasil. `PRIVACY_IMPLEMENTATION.md` to menovalo ako prvú vec pred ostrým
+vývozom a je to hotové:
+
+- Web posiela `consent_version` a `consent_at`, keď je meranie povolené, a nič
+  z toho, keď nie je. Odmietnutie teda nepredstiera súhlas.
+- Obe polovice cestujú spolu alebo vôbec. Čas bez verzie nepomenúva dokument,
+  verzia bez času sa nedá porovnať so 180-dňovou platnosťou. Drží to obmedzenie
+  v databáze aj kontrola na vstupe. Čas v budúcnosti nie je dôkaz a zahodí sa,
+  s dňom tolerancie na rozbité hodiny v telefóne.
+- **Brána je na jednom mieste** (`conversion_consent_gate_sql`) a používajú ju
+  oba nahrávacie workery aj CSV export. Pri CSV najmä preto, že odchádza ako
+  súbor a nedá sa stiahnuť späť.
+- Riadok bez dôkazu sa **neoznačuje natrvalo**. Zostáva `Logged`, nespotrebuje
+  pokus a každý beh ho vypíše ako `blocked_no_consent`. Ticho vynechaný riadok
+  vyzerá presne ako fungujúci systém bez zákazníkov, čo je chyba, ktorú T13 už
+  raz odmietlo zopakovať.
+
+**Otvorené a je to rozhodnutie, nie kód:** WhatsApp riadky dôkaz nemajú a mať
+nebudú, lebo v tej ceste nie je prehliadač. Kým prevádzkovateľ neurčí právny
+základ pre meranie konverzácie z reklamy s prechodom do WhatsAppu, tieto
+konverzie neodídu do Meta. Pri kampani, ktorá má ísť prvá práve cez WhatsApp,
+to treba vyriešiť skôr než rozpočet.
+
+Pribudol aj `channel` a tri identifikátory kampane z ValueTrack
+(`campaign_id`, `adgroup_id`, `keyword_id`). Tie zostanú prázdne, kým sa
+v Google Ads nenastaví final URL suffix — bod 7 v zozname nižšie.
+
+**Lokalita je konečne dáta, nie veta (11. 9., v repozitári).** Adresa žila ako
+voľný text v troch stĺpcoch a ani jeden nedržal PSČ. Formulár sa pritom na obec
+alebo PSČ pýta a odpoveď šla do reťazca, takže jediný geografický údaj, ktorý
+každý dopyt nesie, bol nepoužiteľný hneď po príchode.
+
+- `service_localities` drží 41 obcí **vygenerovaných z bežiaceho pruhu
+  na `index.html`**, nie prepísaných ručne, takže tabuľka a verejný sľub začínajú
+  zhodné. Tri z nich sú mestá, ostatné visia na jednom z nich.
+- Názov sa ukladá aj zložený na jeden tvar bez diakritiky, lebo „Svätý Jur“,
+  „svaty jur“ a „SVÄTÝ JUR“ je jedna obec. Prevod je výslovná tabuľka, nie
+  `iconv //TRANSLIT`, ktorého výstup závisí od knižnice a locale a na zdieľanom
+  hostingu vie ticho vyrobiť otáznik. Test prejde všetkých 41 riadkov a zlyhá,
+  ak sa PHP a generátor niekedy rozídu.
+- PSČ sa z voľného textu vytiahne, len keď tam naozaj je: číslo domu ani kus
+  telefónu sa zaň nesmie považovať.
+- Nerozpoznaná obec **nie je chyba**. Územie sa rozširuje a ľudia píšu s
+  preklepmi; odmietnutý dopyt stojí oveľa viac než nezaradený.
+
+**Otvorené:** zápis `locality_id` na zákazku prechádza jediným `INSERT`-om
+v `JobsRepository::create`, ktorý súbežne mení iná vetva, takže je to samostatný
+krok (T22). `client_locations` nevzniklo zámerne — nemá doň kto písať.
+
+**Nasadené a overené na dev 11. 9. večer (SSH port 22491).** Cieľ potvrdený
+podľa `ENVIRONMENTS.md` dvoma signálmi naraz: dev má `DB_NAME=jg046600db`
+a `DEV_LOGIN_ENABLED=true`, produkcia `jg046601db` a `false`.
+Obe migrácie aplikované jednotlivo cez `php8.4 migrate.php up <verzia>`,
+aby sa nechytila cudzia rozpracovaná migrácia; ani jedna nie je deštruktívna.
+
+Overené priamo na dev databáze: šesť nových stĺpcov na `lead_attribution`,
+PSČ a `locality_id` na dopyte aj na zákazke, 41 obcí, tri mestá, jedinečné
+zložené názvy a „Svätý Jur" uložený aj s diakritikou. Obmedzenia fungujú:
+polovičný dôkaz súhlasu aj vymyslený kanál sú odmietnuté, úplný dôkaz prijatý.
+Skúšobné zápisy bežali v transakcii, ktorá sa vždy vrátila späť.
+
+**Skutočný dopyt prešiel celou cestou.** `POST /api/v1/leads` s textom
+„Svätý Jur 900 21" odpovedal 202 a v databáze vznikol riadok s `postcode`
+90021, lokalitou `svaty-jur`, zónou 1, uloženou verziou aj časom súhlasu,
+kanálom `web_form`, platformou `google` a všetkými tromi identifikátormi
+kampane. Brána súhlasu ten riadok pustila. Skúšobné dáta boli po overení
+zmazané a dev je čistý.
+
+Pri tom sa našla vlastná chyba: workery hlásili `blocked_no_consent` iba
+v odpovedi, ktorú webcron zahodí, lebo kľúč nebol v zozname povolených metrík
+v `cron/_cron_logging.php`. Opravené a nasadené — číslo je teraz aj v trvalom
+zázname behu. Bez toho by brána, ktorá zadržiava konverzie, vyzerala presne ako
+fungujúci systém bez zákazníkov.
+
+Záloha nahradených súborov na serveri:
+`/home/jg046600/tmp/api-dev-before-consent-locality-20260911.tar.gz`.
+
+**Overené aj lokálne:** 496 testov v API a 14 prehliadačových testov prechádza;
+nový prehliadačový test bol overený tak, že sa funkcia odstránila a test zlyhal.
+**Na produkcii nič z toho nie je** a vetva nie je zlúčená do `main`.
 
 **Schema.org JSON-LD, podrobný cenový odhad a premenovaná firma (11. 9., v repozitári).**
 Tri zmeny na vetve `codex/filthyfilter-redesign`:
@@ -884,6 +971,19 @@ produkčné, kým neprejde `validateOnly` a podúčet nebude používať `This m
     a token na správu katalógu udalosti zapísať nevie. Na prvý beh sa oplatí
     pridať `META_CAPI_TEST_EVENT_CODE` a sledovať to v Test Events.
     Podrobnosti v `BACKLOG.md` bod T20.
+
+11. **Nastaviť ValueTrack final URL suffix v Google Ads.** Stĺpce `campaign_id`,
+    `adgroup_id` a `keyword_id` od 11. 9. existujú a web ich posiela, ale zostanú
+    prázdne, kým reklamný účet nezačne písať do cieľovej adresy
+    `campaignid={campaignid}&adgroupid={adgroupid}&targetid={targetid}`. Sú to
+    Google vlastné čísla, ktoré sa pri premenovaní kampane nemenia — bez nich sa
+    lead spája s nákladmi porovnávaním názvov, čo prestane fungovať pri prvom
+    premenovaní. Je to nastavenie účtu, nie kód.
+12. **Určiť právny základ merania konverzácií z WhatsAppu (T23).** Od 11. 9. sa
+    konverzia bez zaznamenaného súhlasu nevyváža. Web súhlas zbiera, WhatsApp
+    nie a ani nemôže — v tej ceste nie je prehliadač. Kým základ nie je určený,
+    konverzie z reklamy s prechodom do WhatsAppu do Meta neodídu. Týka sa to
+    kanála, ktorý má ísť ako prvý platený.
 
 ## Čo čaká na vývoj
 

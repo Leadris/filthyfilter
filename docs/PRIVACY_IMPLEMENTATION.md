@@ -32,11 +32,21 @@ aj aktuálny ORSR. Nejde o novú, ešte nezaloženú spoločnosť.
 Táto zmena upravuje web. Nepotvrdzuje nastavenie GTM, zmluvy s dodávateľmi ani
 vykonávanie výmazov v CRM. Kampaň zostáva na používateľovi; API vetvy sa nemenili.
 
-1. V API je offline export zatiaľ filtrovaný na existenciu click ID. Frontend od
-   tejto verzie posiela ID len so súhlasom, ale staršie záznamy takú istotu nemajú.
-   Pred zapnutím exportu doložiť súhlas pri každom exportovanom zázname (verzia,
-   čas, účel a stav); staré záznamy bez dôkazu neexportovať. Browser localStorage
-   sám osebe nie je centrálny dôkaz súhlasu pre neskorší export.
+1. **Vyriešené v kóde 11. 9. 2026, nenasadené.** Dôkaz súhlasu už nezostáva
+   v prehliadači: web posiela s dopytom `consent_version` a `consent_at`,
+   `lead_attribution` ich ukladá a databáza odmietne polovičný dôkaz. Vývoz
+   konverzie bez zaznamenaného súhlasu je zavretý na jednom mieste
+   (`conversion_consent_gate_sql`), ktoré používajú oba nahrávacie workery aj
+   CSV export — pri CSV najmä preto, že odchádza ako súbor a nedá sa stiahnuť
+   späť. Staré záznamy bez dôkazu tým prestali byť vývozné automaticky, nie
+   rozhodnutím obsluhy.
+
+   **Zostáva prevádzkové:** riadky z WhatsAppu dôkaz nemajú a mať nebudú,
+   lebo v tej ceste nie je prehliadač ani banner. Nie sú stratené a nič ich
+   neoznačuje natrvalo — každý beh ich spočíta ako `blocked_no_consent` — ale
+   kým prevádzkovateľ neurčí právny základ pre *meranie* konverzácie z reklamy
+   s prechodom do WhatsAppu, neodídu nikam. Pri kampani, ktorá má ísť ako prvá
+   práve cez WhatsApp, je to rozhodnutie, nie detail.
 2. Do procesu odvolania/výmazu zahrnúť `lead_attribution`, `conversion_events`,
    zachytenú správu, zákazku, e-mail a zodpovedajúce kópie. Pri odvolaní zastaviť
    aj čakajúci export. Web odkazuje pri už odoslanom dopyte na info@filthyfilter.sk;

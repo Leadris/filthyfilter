@@ -300,6 +300,42 @@ Events a riadok sa prepne na `Uploaded`.
 
 ---
 
+### T22 — Zapísať lokalitu na zákazku
+**Vlastník:** ja · **Repozitár:** `whispair-api` · **Závisí od:** zlúčenia vetvy, ktorá mení `JobsRepository::create`
+
+Stĺpce `jobs.postcode` a `jobs.locality_id` existujú od 11. 9., ale nič ich
+nezapisuje. Všetky cesty, ktorými v `/api/v1` vzniká zákazka, prechádzajú jediným
+`INSERT`-om v `JobsRepository::create`, a ten súbežne mení iná vetva
+(`business_brand`, `service_code`). Dve úpravy toho istého príkazu je presne to,
+ako sa pri zlúčení ticho stratí stĺpec, preto je to samostatný krok.
+
+Adresa zákazky je pritom správnejší zdroj než obec z dopytu: práca sa robí tam,
+kde je jednotka, nie tam, kde býva ten, kto volal.
+
+**Hotové, keď:** zákazka vzniknutá z dopytu, z konceptu aj priamo má vyplnenú
+lokalitu, a tržba na obec je jedno `GROUP BY`.
+
+### T23 — Právny základ merania konverzácií z WhatsAppu
+**Vlastník:** ty (s právnym posúdením) · **Blokuje:** nahrávanie Meta konverzií z CTWA
+
+Od 11. 9. sa konverzia nevyváža bez zaznamenaného súhlasu. Pre web to sedí:
+banner ho zbiera a web ho posiela. Pre WhatsApp nie — v tej ceste nie je
+prehliadač, takže dôkaz nikdy nevznikne a tieto riadky zostanú stáť. Nie sú
+stratené, každý beh workera ich spočíta ako `blocked_no_consent`.
+
+Je to otázka na prevádzkovateľa, nie na kód: aký je právny základ pre *meranie*
+konverzácie, ktorá začala klikom na reklamu s prechodom do WhatsAppu. Dnešná
+tabuľka `whatsapp_consent` rieši posielanie marketingových šablón, čo je iný účel
+a nedá sa naň jednoducho oprieť.
+
+Týka sa to kanála, ktorý má ísť ako prvý platený, takže to nie je detail na
+neskôr.
+
+**Hotové, keď:** základ je určený a zapísaný, a worker má podľa čoho tieto riadky
+pustiť ďalej.
+
+---
+
 ## Poradie, ktoré odporúčam
 
 1. **T1 až T3** naraz, sú tvoje a odblokujú všetko okolo Google.

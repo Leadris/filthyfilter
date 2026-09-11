@@ -59,7 +59,11 @@ test('No consent: no Google or ad storage; enquiry works and carries no click id
   assert.equal(await page.evaluate(()=>sessionStorage.getItem('ff_attr_v2')),null);
   await page.click('[data-consent="reject"]');await submit(page);
   assert.equal(leads.length,1);assert.equal(leads[0].landing_token,'ff-home');
-  for(const key of ['gclid','landing_url','referrer','utm_campaign'])assert.equal(leads[0][key],undefined);
+  for(const key of ['gclid','landing_url','referrer','utm_campaign','campaign_id'])assert.equal(leads[0][key],undefined);
+  // Declining leaves nothing to prove, and the API reads a missing proof as a
+  // reason never to export the row. Sending a version here would claim consent
+  // that was refused.
+  for(const key of ['consent_version','consent_at'])assert.equal(leads[0][key],undefined);
   // The answers the visitor typed are the enquiry itself, not advertising data,
   // so they travel with or without consent. Refusing measurement must not cost
   // the office the service, the town or the unit count.
@@ -110,6 +114,29 @@ test('A Meta click identifier is captured like a Google one and reaches the enqu
   // The platform is decided by the API from the identifiers it was given; a
   // page that could name it could mislabel a Google click as a Meta one.
   assert.equal(leads[0].platform,undefined);
+});
+
+test('The enquiry carries the consent its identifiers depend on, and Google\'s own campaign ids',async t=>{
+  const {page,leads}=await setup(t);
+  const before=Date.now();
+  // campaignid/adgroupid/targetid are what the ValueTrack final URL suffix
+  // writes. They are the ids an ad account reports cost against, so they are
+  // what lets a lead be joined to spend without matching campaign names.
+  await page.goto(base+'/?gclid=TEST&campaignid=22334455&adgroupid=66778899&targetid=kwd-001');
+  await tick(page);
+  await page.click('[data-consent="accept"]');await page.waitForFunction(()=>ffAttribution.isPaid());
+  await submit(page);
+  assert.equal(leads[0].gclid,'TEST');
+  assert.equal(leads[0].campaign_id,'22334455');
+  assert.equal(leads[0].adgroup_id,'66778899');
+  assert.equal(leads[0].keyword_id,'kwd-001');
+  // Without these two the API holds the conversion back, so a click identifier
+  // that travels without them is worth nothing to the upload.
+  assert.equal(leads[0].consent_version,await page.evaluate(()=>ffConsent.version()));
+  assert.ok(leads[0].consent_version,'the banner has to name the notice that was agreed to');
+  const at=Date.parse(leads[0].consent_at);
+  assert.ok(Number.isFinite(at),'consent_at has to be a real instant the server can parse');
+  assert.ok(at>=before&&at<=Date.now(),'and it has to be the moment the visitor actually agreed');
 });
 
 test('Expired and legacy consent do not authorise tracking; malformed query does not break page',async t=>{

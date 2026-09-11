@@ -7,7 +7,14 @@
   // channel is Meta, and without it a Meta lead can be counted but not traced
   // back to the ad that paid for it.
   var PARAMS = { gclid: 512, gbraid: 512, wbraid: 512, fbclid: 512, utm_source: 256,
-    utm_medium: 256, utm_campaign: 256, utm_term: 256, utm_content: 256 };
+    utm_medium: 256, utm_campaign: 256, utm_term: 256, utm_content: 256,
+    // Google's own numeric ids, written by the ValueTrack final URL suffix. A
+    // renamed campaign changes utm_campaign and leaves these alone, which is
+    // what lets a lead be matched to a downloaded cost report without relying
+    // on names. Empty until the suffix is configured in the Ads account.
+    campaignid: 64, adgroupid: 64, targetid: 64 };
+  // URL spelling on the left, the API's column on the right.
+  var AD_ID_FIELDS = { campaignid: "campaign_id", adgroupid: "adgroup_id", targetid: "keyword_id" };
   var current = null;
   function allowed() { return !!(window.ffConsent && window.ffConsent.allowed()); }
   function clip(value, max) { return typeof value === "string" ? value.trim().slice(0, max) : ""; }
@@ -57,7 +64,20 @@
       capture();
       // This identifies the submitted form, even without advertising consent.
       var out = { landing_token: clip(document.body.getAttribute("data-ff-page") || "ff-home", 128) };
-      if (allowed() && current) Object.keys(current).forEach(function (key) { out[key] = current[key]; });
+      if (!allowed()) return out;
+      if (current) Object.keys(current).forEach(function (key) {
+        out[AD_ID_FIELDS[key] || key] = current[key];
+      });
+      /* The proof that travels with the identifiers. The server stores it beside
+         them and the upload workers refuse to export a row that has none, so a
+         click id sent months from now can still say what was agreed to and when.
+         Both halves go together or neither does; the server enforces the same. */
+      var version = window.ffConsent.version();
+      var at = window.ffConsent.timestamp();
+      if (version && at) {
+        out.consent_version = clip(version, 32);
+        out.consent_at = new Date(at).toISOString();
+      }
       return out;
     },
     isPaid: function () {

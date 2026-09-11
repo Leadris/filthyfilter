@@ -120,7 +120,16 @@
     document.body.appendChild(box);
     if (focus) box.querySelector("button").focus();
   }
-  window.ffConsent = { allowed: allowed, timestamp: function () { return choice ? choice.at : null; }, open: function () { banner(true); } };
+  /* version() is read by attribution.js and travels with the enquiry. Storing the
+     choice only in this browser was enough while nothing left the browser; an
+     offline conversion export happens on a server months later and has to be able
+     to say which notice was agreed to and when. */
+  window.ffConsent = {
+    allowed: allowed,
+    timestamp: function () { return choice ? choice.at : null; },
+    version: function () { return choice ? choice.version : null; },
+    open: function () { banner(true); }
+  };
   window.ffMeasure = {
     mode: !TAG_ID ? "off" : TAG_ID.indexOf("GTM-") === 0 ? "gtm" : "gtag",
     event: function (name, params) {

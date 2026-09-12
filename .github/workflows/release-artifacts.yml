@@ -1,0 +1,37 @@
+name: release-artifacts
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - run: npm ci
+      - run: npm run build:config
+      - run: npm test
+      - name: Build both variants from one commit
+        shell: pwsh
+        run: |
+          ./scripts/build-release.ps1 -Environment development -OutputDirectory ./release/development
+          ./scripts/build-release.ps1 -Environment production -OutputDirectory ./release/production
+      - name: Package immutable variants
+        shell: pwsh
+        run: |
+          $sha='${{ github.sha }}'; $stamp=[DateTime]::UtcNow.ToString('yyyyMMddTHHmmssZ')
+          foreach($variant in @('development','production')) {
+            $id="filthyfilter-$stamp-$($sha.Substring(0,12))"; $name="filthyfilter-$variant-$id.tar.gz"; tar -czf "release/$name" -C "release/$variant" .
+            $file=Get-Item "release/$name"; $hash=(Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant()
+            [ordered]@{schemaVersion=1;releaseId=$id;project='filthyfilter';variant=$variant;git=[ordered]@{repository='${{ github.server_url }}/${{ github.repository }}';commit=$sha};ci=[ordered]@{provider='github-actions';runId='${{ github.run_id }}'};artifact=[ordered]@{file=$name;sha256=$hash;size=$file.Length;kind='static-site'};build=[ordered]@{builder='github-actions';platform='ubuntu-latest';tools=[ordered]@{node=(&node --version)}};createdAt=[DateTime]::UtcNow.ToString('o');compatibility=[ordered]@{};migrations=@()}|ConvertTo-Json -Depth 20|Set-Content "release/release-manifest-$variant.json"
+          }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: filthyfilter-${{ github.sha }}
+          path: |
+            release/*.tar.gz
+            release/release-manifest-*.json
+          if-no-files-found: error
+          retention-days: 30

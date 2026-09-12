@@ -170,6 +170,42 @@ shipping it here would add a file that can only ever do nothing or go wrong.
 
 ### Last staging deploy
 
+- Date: 2026-09-12, Meta Pixel inside consent, dormant (commit `8c8fb63`).
+- SSH port: 22025. The host key on that port matches the one already trusted
+  from earlier ports, so the rotation was verified rather than waved through.
+- **A full package this time, not single files.** Staging was byte-identical to
+  the tip of `codex/filthyfilter-redesign` before this deploy, so the package
+  carried nothing unreviewed: only this change was new. Built with
+  `tmp/build_staging_20260908c.py`, 25 499 723 bytes, five pages, all noindex.
+  The archive's SHA-256 was compared after upload before anything was extracted.
+- Production was deliberately left alone. It still runs the 8 September build and
+  is behind staging by more than this change, so releasing it here would have
+  shipped the consent proof, campaign ids, Schema.org, `LocalBusiness` and the
+  company rename at the same time. That is a separate release and a separate
+  decision.
+- Verified on the live staging site: five pages and the review page answer 200,
+  every page carries exactly one `noindex, nofollow`, `robots.txt` disallows
+  everything and `sitemap.xml` is 404. Six files match the packaged release byte
+  for byte, including `js/consent.js`, `js/runtime-config.js` and the privacy
+  notice. `npm run smoke:staging` passed all six checks.
+- **The pixel is dormant and that was checked, not assumed.** The deployed
+  configuration carries `metaPixelId: ""` for all five hosts. In the browser,
+  before consent there is no third-party script at all and `window.fbq` is
+  undefined. After pressing „Povoliť meranie" the Google container loads, no
+  resource from `connect.facebook.net` is requested, `window.fbq` is still
+  undefined and `ffConsent.version()` reads `2026-09-12`. No page contains the
+  string `connect.facebook.net` in its HTML, so there is no `noscript` variant
+  either. Console clean, including the `[ceny]` price-drift check.
+- Review page: 200, 96 425 bytes, SHA-256 `72cb03c7…3ccb`, identical to the
+  repository. It was refreshed in the same session because this change rewrote
+  four claims in `docs/SYSTEM_REVIEW.md` that said the pixel was still missing;
+  leaving the rendered page behind is the exact drift this project already hit.
+- Rollback: `/home/jg046600/tmp/ff-dev-before-metapixel-20260912.tar.gz` for the
+  whole staging root, and `/home/jg046600/tmp/ff-dev-system-review-before-20260912.html`
+  for the review page.
+
+### Staging deploy before that
+
 - Date: 2026-09-11 evening, consent proof and campaign ids in the enquiry
   (`js/attribution.js`, `js/consent.js`), plus the review page rebuilt from the
   updated `docs/SYSTEM_REVIEW.md`.

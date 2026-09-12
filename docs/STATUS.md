@@ -18,7 +18,7 @@ nebol úplný.
 | Okruh tržieb späť do Google Ads | kód, API aj portál existujú; worker a 90-dňová expirácia sú na dev, Ads aktivácia čaká na vlastnú s. r. o. a je produkčnou bránou |
 | Reklamné stránky | dve, na stagingu |
 | Google Ads | Manager, servisný prístup, Draft podúčet a prvá offline akcia sú pripravené; aktivácia podúčtu, ďalšie štyri akcie, kampaň a billing čakajú na vlastnú s. r. o. Checklist: `GOOGLE_ADS_PRODUCTION_GATE.md`. |
-| Meta (Facebook a Instagram) | meranie zo servera hotové, na dev aj na `main` (Conversions API), ale **čaká na dataset a token z Events Managera** (bod 10 nižšie); **pixel na webe hotový 12. 9., ale spí** — bez id sa `connect.facebook.net` nevolá vôbec (bod 13 nižšie); reklamný materiál **nezačatý**, zadanie v `MARKETING_PLAN.md` kap. 11 |
+| Meta (Facebook a Instagram) | meranie zo servera hotové, na dev aj na `main` (Conversions API), ale **čaká na dataset a token z Events Managera** (bod 10 nižšie); **pixel na webe hotový a na dev od 12. 9., ale spí** — bez id sa `connect.facebook.net` nevolá vôbec (bod 13 nižšie); reklamný materiál **nezačatý**, zadanie v `MARKETING_PLAN.md` kap. 11 |
 | Produkčný web | **od 8. 9. večer** zhodný s dev vrátane WhatsApp tlačidla v mobilnej lište |
 | Ikony | hotové na stagingu aj na produkcii; stará baktéria je preč |
 | Technický review celého funnelu | `SYSTEM_REVIEW.md` **prepísaný 10. 9. podľa skutočnosti**: čo je hotové, je označené a odkazuje sem. Web verzia z 10. 9. je **od 11. 9. nasadená na dev** (`dev.filthyfilter.sk/system-review/`). |
@@ -112,7 +112,7 @@ Záloha nahradených súborov na serveri:
 nový prehliadačový test bol overený tak, že sa funkcia odstránila a test zlyhal.
 **Na produkcii nič z toho nie je** a vetva nie je zlúčená do `main`.
 
-**Meta Pixel je v súhlase a spí (12. 9., v repozitári).** Bod T7 a druhý
+**Meta Pixel je v súhlase a spí (12. 9., na dev).** Bod T7 a druhý
 blokujúci bod prvej platenej kampane (`MARKETING_PLAN.md` kap. 11.1). Pixel sedí
 **v** `js/consent.js`, nie vedľa neho, lebo kapitola 7b hovorí, že web má
 jedného vlastníka tagov: druhá značka mimo súhlasu by súhlas obišla a zdvojila
@@ -169,10 +169,24 @@ v prehliadači — `PageView` raz, potom `Contact`/`whatsapp`, `Contact`/`phone`
 `[ceny]`, banner sedí v slovenčine aj angličtine a po súhlase sa načíta iba
 Google kontajner.
 
-**Nasadené:** nikam. Zatiaľ len v repozitári. `DEPLOYMENT.md` krok 2 má odvtedy
-bránu pre moment zapnutia: release s neprázdnym `metaPixelId` je ten, ktorý pixel
-spúšťa, a vtedy už musí byť na danom hostiteľovi nasadená aj nová stránka
-o údajoch a zodpovedajúca `VERSION`.
+**Nasadené na dev 12. 9., port 22025.** Celý balík, nie jednotlivé súbory:
+staging bol pred zásahom bajtovo zhodný so špičkou vetvy, takže balík nepriniesol
+nič neprezreté. Overené na živom dev: pred súhlasom nie je načítaný žiadny cudzí
+skript a `window.fbq` neexistuje; po súhlase sa načíta Google kontajner, z
+`connect.facebook.net` nepríde nič, `window.fbq` stále neexistuje a
+`ffConsent.version()` hlási `2026-09-12`. Ani jedna stránka neobsahuje reťazec
+`connect.facebook.net` v HTML, takže `noscript` variant tam naozaj nie je.
+`npm run smoke:staging` prešiel. Stránka prehľadu je prekreslená a nasadená tiež,
+aby sa nerozišla so zdrojom. Záloha pred zásahom je
+`/home/jg046600/tmp/ff-dev-before-metapixel-20260912.tar.gz`.
+
+**Na produkcii to nie je zámerne.** Ostrá doména beží stále na zostave z 8. 9.
+a je pozadu o viac než túto zmenu: chýba jej verzia a čas súhlasu s dopytom,
+Google campaign id, Schema.org, `LocalBusiness` aj premenovaná firma. Nasadiť
+sem tento balík by vydalo to všetko naraz, a to je samostatné rozhodnutie.
+`DEPLOYMENT.md` krok 2 má odvtedy bránu pre moment zapnutia: release s neprázdnym
+`metaPixelId` je ten, ktorý pixel spúšťa, a vtedy už musí byť na danom
+hostiteľovi nasadená aj nová stránka o údajoch a zodpovedajúca `VERSION`.
 
 **Schema.org JSON-LD, podrobný cenový odhad a premenovaná firma (11. 9., v repozitári).**
 Tri zmeny na vetve `codex/filthyfilter-redesign`:
@@ -955,8 +969,8 @@ zatiaľ bez ikon zámerne.
 Používateľ zadal ako prvý platený kanál Meta s prechodom do WhatsAppu, nie Google Ads.
 Podrobne v `MARKETING_PLAN.md` kapitola 11. Blokujúce je toto:
 
-1. ~~**Meta Pixel neexistuje.**~~ **Rozvod hotový 12. 9., pixel spí** — viď
-   „Meta Pixel je v súhlase a spí“ nižšie. Čaká len na id pixela.
+1. ~~**Meta Pixel neexistuje.**~~ **Rozvod hotový 12. 9. a na dev, pixel spí** —
+   viď „Meta Pixel je v súhlase a spí“ nižšie. Čaká len na id pixela.
 2. **Reklamný materiál je z jednej zákazky.** Kód to nevyrobí.
 
 Bod „WhatsApp chýba v plávajúcej lište“ padol 8. 9., viď nižšie.

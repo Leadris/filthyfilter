@@ -638,6 +638,17 @@ deployed Git commit.
 2. Confirm the working tree, tests and pushed commit. Ak release obsahuje alebo
    aktivuje Google Ads časť funnelu, najprv potvrdiť splnenie všetkých bodov v
    `GOOGLE_ADS_PRODUCTION_GATE.md`; bez toho release zastaviť.
+
+   **Ak je v `config/environments.json` neprázdne `metaPixelId`, tento release
+   zapína Meta Pixel na danom hostiteľovi.** Do tej chvíle sa
+   `connect.facebook.net` nevolá vôbec. Pred takým releasom musí platiť:
+   nasadená stránka ochrany osobných údajov už menuje Meta Platforms Ireland
+   Limited a cookies `_fbp` a `_fbc` (od 12. 9. 2026), a `VERSION`
+   v `js/consent.js` zodpovedá tomu textu. Súhlas vydaný podľa staršieho textu
+   Meta nepokrýva. Po nasadení sa každý návštevník pýta znovu, lebo zmena
+   `VERSION` zahodí uloženú voľbu; je to zámer, nie regresia. Overiť treba, že
+   pred súhlasom nejde na `connect.facebook.net` žiadna požiadavka a že po
+   súhlase ide `PageView`. Podrobnosti: `BACKLOG.md` T7 a T24.
 3. Create a clean local archive:
 
    ```powershell

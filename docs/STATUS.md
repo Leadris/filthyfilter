@@ -169,7 +169,10 @@ v prehliadači — `PageView` raz, potom `Contact`/`whatsapp`, `Contact`/`phone`
 `[ceny]`, banner sedí v slovenčine aj angličtine a po súhlase sa načíta iba
 Google kontajner.
 
-**Nasadené:** nikam. Zatiaľ len v repozitári.
+**Nasadené:** nikam. Zatiaľ len v repozitári. `DEPLOYMENT.md` krok 2 má odvtedy
+bránu pre moment zapnutia: release s neprázdnym `metaPixelId` je ten, ktorý pixel
+spúšťa, a vtedy už musí byť na danom hostiteľovi nasadená aj nová stránka
+o údajoch a zodpovedajúca `VERSION`.
 
 **Schema.org JSON-LD, podrobný cenový odhad a premenovaná firma (11. 9., v repozitári).**
 Tri zmeny na vetve `codex/filthyfilter-redesign`:

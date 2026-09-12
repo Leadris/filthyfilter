@@ -282,8 +282,11 @@ a slúžia nanajvýš ako hrubá orientácia.
 4. **Doplniť čistenie klimatizácií do profilu whispAir** na Google, ak sa tak ešte nestalo.
 5. **Skúšobný e-mail na `info@filthyfilter.sk`**, doručenie stále nikto nepotvrdil.
 6. **Identifikátor Google tagu** do `TAG_ID` v `js/consent.js`. Kým tam nie je, meranie
-   aj banner spia.
-7. **Stránka o spracovaní údajov — hotová 7. 9. 2026**, odkazy v banneri, formulároch a pätičkách.
+   aj banner spia. Doplnené, kontajner je `GTM-57M8XLQJ`.
+7. **Id pixela Meta** do `metaPixelId` v `config/environments.json`. Je to iná hodnota
+   než dataset a token pre Conversions API: id pixela používa prehliadač, dataset
+   a token server. Kým je prázdne, pixel spí. Podrobne `BACKLOG.md` bod T24.
+8. **Stránka o spracovaní údajov — hotová 7. 9. 2026**, odkazy v banneri, formulároch a pätičkách.
 
 ## 11. Meta (Facebook a Instagram) → WhatsApp
 
@@ -300,20 +303,31 @@ Ideálny zákazník: domácnosť alebo menšia prevádzka s nástennou jednotkou
 nebola dlhšie profesionálne čistená, v obsluhovanom území, ochotná poslať cez
 WhatsApp lokalitu, počet jednotiek a fotografiu.
 
-### 11.1 Čo web na túto kampaň nemá (zistené 7. 9. 2026)
+### 11.1 Čo web na túto kampaň nemá (zistené 7. 9. 2026, stav k 12. 9.)
 
-Štyri veci, overené v kóde, nie odhadom:
+Štyri veci, overené v kóde, nie odhadom. Tri z nich sú odvtedy zavreté; otvorený
+zostáva reklamný materiál a id pixela.
 
-1. **WhatsApp nie je v plávajúcej lište na mobile.** Na úvodnej stránke aj na oboch
-   reklamných obsahuje `.mobile-cta` iba „Zavolať“ a „Nacenenie“. Odkazy do
+1. ~~**WhatsApp nie je v plávajúcej lište na mobile.**~~ **Hotové 8. 9. 2026**, lišta má
+   tri tlačidlá na všetkých troch stránkach. Pôvodný nález: na úvodnej stránke aj na oboch
+   reklamných obsahovala `.mobile-cta` iba „Zavolať“ a „Nacenenie“. Odkazy do
    WhatsAppu v tele stránok existujú a sú merané, ale trvalá lišta, ktorú vidí
    návštevník po celý čas, hlavný kanál kampane neponúka. Pri stratégii, kde je
    WhatsApp primárny, je to najlacnejšia úprava s najväčším dopadom.
-2. **Meta Pixel neexistuje.** `js/consent.js` pozná výhradne Google, čo bolo dovtedy
-   správne. Pixel musí ísť **doňho**, nie vedľa neho, inak obíde súhlas a bude to
-   presne tá chyba, pred ktorou varuje kapitola 7b: web má jedného vlastníka tagov.
-3. **Žiadna stránka nemá `LocalBusiness` v JSON-LD.** Overené na všetkých piatich.
-   Chýba to najmä pre prepojenie s profilom na Google, teda pre kapitolu o mapách.
+2. ~~**Meta Pixel neexistuje.**~~ **Rozvod hotový 12. 9. 2026, pixel spí.** Sedí
+   **v** `js/consent.js`, teda tam, kde kapitola 7b hovorí, že má sedieť: web má
+   jedného vlastníka tagov a druhá značka vedľa súhlasu by ho obišla a zdvojila
+   konverzie. Id pixela ešte nie je, `metaPixelId` je vo všetkých piatich
+   záznamoch v `config/environments.json` prázdne, a prázdne pole znamená, že sa
+   `connect.facebook.net` nevolá vôbec — nie že sa volanie odkladá za súhlas.
+   Doplnenie id ho zapne bez zásahu do kódu; postup je v `BACKLOG.md` bod T24.
+   Po súhlase ide `PageView` raz, `whatsapp_click` a `phone_click` ako `Contact`
+   s parametrom `channel`, `lead_submitted` ako `Lead` a `form_start` ako
+   `InitiateCheckout`. Pravidlo z kapitoly 11.2, že `whatsapp_click` je úmysel
+   a nie správa, tým **nepadá**: `Contact` sa smie sledovať, ale neoptimalizuje
+   sa naň.
+3. ~~**Žiadna stránka nemá `LocalBusiness` v JSON-LD.**~~ **Doplnené 11. 9. 2026.**
+   Bolo to potrebné najmä pre prepojenie s profilom na Google, teda pre kapitolu o mapách.
 4. **Materiál na reklamu je z jedinej zákazky.** V `assets/hall/trnava-la-donuteria/`
    je jedna dvojica pred/po, jedno video a jedna fotografia tímu. Na tri koncepty,
    ktoré má kampaň testovať, to nestačí a **nedá sa to vyrobiť kódom**.

@@ -1,6 +1,6 @@
 # FilthyFilter — stav projektu
 
-**Aktualizované 11. 9. 2026.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
+**Aktualizované 12. 9. 2026.** Toto je jediné miesto, kde sa pozerá na to, čo je hotové
 a čo otvorené. Rozhodnutia a ich dôvody zostávajú v `REDESIGN_PLAN.md` a
 `MARKETING_PLAN.md`; postup nasadenia v `DEPLOYMENT.md`. Ak sa niektorý z nich rozchádza
 s týmto súborom, platí tento a treba ho tam opraviť.
@@ -18,7 +18,7 @@ nebol úplný.
 | Okruh tržieb späť do Google Ads | kód, API aj portál existujú; worker a 90-dňová expirácia sú na dev, Ads aktivácia čaká na vlastnú s. r. o. a je produkčnou bránou |
 | Reklamné stránky | dve, na stagingu |
 | Google Ads | Manager, servisný prístup, Draft podúčet a prvá offline akcia sú pripravené; aktivácia podúčtu, ďalšie štyri akcie, kampaň a billing čakajú na vlastnú s. r. o. Checklist: `GOOGLE_ADS_PRODUCTION_GATE.md`. |
-| Meta (Facebook a Instagram) | meranie zo servera hotové, na dev aj na `main` (Conversions API), ale **čaká na dataset a token z Events Managera** (bod 10 nižšie); pixel a reklamný materiál **nezačaté**, zadanie v `MARKETING_PLAN.md` kap. 11 |
+| Meta (Facebook a Instagram) | meranie zo servera hotové, na dev aj na `main` (Conversions API), ale **čaká na dataset a token z Events Managera** (bod 10 nižšie); **pixel na webe hotový 12. 9., ale spí** — bez id sa `connect.facebook.net` nevolá vôbec (bod 13 nižšie); reklamný materiál **nezačatý**, zadanie v `MARKETING_PLAN.md` kap. 11 |
 | Produkčný web | **od 8. 9. večer** zhodný s dev vrátane WhatsApp tlačidla v mobilnej lište |
 | Ikony | hotové na stagingu aj na produkcii; stará baktéria je preč |
 | Technický review celého funnelu | `SYSTEM_REVIEW.md` **prepísaný 10. 9. podľa skutočnosti**: čo je hotové, je označené a odkazuje sem. Web verzia z 10. 9. je **od 11. 9. nasadená na dev** (`dev.filthyfilter.sk/system-review/`). |
@@ -111,6 +111,65 @@ Záloha nahradených súborov na serveri:
 **Overené aj lokálne:** 496 testov v API a 14 prehliadačových testov prechádza;
 nový prehliadačový test bol overený tak, že sa funkcia odstránila a test zlyhal.
 **Na produkcii nič z toho nie je** a vetva nie je zlúčená do `main`.
+
+**Meta Pixel je v súhlase a spí (12. 9., v repozitári).** Bod T7 a druhý
+blokujúci bod prvej platenej kampane (`MARKETING_PLAN.md` kap. 11.1). Pixel sedí
+**v** `js/consent.js`, nie vedľa neho, lebo kapitola 7b hovorí, že web má
+jedného vlastníka tagov: druhá značka mimo súhlasu by súhlas obišla a zdvojila
+konverzie.
+
+**Id pixela ešte nemáme, a prázdne pole neznamená odklad.** `metaPixelId` je vo
+všetkých piatich záznamoch v `config/environments.json` prázdne a pri prázdnej
+hodnote sa `connect.facebook.net` nevolá vôbec a `window.fbq` ani nevznikne.
+Nie je to pixel čakajúci za súhlasom, je to neprítomný pixel. Doplnenie id ho
+zapne bez ďalšieho zásahu do kódu; je to bod 13 v „Čo čaká na používateľa“
+a T24 v `BACKLOG.md`.
+
+**Meta nemá cookieless režim, takže sa nedá riešiť signálom ako Google.** Google
+beží v Basic Consent Mode a pred súhlasom dostáva „denied“. Meta takú vrstvu
+neponúka, preto je jediné správne správanie pixel pred súhlasom vôbec
+neinjektovať a po odmietnutí nikdy. Aj stub `fbq` preto vzniká až vnútri
+`loadPixel()`: keby existoval od načítania stránky, udalosť spred súhlasu by si
+sadla do jeho fronty a dohrala sa do Meta v momente, keď by sa knižnica načítala.
+
+Po súhlase ide `PageView` raz a `ffMeasure.event()` zrkadlí štyri udalosti:
+`whatsapp_click` a `phone_click` na `Contact` s parametrom `channel`
+(`whatsapp`/`phone`, aby sa dali odlíšiť), `lead_submitted` na `Lead`,
+`form_start` na `InitiateCheckout`. Do Meta ide výhradne to, čo je v mapovaní;
+parametre, ktoré `js/main.js` posiela do dataLayer (`placement`, `form`,
+`service`, `page`), sa ďalej neposúvajú. `<noscript>` variant zámerne **nie je**:
+bez JavaScriptu niet súhlasu, teda ani pixela. Platí tá istá 180-dňová platnosť
+a to isté odvolanie; odvolanie stránku obnoví, lebo načítanú cudziu knižnicu
+nemožno spoľahlivo odpojiť, a `clearMeasurement()` maže aj `_fbp` a `_fbc`.
+
+**Banner aj stránka o údajoch museli povedať pravdu o oboch stranách.** Doteraz
+hovorili výhradne o Googli a sľubovali, že personalizované reklamy nepovoľujeme.
+Pri Googli to drží signál `ad_personalization: denied`. Meta rovnaké nastavenie
+neponúka, takže ten sľub by po doplnení id prestal byť pravdivý. Zákaz je preto
+pomenovaný ako googlovský a text dodáva, že Meta dostáva navštívené stránky
+a kliknutia a používa ich aj na optimalizáciu a zacielenie svojich reklám.
+Stránka ochrany osobných údajov menuje Meta Platforms Ireland Limited vedľa
+Google Ireland, dopĺňa `fbclid` medzi identifikátory kliknutia a `_fbp` s `_fbc`
+do tabuľky cookies. „Odmietnuť meranie“ zostáva rovnocennou voľbou.
+
+**Verzia súhlasu je preto `2026-09-12` a každý uložený súhlas sa pýta znovu.**
+Nie je to vedľajší účinok, je to zmysel: starý text Meta nespomínal, takže ním
+vydaný súhlas pixel pokryť nemôže. `consent_version` odchádzajúci s dopytom sa
+tým mení, a od 11. 9. je to hodnota, od ktorej závisí ostrý export konverzií.
+
+**Overené:** `node --test tests/forms.test.cjs` 4/4 a `npm test` 16/16. Dve nové
+prehliadačové kontroly hovoria, že pri prázdnom id sa `connect.facebook.net`
+nevolá ani pred súhlasom, ani po stlačení „Povoliť meranie“, a že `window.fbq`
+v oboch prípadoch neexistuje; tretia vrstva je spoločné tvrdenie v `setup()`,
+ktoré to isté vyžaduje od každého testu v sade. **Obe nové kontroly boli
+dokázané dočasným pokazením kódu:** injektovanie pixela mimo súhlasu zhodilo tú
+prvú, vymyslené id zhodilo tú druhú. Mapovanie som s tým vymysleným id overil
+v prehliadači — `PageView` raz, potom `Contact`/`whatsapp`, `Contact`/`phone`,
+`InitiateCheckout` a `Lead`. Lokálny náhľad má čistú konzolu vrátane kontroly
+`[ceny]`, banner sedí v slovenčine aj angličtine a po súhlase sa načíta iba
+Google kontajner.
+
+**Nasadené:** nikam. Zatiaľ len v repozitári.
 
 **Schema.org JSON-LD, podrobný cenový odhad a premenovaná firma (11. 9., v repozitári).**
 Tri zmeny na vetve `codex/filthyfilter-redesign`:
@@ -893,8 +952,8 @@ zatiaľ bez ikon zámerne.
 Používateľ zadal ako prvý platený kanál Meta s prechodom do WhatsAppu, nie Google Ads.
 Podrobne v `MARKETING_PLAN.md` kapitola 11. Blokujúce je toto:
 
-1. **Meta Pixel neexistuje.** Musí ísť do `js/consent.js`, aby prešiel súhlasom,
-   nie vedľa neho.
+1. ~~**Meta Pixel neexistuje.**~~ **Rozvod hotový 12. 9., pixel spí** — viď
+   „Meta Pixel je v súhlase a spí“ nižšie. Čaká len na id pixela.
 2. **Reklamný materiál je z jednej zákazky.** Kód to nevyrobí.
 
 Bod „WhatsApp chýba v plávajúcej lište“ padol 8. 9., viď nižšie.
@@ -984,6 +1043,12 @@ produkčné, kým neprejde `validateOnly` a podúčet nebude používať `This m
     nie a ani nemôže — v tej ceste nie je prehliadač. Kým základ nie je určený,
     konverzie z reklamy s prechodom do WhatsAppu do Meta neodídu. Týka sa to
     kanála, ktorý má ísť ako prvý platený.
+13. **Odpísať id pixela z Meta Events Managera (T24).** Je to **iná hodnota než
+    dataset a token z bodu 10**: id pixela používa prehliadač, dataset a token
+    server. Odpisuje sa z detailu datasetu, je to číslo, spravidla pätnásť až
+    šestnásť číslic. Ide do `metaPixelId` v `config/environments.json` pri
+    hostiteľoch, kde má merať, a potom `npm run build:config`. Kým tam nie je,
+    pixel nerobí nič a web sa správa presne ako dnes.
 
 ## Čo čaká na vývoj
 

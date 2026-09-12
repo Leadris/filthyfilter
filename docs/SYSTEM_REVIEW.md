@@ -31,7 +31,7 @@ tu je len to, čo mení tento dokument.
 | P0.5 identita zákazníka | chýba | ✅ T12 vrátane `acquisition_lead_attribution_id` |
 | P0.6 lokalita ako dáta | chýba | ⚠ **z väčšej časti hotové 11. 9., na dev** — `service_localities` so 41 obcami, PSČ a `locality_id` na dopyte aj na zákazke, rozpoznanie z voľného textu. Otvorené: zápis `locality_id` na zákazku (T22) a `client_locations` |
 | P0.7 zmazanie legacy emisie | chýba | ✅ v repozitári (T14, päť súborov), **nenasadené** |
-| P1.6 Meta Pixel, JSON-LD | chýba | ⚠ meranie zo servera hotové (Meta CAPI worker, T5); **pixel a `LocalBusiness` stále chýbajú** |
+| P1.6 Meta Pixel, JSON-LD | chýba | ✅ meranie zo servera hotové (Meta CAPI worker, T5), `LocalBusiness` doplnený 11. 9., **pixel hotový 12. 9. a spí, kým nie je id** (T24) |
 | P1.8 test troch formulárov | chýba | ✅ `tests/forms.test.cjs` |
 
 **Model hodnoty konverzie sa zmenil.** Kapitoly G.4 a G.7 predpokladajú hodnotu
@@ -199,7 +199,7 @@ sa dnes nedá zodpovedať z dát.
 13. **Súhlas nie je doložený na serveri.** ❌ **Stále otvorené.**
     `PRIVACY_IMPLEMENTATION.md` bod 1: frontend posiela click ID iba so súhlasom,
     ale `lead_attribution` nemá verziu a čas súhlasu. Web ich pozná
-    (`js/consent.js`, `VERSION = "2026-09-07"`), server ich nemá kam uložiť.
+    (`js/consent.js`, `VERSION = "2026-09-12"`), server ich nemá kam uložiť.
     **Pred prvým ostrým exportom to musí existovať.** Je to najstarší nesplnený
     bod z P0.2.
 
@@ -229,7 +229,7 @@ sa dnes nedá zodpovedať z dát.
 | **Dostupnosť technika** | Žiadna tabuľka, žiadny výpočet. |
 | **Žiadosť o recenziu a jej sledovanie** | Nič. `B2B_TRUST_LAYER.md` opisuje pravidlá, kód žiadny. |
 | **Retenčný worker a „objednať znovu“** | Nič. |
-| **Meta Pixel** | ⚠ Stále nič. Musí ísť **do** `js/consent.js`, nie vedľa neho (T7, závisí od rozhodnutia T6 o personalizovaných reklamách). Blokujúci pre Meta kampaň. |
+| ~~**Meta Pixel**~~ | ✅ **Hotový 12. 9., v repozitári, spí.** Sedí **v** `js/consent.js`, nie vedľa neho. Pred súhlasom sa `connect.facebook.net` nevolá a `window.fbq` neexistuje; pri prázdnom `metaPixelId` sa nevolá nikdy. Po súhlase `PageView`, a `Contact`/`Lead`/`InitiateCheckout` zrkadlené z `ffMeasure`. **Čaká už len na id pixela (T24).** Rozhodnutie T6 to neblokuje: zákaz personalizácie je v texte pomenovaný ako googlovský, lebo Meta rovnaké nastavenie neponúka. |
 | ~~**Meta Conversions API, `fbclid`, `ctwa_clid`**~~ | ✅ **Vyriešené 8. 9., worker na `main` od 10. 9.** `cron/meta_conversions_worker.php` je zrkadlom Google workera nad tou istou frontou, filtrované podľa `platform='meta'`. Web klik ide ako `website` s `fbclid` v cookie `fbc`, klik do WhatsAppu ako `business_messaging` s `ctwa_clid`. Telefón sa hašuje podľa pravidla Meta, nie Google. **Čaká na dataset a token z Events Managera (T20)**, dovtedy ticho nič nerobí. |
 | **Import nákladov na reklamu** | Nič. Bez toho sa ROAS nedá spočítať v systéme. |
 | **Report atribúcie** | Žiadny endpoint, ktorý by zložil kampaň → leady → zákazky → fakturované → marža. |
@@ -344,7 +344,7 @@ chýba. Názvy nových tabuliek sú návrh.
       Meta CTWA: reklama otvára WhatsApp priamo, referral ide vo webhooku
 
 2. Landing page (filthyfilter, statická)
-   └─ js/consent.js         súhlas, Consent Mode v2, GTM, (Meta Pixel — chýba)
+   └─ js/consent.js         súhlas, Consent Mode v2, GTM, Meta Pixel (spí bez id)
    └─ js/attribution.js     first touch do sessionStorage (+ fbclid — chýba)
    └─ js/main.js            ceny z GET /api/v1/service-packages/published, záloha PRICES
                             (mestské stránky + lokalitné dáta — chýba)
@@ -587,7 +587,7 @@ rules“ v Google Ads (násobenie podľa geo/zariadenia) — hrubé, neodporúč
 | P1.3 | Technik: zariadenie z čistenia (`customer_devices` pre technika na priradenej zákazke), `service_visits` s `filth_rating_before/after`, checklist v `checklist_json`; marketingový trigger aj pre `Service` |
 | ~~P1.4~~ | ✅ **Hotové 8. 9.** Faktúra sa zapisuje ručne z Billdu v portáli. **Hodnotu dostal `invoice_paid` po úhrade, nie `job_completed`** — pôvodné znenie tohto riadku bolo prekonané rozhodnutím používateľa |
 | P1.5 | `review_requests` + `cron/review_request_worker.php`: 2 dni po Done šablóna WhatsApp (vyžaduje schválenú Meta šablónu, T9) s fallbackom e-mail; sledovanie odoslania, follow-upu a kliku cez `link_token`. ❌ nezačaté |
-| P1.6 | ⚠ **Dve z troch hotové.** WhatsApp v mobilnej lište 8. 9. (T8). Štruktúrované dáta 11. 9.: všetkých päť stránok nesie `HVACBusiness`, čo je podtyp `LocalBusiness`, plus `FAQPage` a na reklamných aj `Service`. **Chýba len Meta Pixel** (T7, čaká na rozhodnutie T6) |
+| P1.6 | ✅ **Všetky tri hotové.** WhatsApp v mobilnej lište 8. 9. (T8). Štruktúrované dáta 11. 9.: všetkých päť stránok nesie `HVACBusiness`, čo je podtyp `LocalBusiness`, plus `FAQPage` a na reklamných aj `Service`. Meta Pixel 12. 9. (T7) — kód je hotový a **spí, kým nie je id** (T24) |
 | ~~P1.7~~ | ~~Tri mestské stránky (Bratislava, Trnava, Nitra) hneď~~ **Odložené 10. 9. 2026.** Nie preto, že by mestské stránky boli zlé, ale preto, že rozhodnutie zo 6. 9. hovorí „geografické stránky **až podľa dát** o tom, odkiaľ reálne chodia zákazky, **nie dopredu**“. P1.7 chcel tri stránky dopredu. Nahradené: landing pages podľa zámeru (`LANDING_PAGE_STRATEGY.md` kap. 5) a podmienky, za ktorých mestská stránka vzniká (kap. 11.5) |
 | ~~P1.8~~ | ✅ **Hotové 8. 9.** `tests/forms.test.cjs`, štyri testy, overený zlyhaním |
 | P1.9 | Telefónny lead: v portáli/aplikácii rýchly zápis so `source=PhoneNote` a povinným `lead_details.service_code` |

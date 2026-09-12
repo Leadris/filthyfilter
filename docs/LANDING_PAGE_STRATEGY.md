@@ -99,7 +99,7 @@ posielajú `{placement}` (`js/main.js:365`). Iba `lead_submitted` posiela `page`
 Porovnať dve landing pages podľa podielu začatých formulárov sa teda dnes nedá.
 
 **g) Súhlas nie je doložený na serveri.** `MISSING`, a je to právna, nie technická
-prekážka. `js/consent.js` má `VERSION = "2026-09-07"` a čas voľby, ale
+prekážka. `js/consent.js` má `VERSION = "2026-09-12"` a čas voľby, ale
 `lead_attribution` nemá kam ich uložiť. `PRIVACY_IMPLEMENTATION.md` to žiada pred
 prvým ostrým exportom konverzií.
 

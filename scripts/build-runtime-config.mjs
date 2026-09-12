@@ -25,6 +25,11 @@ for (const [host, config] of Object.entries(hosts)) {
   if (config.gtmContainerId && !/^GTM-[A-Z0-9]+$/.test(config.gtmContainerId)) {
     throw new Error(`Invalid GTM container id for ${host}`);
   }
+  // A Meta pixel id is a plain number, roughly 15 to 16 digits. Empty means the
+  // pixel stays dormant, which is the state until Events Manager hands one over.
+  if (config.metaPixelId && !/^[0-9]{13,17}$/.test(config.metaPixelId)) {
+    throw new Error(`Invalid Meta pixel id for ${host}`);
+  }
 }
 
 for (const relativePath of publicPages) {
@@ -45,7 +50,8 @@ const generated = `/* Generated from config/environments.json. Public values onl
   var selected = hosts[String(location.hostname || "").toLowerCase()] || {
     environment: "unsupported",
     apiBase: "",
-    gtmContainerId: ""
+    gtmContainerId: "",
+    metaPixelId: ""
   };
   window.FILTHYFILTER_CONFIG = Object.freeze(selected);
 })();

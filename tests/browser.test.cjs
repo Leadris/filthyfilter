@@ -26,7 +26,7 @@ async function setup(t,feed={success:true,servicePackages:[]},options={}) {
   const context=await browser.newContext(options);
   t.after(()=>context.close());
   const page=await context.newPage();
-  const errors=[],google=[],leads=[],unexpected=[];
+  const errors=[],google=[],meta=[],leads=[],unexpected=[];
   page.on('pageerror',e=>errors.push(e.message));
   await context.route('**/*',async route=>{
     const req=route.request(),url=req.url();
@@ -37,10 +37,15 @@ async function setup(t,feed={success:true,servicePackages:[]},options={}) {
     }
     if(url.includes('/api/v1/leads')){leads.push(req.postDataJSON());return route.fulfill({json:{success:true}});}
     if(url.startsWith('https://www.googletagmanager.com/')){google.push(url);return route.fulfill({contentType:'text/javascript',body:'/* measurement stub: no real events sent */'});}
+    // Named separately from `unexpected` so a pixel that wakes up says so, rather
+    // than failing as an anonymous stray host.
+    if(url.startsWith('https://connect.facebook.net/')){meta.push(url);return route.abort();}
     unexpected.push(url);return route.abort();
   });
-  t.after(()=>{assert.deepEqual(errors,[]);assert.deepEqual(unexpected,[]);});
-  return {context,page,google,leads};
+  t.after(()=>{assert.deepEqual(errors,[]);assert.deepEqual(unexpected,[]);
+    // Every test carries this: while metaPixelId is empty, no test may touch Meta.
+    assert.deepEqual(meta,[],'something requested connect.facebook.net');});
+  return {context,page,google,meta,leads};
 }
 const pkg=(code,price,extras={})=>({packageCode:code,priceAmount:price,currency:'EUR',priceVatMode:'vat_included',...extras});
 async function tick(page){await page.waitForFunction(()=>window.ffConsent && window.ffAttribution);}
@@ -139,11 +144,45 @@ test('The enquiry carries the consent its identifiers depend on, and Google\'s o
   assert.ok(at>=before&&at<=Date.now(),'and it has to be the moment the visitor actually agreed');
 });
 
+test('An empty pixel id keeps Meta out of the page: nothing requested, no fbq to queue into',async t=>{
+  const {page,meta}=await setup(t);
+  await page.goto(base+'/?fbclid=FB-DORMANT');await tick(page);
+  // config/environments.json carries metaPixelId as an empty string until the
+  // owner's Events Manager issues one. Empty does not mean deferred behind
+  // consent, it means never injected at all.
+  assert.equal(await page.evaluate(()=>window.FILTHYFILTER_CONFIG.metaPixelId),'');
+  assert.deepEqual(meta,[],'a request reached Meta before the visitor was even asked');
+  // fbq must not exist before a yes. A stub created at file scope would collect
+  // pre-consent events in its queue and replay them the moment a pixel loaded.
+  assert.equal(await page.evaluate(()=>typeof window.fbq),'undefined');
+  await page.click('[data-consent="reject"]');await submit(page);
+  assert.deepEqual(meta,[],'a request reached Meta after the visitor declined');
+  assert.equal(await page.evaluate(()=>typeof window.fbq),'undefined');
+});
+
+test('Accepting loads Google and still nothing from Meta while the pixel id is empty',async t=>{
+  const {page,google,meta}=await setup(t);
+  await page.goto(base+'/');await tick(page);
+  await page.click('[data-consent="accept"]');
+  await page.waitForFunction(()=>ffConsent.allowed());
+  // Consent itself works, so Meta staying away is the empty id doing its job,
+  // not a broken banner that would have hidden the real behaviour.
+  assert.equal(google.length,1,'accepting has to load the Google container');
+  assert.deepEqual(meta,[],'accept loaded a pixel that has no id');
+  assert.equal(await page.evaluate(()=>typeof window.fbq),'undefined');
+  // form_start, lead_submitted and whatsapp_click all pass through ffMeasure,
+  // which is where the Meta mirror lives. None of them may wake it up.
+  await submit(page);
+  assert.equal(await page.evaluate(()=>dataLayer.some(e=>e.event==='lead_submitted')),true,'the dataLayer path still works');
+  assert.deepEqual(meta,[],'an event fired a pixel that has no id');
+  assert.equal(await page.evaluate(()=>typeof window.fbq),'undefined');
+});
+
 test('Expired and legacy consent do not authorise tracking; malformed query does not break page',async t=>{
   const {page,context,google}=await setup(t);
   await context.addInitScript(()=>{
     localStorage.setItem('ff_consent_v1','yes');
-    localStorage.setItem('ff_consent_v2',JSON.stringify({version:'2026-09-07',accepted:true,at:Date.now()-181*86400000}));
+    localStorage.setItem('ff_consent_v2',JSON.stringify({version:'2026-09-12',accepted:true,at:Date.now()-181*86400000}));
     sessionStorage.setItem('ff_attr_v1',JSON.stringify({gclid:'LEGACY'}));
   });
   await page.goto(base+'/?%E0%A4%A=bad');await tick(page);

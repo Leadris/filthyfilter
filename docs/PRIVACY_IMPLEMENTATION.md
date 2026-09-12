@@ -11,14 +11,24 @@ aj aktuálny ORSR. Nejde o novú, ešte nezaloženú spoločnosť.
 - Google GTM `GTM-57M8XLQJ` sa načíta až po povolení merania (basic Consent Mode v2).
   Štyri signály sa najprv nastavia na denied. Po súhlase sú povolené analytické
   a reklamné meranie a ad_user_data; **ad_personalization zostáva denied**.
+- **Meta Pixel (od 12. 9. 2026, spí).** Meta nemá cookieless režim ani signál ako
+  Consent Mode, preto sa `connect.facebook.net` pred súhlasom vôbec neinjektuje
+  a po odmietnutí nikdy. `metaPixelId` je zatiaľ prázdne, takže sa nevolá ani po
+  súhlase. Zákaz personalizácie je odvtedy v texte pomenovaný ako googlovský:
+  Meta rovnaké nastavenie neponúka a dostáva navštívené stránky a kliknutia.
+  Príjemca Meta Platforms Ireland Limited aj cookies `_fbp` a `_fbc` sú na
+  stránke o údajoch; odvolanie ich maže spolu s googlovskými.
 - Jeden voliteľný účel: vyhodnotenie reklamnej návštevy, dopytu a výslednej zákazky.
   Text výslovne zahŕňa hodnotu zákazky a hash kontaktu pri offline meraní. Hash nie
-  je anonymný údaj. Žiadny Meta Pixel sa touto zmenou nepridal.
+  je anonymný údaj. Táto zmena Meta Pixel nepridala; pridala ho až 12. 9. 2026,
+  a aj vtedy spiaci.
 - Rovnocenné tlačidlá povoliť/odmietnuť. Nastavenia sú dostupné v každej pätičke
   aj v texte informácií. Odvolanie vyčistí vlastné meracie cookies a atribúciu,
   odošle denied a obnoví stránku, aby nepokračovali už načítané cudzie skripty.
   Banner na obnovenie upozorní a dá sa zavrieť bez zmeny.
-- `ff_consent_v2`: voľba, čas a verzia informácie, platnosť 180 dní. Staré `yes`
+- `ff_consent_v2`: voľba, čas a verzia informácie, platnosť 180 dní. Verzia je od
+  12. 9. 2026 `2026-09-12`; text vtedy pribral Meta, takže súhlas vydaný podľa
+  staršieho textu sa nepovažuje za súhlas s novým rozsahom a pýta sa znovu. Staré `yes`
   z v1 sa nepovažuje za súhlas s novým rozsahom. Staré atribučné dáta sa vymažú.
 - `ff_attr_v2`: iba po súhlase, na reláciu karty; vstupná URL bez query a fragmentu,
   referrer len origin, parametre len whitelist. Bez súhlasu ide spolu s dopytom

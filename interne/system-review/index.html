@@ -136,7 +136,7 @@
 <header>
   <p class="kicker">FilthyFilter by whispAir · interný dokument</p>
   <h1>Technický review: FilthyFilter + whispair-api voči modelu „klik → faktúra → recenzia → ďalšia objednávka“</h1>
-  <p class="sub">Zdroj: <code>docs/SYSTEM_REVIEW.md</code> v repozitári FilthyFilter. Vygenerované 11. 9. 2026.</p>
+  <p class="sub">Zdroj: <code>docs/SYSTEM_REVIEW.md</code> v repozitári FilthyFilter. Vygenerované 12. 9. 2026.</p>
   <div class="notice">Neindexovaná, neverejná stránka na stagingu. Nie je chránená heslom, adresu berte ako neuvedenú, nie tajnú.</div>
 </header>
 
@@ -203,7 +203,7 @@ tu je len to, čo mení tento dokument.</p>
 <tr>
 <td>P1.6 Meta Pixel, JSON-LD</td>
 <td>chýba</td>
-<td>⚠ meranie zo servera hotové (Meta CAPI worker, T5); <strong>pixel a <code>LocalBusiness</code> stále chýbajú</strong></td>
+<td>✅ meranie zo servera hotové (Meta CAPI worker, T5), <code>LocalBusiness</code> doplnený 11. 9., <strong>pixel hotový 12. 9. a spí, kým nie je id</strong> (T24)</td>
 </tr>
 <tr>
 <td>P1.8 test troch formulárov</td>
@@ -505,7 +505,7 @@ sa dnes nedá zodpovedať z dát.</p>
 <p><strong>Súhlas nie je doložený na serveri.</strong> ❌ <strong>Stále otvorené.</strong>
     <code>PRIVACY_IMPLEMENTATION.md</code> bod 1: frontend posiela click ID iba so súhlasom,
     ale <code>lead_attribution</code> nemá verziu a čas súhlasu. Web ich pozná
-    (<code>js/consent.js</code>, <code>VERSION = "2026-09-07"</code>), server ich nemá kam uložiť.
+    (<code>js/consent.js</code>, <code>VERSION = "2026-09-12"</code>), server ich nemá kam uložiť.
     <strong>Pred prvým ostrým exportom to musí existovať.</strong> Je to najstarší nesplnený
     bod z P0.2.</p>
 </li>
@@ -564,8 +564,8 @@ sa dnes nedá zodpovedať z dát.</p>
 <td>Nič.</td>
 </tr>
 <tr>
-<td><strong>Meta Pixel</strong></td>
-<td>⚠ Stále nič. Musí ísť <strong>do</strong> <code>js/consent.js</code>, nie vedľa neho (T7, závisí od rozhodnutia T6 o personalizovaných reklamách). Blokujúci pre Meta kampaň.</td>
+<td>~~<strong>Meta Pixel</strong>~~</td>
+<td>✅ <strong>Hotový 12. 9., v repozitári, spí.</strong> Sedí <strong>v</strong> <code>js/consent.js</code>, nie vedľa neho. Pred súhlasom sa <code>connect.facebook.net</code> nevolá a <code>window.fbq</code> neexistuje; pri prázdnom <code>metaPixelId</code> sa nevolá nikdy. Po súhlase <code>PageView</code>, a <code>Contact</code>/<code>Lead</code>/<code>InitiateCheckout</code> zrkadlené z <code>ffMeasure</code>. <strong>Čaká už len na id pixela (T24).</strong> Rozhodnutie T6 to neblokuje: zákaz personalizácie je v texte pomenovaný ako googlovský, lebo Meta rovnaké nastavenie neponúka.</td>
 </tr>
 <tr>
 <td>~~<strong>Meta Conversions API, <code>fbclid</code>, <code>ctwa_clid</code></strong>~~</td>
@@ -815,7 +815,7 @@ chýba. Názvy nových tabuliek sú návrh.</p>
       Meta CTWA: reklama otvára WhatsApp priamo, referral ide vo webhooku
 
 2. Landing page (filthyfilter, statická)
-   └─ js/consent.js         súhlas, Consent Mode v2, GTM, (Meta Pixel — chýba)
+   └─ js/consent.js         súhlas, Consent Mode v2, GTM, Meta Pixel (spí bez id)
    └─ js/attribution.js     first touch do sessionStorage (+ fbclid — chýba)
    └─ js/main.js            ceny z GET /api/v1/service-packages/published, záloha PRICES
                             (mestské stránky + lokalitné dáta — chýba)
@@ -1097,7 +1097,7 @@ rules“ v Google Ads (násobenie podľa geo/zariadenia) — hrubé, neodporúč
 </tr>
 <tr>
 <td>P1.6</td>
-<td>⚠ <strong>Dve z troch hotové.</strong> WhatsApp v mobilnej lište 8. 9. (T8). Štruktúrované dáta 11. 9.: všetkých päť stránok nesie <code>HVACBusiness</code>, čo je podtyp <code>LocalBusiness</code>, plus <code>FAQPage</code> a na reklamných aj <code>Service</code>. <strong>Chýba len Meta Pixel</strong> (T7, čaká na rozhodnutie T6)</td>
+<td>✅ <strong>Všetky tri hotové.</strong> WhatsApp v mobilnej lište 8. 9. (T8). Štruktúrované dáta 11. 9.: všetkých päť stránok nesie <code>HVACBusiness</code>, čo je podtyp <code>LocalBusiness</code>, plus <code>FAQPage</code> a na reklamných aj <code>Service</code>. Meta Pixel 12. 9. (T7) — kód je hotový a <strong>spí, kým nie je id</strong> (T24)</td>
 </tr>
 <tr>
 <td>~~P1.7~~</td>
@@ -1400,7 +1400,7 @@ od 6. 9.</p>
 </ol>
 <p>Ďalších sedem rozhodnutí k landing pages a zámerom je v
 <code>LANDING_PAGE_STRATEGY.md</code> kap. 14.</p>
-<footer>FilthyFilter by whispAir · technický review · 11. 9. 2026</footer>
+<footer>FilthyFilter by whispAir · technický review · 12. 9. 2026</footer>
 </div>
 </main>
 </div>

@@ -176,9 +176,11 @@ Zvyšok sa dá odvodiť z už existujúcich polí.
 prvý platený kanál, takže bez `fbclid` je nemerateľná. Pridáva sa do rovnakého
 first-touch mechanizmu a do tela dopytu.
 
-Meta Pixel v `js/consent.js` je samostatná položka a **čaká na rozhodnutie
-o personalizovaných reklamách** (`STATUS.md`). Bez pixelu sa dá merať cez
-Conversions API zo servera, čo je aj tak spoľahlivejšie.
+Meta Pixel v `js/consent.js` je samostatná položka a je **hotový od 12. 9. 2026,
+spí bez id pixela** (`STATUS.md`, `BACKLOG.md` T24). Rozhodnutie o personalizovaných
+reklamách ho už neblokuje: zákaz personalizácie je v texte pomenovaný ako googlovský,
+lebo Meta rovnaké nastavenie neponúka. Aj bez pixela sa dá merať cez Conversions API
+zo servera, čo je aj tak spoľahlivejšie.
 
 ### 4.3 WhatsApp odkazy nesú značku a atribúciu
 
@@ -432,7 +434,7 @@ a `DEPLOYMENT.md`. Produkčné nasadenie je samostatná etapa.
   v `SYSTEM_REVIEW.md` ako P1 a majú vlastný plán.
 - Import nákladov na reklamu a výpočet ROAS v systéme. Bez neho sa ROAS počíta
   ručne z exportu, čo na začiatok stačí.
-- Meta Pixel na webe. Čaká na rozhodnutie o personalizovaných reklamách.
+- ~~Meta Pixel na webe.~~ Hotový 12. 9. 2026, spí bez id pixela (T24).
 
 ---
 
@@ -445,7 +447,8 @@ a `DEPLOYMENT.md`. Produkčné nasadenie je samostatná etapa.
    podľa nastavenia firmy. Treba teda overiť v Billdu, či jedna firma zvládne
    viac číselných radov. Ak nie, vlastný rad znamená druhú firmu v Billdu, čo
    mení rozhodnutie „jedna firma pre obe značky" z kapitoly 1.
-3. **Personalizované reklamy.** Rozhodnutie stále visí a blokuje Meta Pixel na
-   webe (`STATUS.md`). Meranie cez Conversions API na ňom nezávisí.
+3. **Personalizované reklamy.** Rozhodnutie stále visí, ale **Meta Pixel už
+   neblokuje** (hotový 12. 9., `STATUS.md`). Týka sa teda len remarketingových
+   zoznamov v Google Ads. Meranie cez Conversions API na ňom nezávisí.
 4. **Mapa kampaní pre `referral.source_id`.** Vznikne až so spustením prvej
    Meta kampane. Do tej doby sa značka určuje z tokenu v texte správy.

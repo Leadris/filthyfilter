@@ -101,14 +101,61 @@ vetu v banneri a odsek na stránke o údajoch, čo je právny text.
 
 **Hotové, keď:** povieš áno alebo nie.
 
-### T7 — Meta Pixel na webe
-**Vlastník:** ja · **Repozitár:** `filthyfilter` · **Závisí od:** T6
+### T7 — Meta Pixel na webe — **kód hotový 12. 9. 2026, čaká na id**
+**Vlastník:** ja · **Repozitár:** `filthyfilter` · **Závisí od:** id pixela (T24)
 
 Pixel musí ísť **do** `js/consent.js`, aby prešiel súhlasom, nie vedľa neho.
 Meranie zo servera (T5) na ňom nezávisí; pixel pridáva dáta z prehliadača
 a možnosť optimalizácie na udalosti na stránke.
 
 **Hotové, keď:** pixel sa nenačíta pred súhlasom a po súhlase posiela `PageView`.
+
+Rozvod je hotový a **spí**. `js/consent.js` číta `META_PIXEL_ID`
+z `window.FILTHYFILTER_CONFIG.metaPixelId`; hodnota je vo všetkých piatich
+záznamoch v `config/environments.json` prázdna, takže `connect.facebook.net` sa
+nevolá nikdy a `window.fbq` ani nevznikne. Prázdne pole nie je odklad za súhlas,
+je to úplná neprítomnosť pixela. Až doplnenie id ho zapne, bez ďalšieho zásahu
+do kódu.
+
+Po súhlase ide `PageView` raz a `ffMeasure.event()` zrkadlí štyri udalosti:
+`whatsapp_click` a `phone_click` na `Contact` s parametrom `channel`,
+`lead_submitted` na `Lead`, `form_start` na `InitiateCheckout`. Do Meta ide len
+to, čo je v mapovaní; parametre z dataLayer sa neposúvajú ďalej. Udalosť spred
+súhlasu sa nikam neukladá ani nedohráva — stub `fbq` vzniká až vnútri
+`loadPixel()`, takže pred súhlasom nemá kam sadnúť. `<noscript>` variant
+zámerne **nie je**: bez JavaScriptu niet súhlasu, teda ani pixela.
+
+Odvolanie súhlasu stránku obnoví a `clearMeasurement()` maže aj `_fbp` a `_fbc`.
+
+**T6 to už neblokuje.** Rozhodnutie o personalizovaných reklamách zostáva
+otvorené pre Google, ale banner a stránka o údajoch sú 12. 9. prepísané tak, aby
+hovorili pravdu o oboch stranách: Googlu personalizáciu nepovoľujeme, Meta
+rovnaké nastavenie neponúka a dostáva navštívené stránky a kliknutia. Verzia
+súhlasu je preto `2026-09-12` a každý uložený súhlas sa pýta znovu — starý text
+Meta nespomínal, takže ňou vydaný súhlas pixel pokryť nemôže.
+
+Overené: `node --test tests/forms.test.cjs` 4/4 a `npm test` 16/16. Dve nové
+prehliadačové kontroly hovoria, že pri prázdnom id sa `connect.facebook.net`
+nevolá ani pred súhlasom, ani po stlačení „Povoliť meranie“; obe boli dokázané
+dočasným pokazením kódu. Mapovanie som overil s vymysleným id: `PageView` raz,
+potom `Contact`/`whatsapp`, `Contact`/`phone`, `InitiateCheckout` a `Lead`.
+
+### T24 — Id pixela z Meta Events Managera
+**Vlastník:** ty · **Blokuje:** zapnutie T7
+
+Je to **iná hodnota než dataset a token z T20**. Dataset a token používa server
+(Conversions API), id pixela používa prehliadač. V Events Manageri sa id pixela
+odpisuje z detailu datasetu; je to číslo, spravidla pätnásť až šestnásť číslic.
+
+Ide do `config/environments.json` do poľa `metaPixelId` pri hostiteľoch, kde má
+merať, a potom `npm run build:config`. Generovaný `js/runtime-config.js` sa
+needituje ručne, `npm test` na rozchod spadne. Validátor v
+`scripts/build-runtime-config.mjs` neprijme nič iné než číslice.
+
+**Hotové, keď:** po doplnení id sa v Test Events objaví `PageView` a `Lead`
+z webu, a prázdne id zostáva na prostrediach, kde merať nechceme.
+
+---
 
 ### T8 — Tlačidlo WhatsApp v mobilnej lište — **hotové 8. 9. 2026**
 **Vlastník:** ja · **Repozitár:** `filthyfilter` · **Závisí od:** nič
